@@ -39,7 +39,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        coverage run --relative-files -m pytest
+        coverage run -m pytest
         coverage xml
         cat coverage.xml
     - name: SonarQube Scan
