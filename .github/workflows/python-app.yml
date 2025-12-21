@@ -41,6 +41,7 @@ jobs:
       run: |
         coverage run -m pytest
         coverage xml
+        cat coverage.xml
     - name: SonarQube Scan
       uses: SonarSource/sonarqube-scan-action@v6
       env:
