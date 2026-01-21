@@ -25,7 +25,9 @@ def after_request(response):
 
 
 def init_metrics(app):
-    with app.app_context():
-        app.before_request(before_request)
 
-        app.after_request(after_request)
+    if not app.config["TESTING"]:
+        with app.app_context():
+            app.before_request(before_request)
+
+            app.after_request(after_request)

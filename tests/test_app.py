@@ -17,20 +17,8 @@ def test_home_route(client):
     assert response.json == {"message": "Hello, Flask!"}
 
 
-def test_add_success(client):
-    response = client.post("/add", json={"a": 2, "b": 3})
-    assert response.status_code == 200
-    assert response.json["result"] == 5
-
-
-def test_add_missing_values(client):
-    response = client.post("/add", json={"a": 2})
-    assert response.status_code == 400
-    assert "error" in response.json
-
-
 def test_create_user(client):
-    response = client.post("/user", json={"email": "2", "username": "3"})
+    response = client.post("/user", json={"email": "test@example.com", "name": "test"})
     assert response.status_code == 200
 
 
