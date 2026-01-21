@@ -27,3 +27,11 @@ def test_add_missing_values(client):
     response = client.post("/add", json={"a": 2})
     assert response.status_code == 400
     assert "error" in response.json
+
+
+def test_create_user(client):
+    response = client.post("/user", json={"email": "2", "username": "3"})
+    assert response.status_code == 200
+
+
+
