@@ -10,7 +10,6 @@ def client():
     with app.test_client() as client:
         yield client
 
-
 def test_home_route(client):
     response = client.get("/")
     assert response.status_code == 200
@@ -27,3 +26,24 @@ def test_add_missing_values(client):
     response = client.post("/add", json={"a": 2})
     assert response.status_code == 400
     assert "error" in response.json
+
+def test_create_user(client):
+    response = client.post(
+        "/users",
+        json={"username": "john", "email": "john@example.com"}
+    )
+    assert response.status_code == 200
+    assert response.json["username"] == "john"
+    assert response.json["email"] == "john@example.com"
+
+
+def test_add_invalid_datatype(client):
+    response = client.post("/add", json={"a": "two", "b": 3})
+    assert response.status_code == 400
+    assert "error" in response.json
+
+def test_missing_attribute(client):
+    response = client.post("/users", json={"username": "3"})
+    assert response.status_code == 400
+    assert "error" in response.json
+
