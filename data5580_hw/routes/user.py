@@ -18,3 +18,4 @@ def create_user():
 @user.route("/user/<user_id>", methods=["PATCH"])
 def update_user(user_id: str):
     return user_controller.update_user(user_id=user_id)
+
