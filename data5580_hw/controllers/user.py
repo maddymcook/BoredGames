@@ -60,3 +60,5 @@ class UserController:
         return user.model_dump_json(), 200
 
 user_controller = UserController()
+
+#triggering sonar scan
