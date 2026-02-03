@@ -3,7 +3,7 @@ import logging
 from flask import jsonify, request
 
 from sqlalchemy.exc import IntegrityError
-
+from pydantic import ValidationError
 from data5580_hw.services.database.database_client import db
 from data5580_hw.services.database.user_model import UserSQL
 from data5580_hw.models.user import User
@@ -13,21 +13,22 @@ logger = logging.getLogger(__name__)
 
 class UserController:
     @staticmethod
-    def create_user() -> tuple[str, int]:
-        user = User.model_validate(request.get_json(force=True))
+    def create_user():
+        try:
+            user = User.model_validate(request.get_json(force=True))
+        except ValidationError as e:
+            return jsonify({"error": e.errors()}), 400
 
         user_sql = UserSQL(name=user.name, email=user.email, id=user.id)
-
         db.session.add(user_sql)
-
         try:
             db.session.commit()
         except IntegrityError:
+            db.session.rollback()
             return jsonify({"error": "User already exists"}), 400
 
         logging.info(f"user created, {user.id} for {user.email}")
-
-        return user.model_dump_json(), 200
+        return jsonify(user.model_dump()), 200
 
 
     @staticmethod

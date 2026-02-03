@@ -17,11 +17,17 @@ def before_request():
 
 
 def after_request(response):
-    latency = time.time() - request.start_time
-    path = request.url_rule.rule
+    latency = time.time() - getattr(request, "start_time", time.time())
+
+    # Safely get the path; use "unknown" if the route wasn't matched
+    path = request.url_rule.rule if request.url_rule else "unknown"
+
+    # Update Prometheus metrics
     REQUEST_COUNT.labels(method=request.method, endpoint=path, http_status=response.status_code).inc()
     REQUEST_LATENCY.labels(method=request.method, endpoint=path, http_status=response.status_code).observe(latency)
+
     return response
+
 
 
 def init_metrics(app):

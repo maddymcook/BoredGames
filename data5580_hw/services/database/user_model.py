@@ -1,28 +1,12 @@
-import logging
+from sqlalchemy import UniqueConstraint
 
-from flask import jsonify, request
-
-from sqlalchemy.exc import IntegrityError
-from data5580_hw.services.database_client import db
-from data5580_hw.models.user_model import User as UserSQL
-from data5580_hw.services.user import User
+from data5580_hw.services.database.database_client import db
 
 
-class UserController:    
-    def __init__(self, user_service):
-            self.user_service = user_service    
-    def create_user(self, data):
-            name = data.get("username")
-            email = data.get("email")
+class UserSQL(db.Model):
+    __tablename__ = "users"
+    id = db.Column(db.String, primary_key=True)
+    name = db.Column(db.String)
+    email = db.Column(db.String, unique=True)
 
-            if not name or not email:
-                return {"error": "Missing values"}, 400
-
-            user = self.user_service.create_user(name, email)
-            if not user:
-                return {"error": "Email already exists"}, 400
-
-            return {
-                "username": user.name,
-                "email": user.email
-            }, 200
+    UniqueConstraint('email')

@@ -1,3 +1,5 @@
 flask
 pytest
+pytest-cov
+requests
 pydantic
