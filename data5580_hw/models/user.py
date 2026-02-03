@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, model_validator
 import uuid
 
 def get_id():
@@ -7,5 +7,16 @@ def get_id():
 class User(BaseModel):
     name: str
     email: EmailStr
-
     id: str = Field(default_factory=get_id)
+
+
+class UserUpdate(BaseModel):
+    """Optional name and/or email for PATCH; at least one required."""
+    name: str | None = None
+    email: EmailStr | None = None
+
+    @model_validator(mode="after")
+    def at_least_one_field(self):
+        if self.name is None and self.email is None:
+            raise ValueError("At least one of name or email is required")
+        return self
