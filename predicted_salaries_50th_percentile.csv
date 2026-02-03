@@ -1,0 +1,2201 @@
+LABEL_INSTITUTION,Year,Percentile,School_ID,Predicted_Salary
+Institutions in Alabama,1,50,150,43125.639040412185
+Institutions in Alabama,5,50,150,59702.48251334777
+Institutions in Alabama,10,50,150,75076.3683253136
+Institutions in Alabama,15,50,150,75076.3683253136
+Institutions in Arizona,1,50,151,42969.7129988345
+Institutions in Arizona,5,50,151,59708.851400793654
+Institutions in Arizona,10,50,151,76319.89769444443
+Institutions in Arizona,15,50,151,76319.89769444443
+Institutions in Colorado,1,50,152,40148.83434945609
+Institutions in Colorado,5,50,152,56856.491150793656
+Institutions in Colorado,10,50,152,72312.14884920637
+Institutions in Colorado,15,50,152,72312.14884920637
+Institutions in Connecticut,1,50,153,44943.57342743368
+Institutions in Connecticut,5,50,153,64960.96430411255
+Institutions in Connecticut,10,50,153,78873.56936183263
+Institutions in Connecticut,15,50,153,78873.56936183263
+Institutions in District of Columbia,1,50,154,49025.55170238097
+Institutions in District of Columbia,5,50,154,67702.48698989899
+Institutions in District of Columbia,10,50,154,78873.56936183263
+Institutions in District of Columbia,15,50,154,78873.56936183263
+Institutions in Georgia,1,50,155,41809.82332758908
+Institutions in Georgia,5,50,155,57184.40603890553
+Institutions in Georgia,10,50,155,71115.99654761903
+Institutions in Georgia,15,50,155,71115.99654761903
+Institutions in Hawaii,1,50,156,38102.6932005217
+Institutions in Hawaii,5,50,156,55763.84472619047
+Institutions in Hawaii,10,50,156,69973.75946428569
+Institutions in Hawaii,15,50,156,69973.75946428569
+Institutions in Illinois,1,50,157,42792.60582151998
+Institutions in Illinois,5,50,157,60018.90835420131
+Institutions in Illinois,10,50,157,74914.2786598124
+Institutions in Illinois,15,50,157,74914.2786598124
+Institutions in Indiana,1,50,158,43797.47703984822
+Institutions in Indiana,5,50,158,58121.7282005772
+Institutions in Indiana,10,50,158,72602.94001984126
+Institutions in Indiana,15,50,158,72602.94001984126
+Institutions in Iowa,1,50,159,42265.51915123765
+Institutions in Iowa,5,50,159,60162.756096681114
+Institutions in Iowa,10,50,159,76168.64975937952
+Institutions in Iowa,15,50,159,76168.64975937952
+Institutions in Louisiana,1,50,160,40190.981734682
+Institutions in Louisiana,5,50,160,55073.236342988705
+Institutions in Louisiana,10,50,160,66184.6928625541
+Institutions in Louisiana,15,50,160,66184.6928625541
+Institutions in Maine,1,50,161,36591.266270479515
+Institutions in Maine,5,50,161,47667.01106433598
+Institutions in Maine,10,50,161,57005.24756493509
+Institutions in Maine,15,50,161,57005.24756493509
+Institutions in Massachusetts,1,50,162,43592.5707900433
+Institutions in Massachusetts,5,50,162,64400.998
+Institutions in Massachusetts,10,50,162,78596.09190476191
+Institutions in Massachusetts,15,50,162,78596.09190476191
+Institutions in Michigan,1,50,163,50417.89712401488
+Institutions in Michigan,5,50,163,74557.75049583748
+Institutions in Michigan,10,50,163,100364.8510119048
+Institutions in Michigan,15,50,163,100364.8510119048
+Institutions in Minnesota,1,50,164,43337.25395526696
+Institutions in Minnesota,5,50,164,60907.025345238115
+Institutions in Minnesota,10,50,164,77834.22373809524
+Institutions in Minnesota,15,50,164,77834.22373809524
+Institutions in Missouri,1,50,165,38967.730245088234
+Institutions in Missouri,5,50,165,53903.93686399709
+Institutions in Missouri,10,50,165,68441.58542460318
+Institutions in Missouri,15,50,165,68441.58542460318
+Institutions in Montana,1,50,166,36937.58216626429
+Institutions in Montana,5,50,166,52747.44426190477
+Institutions in Montana,10,50,166,66024.87173015872
+Institutions in Montana,15,50,166,66024.87173015872
+Institutions in New York,1,50,167,40545.697750999
+Institutions in New York,5,50,167,61688.90461735485
+Institutions in New York,10,50,167,77945.56964285717
+Institutions in New York,15,50,167,77945.56964285717
+Institutions in Ohio,1,50,168,42364.84126606726
+Institutions in Ohio,5,50,168,58372.250589826835
+Institutions in Ohio,10,50,168,72815.72588883342
+Institutions in Ohio,15,50,168,72815.72588883342
+Institutions in Oklahoma,1,50,169,41373.38480952381
+Institutions in Oklahoma,5,50,169,56910.51620238094
+Institutions in Oklahoma,10,50,169,68001.49071428571
+Institutions in Oklahoma,15,50,169,68001.49071428571
+Institutions in Oregon,1,50,170,38494.37289051227
+Institutions in Oregon,5,50,170,56808.86500721499
+Institutions in Oregon,10,50,170,72207.76825649351
+Institutions in Oregon,15,50,170,72207.76825649351
+Institutions in Pennsylvania,1,50,171,46993.46785742036
+Institutions in Pennsylvania,5,50,171,67152.24048498723
+Institutions in Pennsylvania,10,50,171,86288.9368838384
+Institutions in Pennsylvania,15,50,171,86288.9368838384
+Institutions in Rhode Island,1,50,172,53005.73371825395
+Institutions in Rhode Island,5,50,172,80199.50303607505
+Institutions in Rhode Island,10,50,172,109117.5079448052
+Institutions in Rhode Island,15,50,172,109117.5079448052
+Institutions in South Carolina,1,50,173,38412.855130480624
+Institutions in South Carolina,5,50,173,52847.98875180375
+Institutions in South Carolina,10,50,173,65126.99773881672
+Institutions in South Carolina,15,50,173,65126.99773881672
+Institutions in South Dakota,1,50,174,42004.360921564534
+Institutions in South Dakota,5,50,174,55308.593921356405
+Institutions in South Dakota,10,50,174,67101.53860028858
+Institutions in South Dakota,15,50,174,67101.53860028858
+Institutions in Texas,1,50,175,47196.75682177625
+Institutions in Texas,5,50,175,63444.58407142858
+Institutions in Texas,10,50,175,75437.0944563492
+Institutions in Texas,15,50,175,75437.0944563492
+Institutions in Utah,1,50,176,43675.19649531024
+Institutions in Utah,5,50,176,61991.53423015874
+Institutions in Utah,10,50,176,79954.99429365079
+Institutions in Utah,15,50,176,79954.99429365079
+Institutions in Virginia,1,50,177,42951.885061827066
+Institutions in Virginia,5,50,177,60726.548773781775
+Institutions in Virginia,10,50,177,76934.29238095238
+Institutions in Virginia,15,50,177,76934.29238095238
+Institutions in West Virginia,1,50,178,38139.361395146516
+Institutions in West Virginia,5,50,178,55667.18361580089
+Institutions in West Virginia,10,50,178,69265.27774114771
+Institutions in West Virginia,15,50,178,69265.27774114771
+Institutions in Wisconsin,1,50,179,40863.93820740371
+Institutions in Wisconsin,5,50,179,57379.12350144303
+Institutions in Wisconsin,10,50,179,71182.63830952381
+Institutions in Wisconsin,15,50,179,71182.63830952381
+Institutions in Wyoming,1,50,180,43053.84351767678
+Institutions in Wyoming,5,50,180,58624.16280411258
+Institutions in Wyoming,10,50,180,69618.50352380952
+Institutions in Wyoming,15,50,180,69618.50352380952
+University of Alabama,1,50,407,42058.87361222112
+University of Alabama,5,50,407,59403.7387041847
+University of Alabama,10,50,407,74540.99667857144
+University of Alabama,15,50,407,74540.99667857144
+University of Alabama at Birmingham,1,50,408,42855.804888528146
+University of Alabama at Birmingham,5,50,408,57022.60658333334
+University of Alabama at Birmingham,10,50,408,73132.46205555556
+University of Alabama at Birmingham,15,50,408,73132.46205555556
+University of Alabama in Huntsville,1,50,409,49836.28882894882
+University of Alabama in Huntsville,5,50,409,69108.7291904762
+University of Alabama in Huntsville,10,50,409,84786.39620634919
+University of Alabama in Huntsville,15,50,409,84786.39620634919
+Arizona State University,1,50,9,43978.35290548341
+Arizona State University,5,50,9,61106.66467604617
+Arizona State University,10,50,9,78186.8957608225
+Arizona State University,15,50,9,78186.8957608225
+Northern Arizona University,1,50,249,41726.11194663669
+Northern Arizona University,5,50,249,54503.522931318665
+Northern Arizona University,10,50,249,66023.44334343434
+Northern Arizona University,15,50,249,66023.44334343434
+University of Arizona (The),1,50,410,41577.2401033411
+University of Arizona (The),5,50,410,61315.000083694096
+University of Arizona (The),10,50,410,82467.46623809525
+University of Arizona (The),15,50,410,82467.46623809525
+Adams State University,1,50,1,35609.389195776435
+Adams State University,5,50,1,46304.741247114
+Adams State University,10,50,1,54650.4714599567
+Adams State University,15,50,1,54650.4714599567
+Arapahoe Community College,1,50,8,37897.23604082846
+Arapahoe Community College,5,50,8,53944.451602786125
+Arapahoe Community College,10,50,8,64284.773095238095
+Arapahoe Community College,15,50,8,64284.773095238095
+Colorado School of Mines,1,50,70,72042.70181172772
+Colorado School of Mines,5,50,70,97542.92622258299
+Colorado School of Mines,10,50,70,120889.29828860024
+Colorado School of Mines,15,50,70,120889.29828860024
+University of Northern Colorado,1,50,463,36325.628072594074
+University of Northern Colorado,5,50,463,51060.51524134201
+University of Northern Colorado,10,50,463,62543.68458441559
+University of Northern Colorado,15,50,463,62543.68458441559
+Colorado State University,1,50,71,37981.95589546565
+Colorado State University,5,50,71,56822.432863747395
+Colorado State University,10,50,71,74322.58141161616
+Colorado State University,15,50,71,74322.58141161616
+Fort Lewis College,1,50,107,31422.167366008995
+Fort Lewis College,5,50,107,46126.26624098126
+Fort Lewis College,10,50,107,58423.839100732606
+Fort Lewis College,15,50,107,58423.839100732606
+Colorado Mesa University,1,50,68,38206.45057534132
+Colorado Mesa University,5,50,68,51404.100500721506
+Colorado Mesa University,10,50,68,62380.76368795095
+Colorado Mesa University,15,50,68,62380.76368795095
+Metropolitan State University of Denver,1,50,218,40718.93941264292
+Metropolitan State University of Denver,5,50,218,54858.188799783566
+Metropolitan State University of Denver,10,50,218,66686.10227300476
+Metropolitan State University of Denver,15,50,218,66686.10227300476
+Colorado State University-Pueblo,1,50,73,38885.040076728845
+Colorado State University-Pueblo,5,50,73,50123.71621861472
+Colorado State University-Pueblo,10,50,73,59297.42210533912
+Colorado State University-Pueblo,15,50,73,59297.42210533912
+Trinidad State Junior College,1,50,400,43292.11168253968
+Trinidad State Junior College,5,50,400,45909.268154761914
+Trinidad State Junior College,10,50,400,39811.389833333335
+Trinidad State Junior College,15,50,400,39811.389833333335
+University of Colorado Boulder,1,50,415,40306.98503091353
+University of Colorado Boulder,5,50,415,62529.82951420802
+University of Colorado Boulder,10,50,415,84407.66884415584
+University of Colorado Boulder,15,50,415,84407.66884415584
+Western Colorado University,1,50,536,31790.702749000993
+Western Colorado University,5,50,536,47884.78478893331
+Western Colorado University,10,50,536,60924.65558297259
+Western Colorado University,15,50,536,60924.65558297259
+Albertus Magnus College,1,50,4,59265.62167635142
+Albertus Magnus College,5,50,4,72526.0095844156
+Albertus Magnus College,10,50,4,81626.65322222226
+Albertus Magnus College,15,50,4,81626.65322222226
+Central Connecticut State University,1,50,43,44190.553604215245
+Central Connecticut State University,5,50,43,64539.67357503609
+Central Connecticut State University,10,50,43,78636.82971428573
+Central Connecticut State University,15,50,43,78636.82971428573
+Connecticut College,1,50,82,45884.84249999999
+Connecticut College,5,50,82,68849.28756349206
+Connecticut College,10,50,82,92612.87373015872
+Connecticut College,15,50,82,92612.87373015872
+Western Connecticut State University,1,50,537,43566.07255150404
+Western Connecticut State University,5,50,537,62301.472588772354
+Western Connecticut State University,10,50,537,76791.92927308801
+Western Connecticut State University,15,50,537,76791.92927308801
+Fairfield University,1,50,102,58095.61355952381
+Fairfield University,5,50,102,47206.636578282814
+Fairfield University,10,50,102,57631.42211111112
+Fairfield University,15,50,102,57631.42211111112
+Mitchell College,1,50,231,27861.23076984127
+Mitchell College,5,50,231,43978.9269025974
+Mitchell College,10,50,231,59504.43013347764
+Mitchell College,15,50,231,59504.43013347764
+University of New Haven,1,50,457,40655.246091269844
+University of New Haven,5,50,457,61501.99953174602
+University of New Haven,10,50,457,67311.93032936509
+University of New Haven,15,50,457,67311.93032936509
+Quinnipiac University,1,50,299,47742.111460317465
+Quinnipiac University,5,50,299,77169.02989285713
+Quinnipiac University,10,50,299,94480.03908333334
+Quinnipiac University,15,50,299,94480.03908333334
+Sacred Heart University,1,50,322,47180.95597419245
+Sacred Heart University,5,50,322,71678.73784415584
+Sacred Heart University,10,50,322,87289.82984487739
+Sacred Heart University,15,50,322,87289.82984487739
+Southern Connecticut State University,1,50,346,40585.157963508726
+Southern Connecticut State University,5,50,346,59271.47441774893
+Southern Connecticut State University,10,50,346,71427.45912301588
+Southern Connecticut State University,15,50,346,71427.45912301588
+University of Saint Joseph,1,50,471,51909.18005844155
+University of Saint Joseph,5,50,471,64966.74292857143
+University of Saint Joseph,10,50,471,69887.535
+University of Saint Joseph,15,50,471,69887.535
+University of Bridgeport,1,50,411,46024.06208152957
+University of Bridgeport,5,50,411,58748.78097222223
+University of Bridgeport,10,50,411,72389.90997619047
+University of Bridgeport,15,50,411,72389.90997619047
+University of Connecticut,1,50,418,47065.19481421355
+University of Connecticut,5,50,418,73086.85648809525
+University of Connecticut,10,50,418,93196.22058333334
+University of Connecticut,15,50,418,93196.22058333334
+University of Hartford,1,50,420,42582.94292857144
+University of Hartford,5,50,420,64978.56850793652
+University of Hartford,10,50,420,82138.30111904762
+University of Hartford,15,50,420,82138.30111904762
+Eastern Connecticut State University,1,50,93,38372.89322632922
+Eastern Connecticut State University,5,50,93,57627.326154761904
+Eastern Connecticut State University,10,50,93,70965.84811507935
+Eastern Connecticut State University,15,50,93,70965.84811507935
+University of the District of Columbia,1,50,513,48974.093380952385
+University of the District of Columbia,5,50,513,66999.39666666667
+University of the District of Columbia,10,50,513,70070.10614285714
+University of the District of Columbia,15,50,513,70070.10614285714
+Abraham Baldwin Agricultural College,1,50,0,39691.25476767676
+Abraham Baldwin Agricultural College,5,50,0,51440.94183333334
+Abraham Baldwin Agricultural College,10,50,0,63612.55909090909
+Abraham Baldwin Agricultural College,15,50,0,63612.55909090909
+Agnes Scott College,1,50,2,33393.4077106782
+Agnes Scott College,5,50,2,48055.25507359309
+Agnes Scott College,10,50,2,62809.09852380953
+Agnes Scott College,15,50,2,62809.09852380953
+Albany State University,1,50,3,34009.19488682233
+Albany State University,5,50,3,45056.10828066378
+Albany State University,10,50,3,54210.32711219336
+Albany State University,15,50,3,54210.32711219336
+Berry College,1,50,19,34691.2790497003
+Berry College,5,50,19,51221.40196031745
+Berry College,10,50,19,68139.22566666668
+Berry College,15,50,19,68139.22566666668
+College of Coastal Georgia,1,50,62,42538.21301587302
+College of Coastal Georgia,5,50,62,53537.255690476195
+College of Coastal Georgia,10,50,62,61776.6988015873
+College of Coastal Georgia,15,50,62,61776.6988015873
+Clark Atlanta University,1,50,54,37102.2615
+Clark Atlanta University,5,50,54,53195.916904761914
+Clark Atlanta University,10,50,54,50475.08497222223
+Clark Atlanta University,15,50,54,50475.08497222223
+Columbus State University,1,50,76,38826.362013722384
+Columbus State University,5,50,76,51047.90950946275
+Columbus State University,10,50,76,61618.91173953826
+Columbus State University,15,50,76,61618.91173953826
+Emmanuel College,1,50,98,31641.818750000006
+Emmanuel College,5,50,98,45261.28926984127
+Emmanuel College,10,50,98,75493.90741269839
+Emmanuel College,15,50,98,75493.90741269839
+Fort Valley State University,1,50,108,31696.2941013986
+Fort Valley State University,5,50,108,43456.450493062504
+Fort Valley State University,10,50,108,52863.1469047619
+Fort Valley State University,15,50,108,52863.1469047619
+Georgia Institute of Technology,1,50,120,69074.40897727275
+Georgia Institute of Technology,5,50,120,91682.56692193919
+Georgia Institute of Technology,10,50,120,120775.59516161616
+Georgia Institute of Technology,15,50,120,120775.59516161616
+Georgia Southern University,1,50,121,39862.78388769565
+Georgia Southern University,5,50,121,54183.199063492044
+Georgia Southern University,10,50,121,64813.889518564756
+Georgia Southern University,15,50,121,64813.889518564756
+Georgia Southwestern State University,1,50,122,38657.655431013445
+Georgia Southwestern State University,5,50,122,49626.596281385304
+Georgia Southwestern State University,10,50,122,57462.77476623378
+Georgia Southwestern State University,15,50,122,57462.77476623378
+Georgia State University,1,50,123,39742.105225801984
+Georgia State University,5,50,123,56443.296335137056
+Georgia State University,10,50,123,69592.6215981241
+Georgia State University,15,50,123,69592.6215981241
+Gordon State College,1,50,125,39768.368952380966
+Gordon State College,5,50,125,52587.72
+Gordon State College,10,50,125,59623.819
+Gordon State College,15,50,125,59623.819
+Kennesaw State University,1,50,186,45144.79294706439
+Kennesaw State University,5,50,186,60116.09862506938
+Kennesaw State University,10,50,186,73181.70927200578
+Kennesaw State University,15,50,186,73181.70927200578
+Augusta University,1,50,12,44992.02427661227
+Augusta University,5,50,12,56352.14662090687
+Augusta University,10,50,12,66499.85838888891
+Augusta University,15,50,12,66499.85838888891
+Middle Georgia State University,1,50,220,41931.48217922356
+Middle Georgia State University,5,50,220,53026.93759704186
+Middle Georgia State University,10,50,220,64543.40760556111
+Middle Georgia State University,15,50,220,64543.40760556111
+University of North Georgia,1,50,459,40259.178625707624
+University of North Georgia,5,50,459,52272.74118253967
+University of North Georgia,10,50,459,62451.28895634919
+University of North Georgia,15,50,459,62451.28895634919
+Piedmont University,1,50,288,43329.530316849814
+Piedmont University,5,50,288,56846.4324935065
+Piedmont University,10,50,288,74557.04989782441
+Piedmont University,15,50,288,74557.04989782441
+Savannah State University,1,50,332,31015.575827353216
+Savannah State University,5,50,332,44798.74965476189
+Savannah State University,10,50,332,55615.82346861473
+Savannah State University,15,50,332,55615.82346861473
+South Georgia State College,1,50,340,59091.55814285713
+South Georgia State College,5,50,340,80392.37767063493
+South Georgia State College,10,50,340,71649.04321176045
+South Georgia State College,15,50,340,71649.04321176045
+Spelman College,1,50,359,37746.75816486291
+Spelman College,5,50,359,54608.949071428564
+Spelman College,10,50,359,79522.19976190473
+Spelman College,15,50,359,79522.19976190473
+University of Georgia,1,50,419,41994.800946359195
+University of Georgia,5,50,419,61165.1882826618
+University of Georgia,10,50,419,79933.33656654455
+University of Georgia,15,50,419,79933.33656654455
+Valdosta State University,1,50,516,35569.9639720141
+Valdosta State University,5,50,516,50229.40903743479
+Valdosta State University,10,50,516,59898.114963203465
+Valdosta State University,15,50,516,59898.114963203465
+University of West Georgia,1,50,497,38595.62535120436
+University of West Georgia,5,50,497,52936.43470117137
+University of West Georgia,10,50,497,63418.10262590187
+University of West Georgia,15,50,497,63418.10262590187
+Georgia College & State University,1,50,117,40090.159083555336
+Georgia College & State University,5,50,117,54007.19336566212
+Georgia College & State University,10,50,117,64359.32687554112
+Georgia College & State University,15,50,117,64359.32687554112
+Young Harris College,1,50,548,29639.556956349203
+Young Harris College,5,50,548,43933.3255
+Young Harris College,10,50,548,61816.37174999998
+Young Harris College,15,50,548,61816.37174999998
+University of Hawaii at Manoa,1,50,424,38129.239820057395
+University of Hawaii at Manoa,5,50,424,56656.84655699858
+University of Hawaii at Manoa,10,50,424,71188.69963528136
+University of Hawaii at Manoa,15,50,424,71188.69963528136
+University of Hawaii at Hilo,1,50,423,35496.27823035295
+University of Hawaii at Hilo,5,50,423,51222.9227049062
+University of Hawaii at Hilo,10,50,423,65886.38719985569
+University of Hawaii at Hilo,15,50,423,65886.38719985569
+University of Hawaii Maui College,1,50,422,45138.31738095238
+University of Hawaii Maui College,5,50,422,63490.80564285714
+University of Hawaii Maui College,10,50,422,63214.42876190477
+University of Hawaii Maui College,15,50,422,63214.42876190477
+Aurora University,1,50,13,42300.72870177045
+Aurora University,5,50,13,55911.06973015872
+Aurora University,10,50,13,67250.06172619047
+Aurora University,15,50,13,67250.06172619047
+Rosalind Franklin University of Medicine and Science,1,50,307,67715.8729285714
+Rosalind Franklin University of Medicine and Science,5,50,307,62185.15673809524
+Rosalind Franklin University of Medicine and Science,10,50,307,104715.61023809524
+Rosalind Franklin University of Medicine and Science,15,50,307,104715.61023809524
+Concordia University,1,50,80,36742.0470191059
+Concordia University,5,50,80,50142.71829761903
+Concordia University,10,50,80,59139.65082142857
+Concordia University,15,50,80,59139.65082142857
+DePaul University,1,50,87,47828.08753174603
+DePaul University,5,50,87,67445.98570396267
+DePaul University,10,50,87,87213.10430988457
+DePaul University,15,50,87,87213.10430988457
+Eastern Illinois University,1,50,94,36380.33838453213
+Eastern Illinois University,5,50,94,52564.76815592741
+Eastern Illinois University,10,50,94,63868.326389971146
+Eastern Illinois University,15,50,94,63868.326389971146
+Elmhurst University,1,50,97,45085.618465673215
+Elmhurst University,5,50,97,62389.50053465978
+Elmhurst University,10,50,97,75560.46741269839
+Elmhurst University,15,50,97,75560.46741269839
+Eureka College,1,50,101,36094.44429179154
+Eureka College,5,50,101,47206.636578282814
+Eureka College,10,50,101,57726.45832142858
+Eureka College,15,50,101,57726.45832142858
+Illinois State University,1,50,138,42079.0038019758
+Illinois State University,5,50,138,58632.3129389777
+Illinois State University,10,50,138,72248.95443073592
+Illinois State University,15,50,138,72248.95443073592
+Northeastern Illinois University,1,50,247,40686.401397741145
+Northeastern Illinois University,5,50,247,55089.87569444446
+Northeastern Illinois University,10,50,247,67676.38023015873
+Northeastern Illinois University,15,50,247,67676.38023015873
+Chicago State University,1,50,48,41684.524931818196
+Chicago State University,5,50,48,54494.341321789325
+Chicago State University,10,50,48,63887.00293939393
+Chicago State University,15,50,48,63887.00293939393
+Judson University,1,50,185,40449.087182539675
+Judson University,5,50,185,60645.80117857143
+Judson University,10,50,185,97472.57082323235
+Judson University,15,50,185,97472.57082323235
+Lewis University,1,50,192,48729.579053235975
+Lewis University,5,50,192,66281.26650607726
+Lewis University,10,50,192,79945.63771825399
+Lewis University,15,50,192,79945.63771825399
+Loyola University Chicago,1,50,206,44396.78205661008
+Loyola University Chicago,5,50,206,63468.045856060606
+Loyola University Chicago,10,50,206,85152.8037849928
+Loyola University Chicago,15,50,206,85152.8037849928
+Millikin University,1,50,223,39784.600038461525
+Millikin University,5,50,223,53712.6721875902
+Millikin University,10,50,223,66149.02571825398
+Millikin University,15,50,223,66149.02571825398
+Monmouth College,1,50,232,37232.159059884565
+Monmouth College,5,50,232,51688.64673015872
+Monmouth College,10,50,232,66223.96814502164
+Monmouth College,15,50,232,66223.96814502164
+National Louis University,1,50,240,49231.68315739814
+National Louis University,5,50,240,61184.30222286047
+National Louis University,10,50,240,72250.31961141634
+National Louis University,15,50,240,72250.31961141634
+Northern Illinois University,1,50,250,41456.682606976356
+Northern Illinois University,5,50,250,59210.48837229436
+Northern Illinois University,10,50,250,73662.33003787877
+Northern Illinois University,15,50,250,73662.33003787877
+Olivet Nazarene University,1,50,263,47756.92322301309
+Olivet Nazarene University,5,50,263,57856.24788528139
+Olivet Nazarene University,10,50,263,68348.06189285715
+Olivet Nazarene University,15,50,263,68348.06189285715
+Dominican University,1,50,89,39917.07036799312
+Dominican University,5,50,89,55185.68957287157
+Dominican University,10,50,89,72886.87725000002
+Dominican University,15,50,89,72886.87725000002
+Southern Illinois University at Carbondale,1,50,348,40743.66340018316
+Southern Illinois University at Carbondale,5,50,348,57148.061512043525
+Southern Illinois University at Carbondale,10,50,348,70271.49550396827
+Southern Illinois University at Carbondale,15,50,348,70271.49550396827
+Southern Illinois University Edwardsville,1,50,347,41739.16587756687
+Southern Illinois University Edwardsville,5,50,347,55270.59563492061
+Southern Illinois University Edwardsville,10,50,347,68961.17498484848
+Southern Illinois University Edwardsville,15,50,347,68961.17498484848
+Benedictine University,1,50,18,47099.95635214785
+Benedictine University,5,50,18,65165.52040079367
+Benedictine University,10,50,18,80870.6111984127
+Benedictine University,15,50,18,80870.6111984127
+University of Illinois Urbana-Champaign,1,50,428,49744.20853424354
+University of Illinois Urbana-Champaign,5,50,428,73024.59246825399
+University of Illinois Urbana-Champaign,10,50,428,100098.68987301589
+University of Illinois Urbana-Champaign,15,50,428,100098.68987301589
+University of Illinois at Chicago,1,50,429,42031.86107972583
+University of Illinois at Chicago,5,50,429,63233.6427463925
+University of Illinois at Chicago,10,50,429,83787.77086507936
+University of Illinois at Chicago,15,50,429,83787.77086507936
+Western Illinois University,1,50,539,37135.587705464895
+Western Illinois University,5,50,539,53782.6226818182
+Western Illinois University,10,50,539,66266.58582539682
+Western Illinois University,15,50,539,66266.58582539682
+Wheaton College,1,50,542,36937.72158730158
+Wheaton College,5,50,542,58634.87221356422
+Wheaton College,10,50,542,77168.19436904763
+Wheaton College,15,50,542,77168.19436904763
+Anderson University,1,50,6,39616.32772222222
+Anderson University,5,50,6,50209.914792207805
+Anderson University,10,50,6,43129.5074014319
+Anderson University,15,50,6,43129.5074014319
+Ball State University,1,50,16,37399.39323659673
+Ball State University,5,50,16,51116.57316269841
+Ball State University,10,50,16,61713.29987301589
+Ball State University,15,50,16,61713.29987301589
+Butler University,1,50,31,49863.11862301588
+Butler University,5,50,31,64852.427238095246
+Butler University,10,50,31,120404.92204761904
+Butler University,15,50,31,120404.92204761904
+Earlham College,1,50,90,32383.87957051282
+Earlham College,5,50,90,60197.20221428573
+Earlham College,10,50,90,72291.77725000001
+Earlham College,15,50,90,72291.77725000001
+Franklin College of Indiana,1,50,111,40143.24549458875
+Franklin College of Indiana,5,50,111,52955.40689285715
+Franklin College of Indiana,10,50,111,55681.599903318885
+Franklin College of Indiana,15,50,111,55681.599903318885
+Grace College and Theological Seminary,1,50,126,33434.1506031746
+Grace College and Theological Seminary,5,50,126,44834.86877380951
+Grace College and Theological Seminary,10,50,126,62335.77880952381
+Grace College and Theological Seminary,15,50,126,62335.77880952381
+Hanover College,1,50,134,35459.50692857143
+Hanover College,5,50,134,53320.73667857144
+Hanover College,10,50,134,74883.89305699855
+Hanover College,15,50,134,74883.89305699855
+University of Indianapolis,1,50,431,43367.86291666668
+University of Indianapolis,5,50,431,64929.10457142856
+University of Indianapolis,10,50,431,75882.27133333332
+University of Indianapolis,15,50,431,75882.27133333332
+Indiana Institute of Technology,1,50,139,46548.291645299156
+Indiana Institute of Technology,5,50,139,58159.840999999986
+Indiana Institute of Technology,10,50,139,74180.38478787878
+Indiana Institute of Technology,15,50,139,74180.38478787878
+Indiana State University,1,50,140,39266.47561415546
+Indiana State University,5,50,140,51350.04482467533
+Indiana State University,10,50,140,60813.63839285715
+Indiana State University,15,50,140,60813.63839285715
+University of Southern Indiana,1,50,478,38455.08562531914
+University of Southern Indiana,5,50,478,50710.6219686147
+University of Southern Indiana,10,50,478,59562.705308802324
+University of Southern Indiana,15,50,478,59562.705308802324
+Indiana University - Bloomington,1,50,141,43602.67389671439
+Indiana University - Bloomington,5,50,141,61777.95996459097
+Indiana University - Bloomington,10,50,141,80900.17961544011
+Indiana University - Bloomington,15,50,141,80900.17961544011
+Indiana University - East,1,50,142,41730.80783631645
+Indiana University - East,5,50,142,48915.4815605228
+Indiana University - East,10,50,142,55734.28401190475
+Indiana University - East,15,50,142,55734.28401190475
+Indiana University - Purdue University Indianapolis,1,50,145,44851.81203801754
+Indiana University - Purdue University Indianapolis,5,50,145,57555.51362157287
+Indiana University - Purdue University Indianapolis,10,50,145,69496.69539285712
+Indiana University - Purdue University Indianapolis,15,50,145,69496.69539285712
+Indiana University - Kokomo,1,50,143,44544.769908646915
+Indiana University - Kokomo,5,50,143,54938.75849644803
+Indiana University - Kokomo,10,50,143,62027.20275468976
+Indiana University - Kokomo,15,50,143,62027.20275468976
+Indiana University - Northwest,1,50,144,42546.7244476357
+Indiana University - Northwest,5,50,144,54658.94205050505
+Indiana University - Northwest,10,50,144,64711.07754942279
+Indiana University - Northwest,15,50,144,64711.07754942279
+Indiana University - South Bend,1,50,146,39083.48582941404
+Indiana University - South Bend,5,50,146,48982.80427808302
+Indiana University - South Bend,10,50,146,57491.8616984127
+Indiana University - South Bend,15,50,146,57491.8616984127
+Indiana University Southeast,1,50,147,40979.604946248204
+Indiana University Southeast,5,50,147,53162.87323384946
+Indiana University Southeast,10,50,147,63868.28129148632
+Indiana University Southeast,15,50,147,63868.28129148632
+Manchester University,1,50,208,37889.677988095245
+Manchester University,5,50,208,55728.15483549785
+Manchester University,10,50,208,77338.39507142857
+Manchester University,15,50,208,77338.39507142857
+Indiana Wesleyan University,1,50,148,57582.61820815296
+Indiana Wesleyan University,5,50,148,70760.82898809525
+Indiana Wesleyan University,10,50,148,81828.4997121212
+Indiana Wesleyan University,15,50,148,81828.4997121212
+Purdue University,1,50,295,52392.59800830211
+Purdue University,5,50,295,70235.57854770229
+Purdue University,10,50,295,90365.00676190479
+Purdue University,15,50,295,90365.00676190479
+Purdue University - North Central,1,50,296,40476.01548088023
+Purdue University - North Central,5,50,296,52157.1740007215
+Purdue University - North Central,10,50,296,62058.60634271285
+Purdue University - North Central,15,50,296,62058.60634271285
+Purdue University Northwest,1,50,298,49426.79054856254
+Purdue University Northwest,5,50,298,61242.93212051838
+Purdue University Northwest,10,50,298,69502.24359054834
+Purdue University Northwest,15,50,298,69502.24359054834
+Purdue University Fort Wayne,1,50,297,39611.11168306693
+Purdue University Fort Wayne,5,50,297,52591.803410062166
+Purdue University Fort Wayne,10,50,297,62062.66500324677
+Purdue University Fort Wayne,15,50,297,62062.66500324677
+Rose-Hulman Institute of Technology,1,50,308,78092.2424047619
+Rose-Hulman Institute of Technology,5,50,308,95491.71818181819
+Rose-Hulman Institute of Technology,10,50,308,103214.05861111112
+Rose-Hulman Institute of Technology,15,50,308,103214.05861111112
+University of Saint Francis,1,50,470,40231.37195779222
+University of Saint Francis,5,50,470,55284.57621428571
+University of Saint Francis,10,50,470,107098.66170634916
+University of Saint Francis,15,50,470,107098.66170634916
+Saint Mary of the Woods College,1,50,327,36910.30454653679
+Saint Mary of the Woods College,5,50,327,45003.364499999996
+Saint Mary of the Woods College,10,50,327,95955.09440476193
+Saint Mary of the Woods College,15,50,327,95955.09440476193
+Trine University,1,50,398,51015.145484126995
+Trine University,5,50,398,68701.5980595238
+Trine University,10,50,398,123309.4017142857
+Trine University,15,50,398,123309.4017142857
+Trine University - Fort Wayne,1,50,399,43656.79668253969
+Trine University - Fort Wayne,5,50,399,46508.912678571425
+Trine University - Fort Wayne,10,50,399,45134.32333333334
+Trine University - Fort Wayne,15,50,399,45134.32333333334
+Valparaiso University,1,50,517,49671.62941666666
+Valparaiso University,5,50,517,57625.83584920634
+Valparaiso University,10,50,517,79443.23925
+Valparaiso University,15,50,517,79443.23925
+Vincennes University,1,50,518,44739.73191883118
+Vincennes University,5,50,518,50145.30013888889
+Vincennes University,10,50,518,58396.057250000005
+Vincennes University,15,50,518,58396.057250000005
+Wabash College,1,50,527,42130.13485714287
+Wabash College,5,50,527,60863.673123015884
+Wabash College,10,50,527,47864.565820346324
+Wabash College,15,50,527,47864.565820346324
+Iowa State University of Science & Technology,1,50,182,45382.333576537865
+Iowa State University of Science & Technology,5,50,182,63233.45315076588
+Iowa State University of Science & Technology,10,50,182,81323.66054761905
+Iowa State University of Science & Technology,15,50,182,81323.66054761905
+University of Northern Iowa,1,50,464,37693.48116020091
+University of Northern Iowa,5,50,464,53955.31077561327
+University of Northern Iowa,10,50,464,65689.68436904762
+University of Northern Iowa,15,50,464,65689.68436904762
+University of Iowa,1,50,432,41691.468422521924
+University of Iowa,5,50,432,61775.64902633477
+University of Iowa,10,50,432,79970.79714682541
+University of Iowa,15,50,432,79970.79714682541
+Ottawa University - Jeffersonville,1,50,266,40960.00526906426
+Ottawa University - Jeffersonville,5,50,266,61012.77100721499
+Ottawa University - Jeffersonville,10,50,266,79162.3016626984
+Ottawa University - Jeffersonville,15,50,266,79162.3016626984
+Nicholls State University,1,50,243,41242.186822150055
+Nicholls State University,5,50,243,54303.82317027416
+Nicholls State University,10,50,243,62664.28396572872
+Nicholls State University,15,50,243,62664.28396572872
+Grambling State University,1,50,127,32714.545359113104
+Grambling State University,5,50,127,47903.482812770555
+Grambling State University,10,50,127,58138.44155555555
+Grambling State University,15,50,127,58138.44155555555
+Louisiana Tech University,1,50,205,39522.35506327006
+Louisiana Tech University,5,50,205,56862.66313922189
+Louisiana Tech University,10,50,205,70029.25942582414
+Louisiana Tech University,15,50,205,70029.25942582414
+Louisiana State University & Agricultural & Mechanical College,1,50,200,40215.9320342165
+Louisiana State University & Agricultural & Mechanical College,5,50,200,61936.311673909426
+Louisiana State University & Agricultural & Mechanical College,10,50,200,79801.5044404762
+Louisiana State University & Agricultural & Mechanical College,15,50,200,79801.5044404762
+Louisiana State University at Alexandria,1,50,203,38607.212438963
+Louisiana State University at Alexandria,5,50,203,47642.70335958486
+Louisiana State University at Alexandria,10,50,203,51017.31332936507
+Louisiana State University at Alexandria,15,50,203,51017.31332936507
+Louisiana State University in Shreveport,1,50,204,36863.5657513875
+Louisiana State University in Shreveport,5,50,204,50041.68892821067
+Louisiana State University in Shreveport,10,50,204,58689.45897619047
+Louisiana State University in Shreveport,15,50,204,58689.45897619047
+Louisiana State University Health Sciences Center,1,50,201,68008.21364121743
+Louisiana State University Health Sciences Center,5,50,201,71532.08760592187
+Louisiana State University Health Sciences Center,10,50,201,82179.25134343434
+Louisiana State University Health Sciences Center,15,50,201,82179.25134343434
+University of New Orleans (The),1,50,458,37412.302414557664
+University of New Orleans (The),5,50,458,54011.803202380965
+University of New Orleans (The),10,50,458,65608.6417142857
+University of New Orleans (The),15,50,458,65608.6417142857
+McNeese State University,1,50,216,41597.26131571207
+McNeese State University,5,50,216,52991.63505647132
+McNeese State University,10,50,216,60560.14514357862
+McNeese State University,15,50,216,60560.14514357862
+University of Louisiana at Monroe,1,50,434,42072.03084784659
+University of Louisiana at Monroe,5,50,434,55298.82512301588
+University of Louisiana at Monroe,10,50,434,63214.326104978325
+University of Louisiana at Monroe,15,50,434,63214.326104978325
+Northwestern State University,1,50,254,41530.08716908092
+Northwestern State University,5,50,254,52609.430797979796
+Northwestern State University,10,50,254,61962.271966089436
+Northwestern State University,15,50,254,61962.271966089436
+Southeastern Louisiana University,1,50,344,38528.3686801393
+Southeastern Louisiana University,5,50,344,52344.357495671
+Southeastern Louisiana University,10,50,344,60186.738548701294
+Southeastern Louisiana University,15,50,344,60186.738548701294
+Southern University and Agricultural & Mechanical Colg at Baton Rouge,1,50,351,36612.52591269842
+Southern University and Agricultural & Mechanical Colg at Baton Rouge,5,50,351,50265.73370598846
+Southern University and Agricultural & Mechanical Colg at Baton Rouge,10,50,351,59778.91780952381
+Southern University and Agricultural & Mechanical Colg at Baton Rouge,15,50,351,59778.91780952381
+Southern University at New Orleans,1,50,352,34543.77475758965
+Southern University at New Orleans,5,50,352,45687.970505494515
+Southern University at New Orleans,10,50,352,52604.84940945167
+Southern University at New Orleans,15,50,352,52604.84940945167
+University of Louisiana at Lafayette,1,50,433,40919.23114792723
+University of Louisiana at Lafayette,5,50,433,53269.48276412476
+University of Louisiana at Lafayette,10,50,433,63423.920531440766
+University of Louisiana at Lafayette,15,50,433,63423.920531440766
+University Of Maine Presque Isle,1,50,404,32447.10677489178
+University Of Maine Presque Isle,5,50,404,41254.36649603175
+University Of Maine Presque Isle,10,50,404,48361.3724047619
+University Of Maine Presque Isle,15,50,404,48361.3724047619
+University of Maine - Farmington,1,50,438,32347.173316072807
+University of Maine - Farmington,5,50,438,42347.260805555554
+University of Maine - Farmington,10,50,438,51145.093678571415
+University of Maine - Farmington,15,50,438,51145.093678571415
+University of Maine - Fort Kent,1,50,439,46656.49458202908
+University of Maine - Fort Kent,5,50,439,52341.88279112556
+University of Maine - Fort Kent,10,50,439,59954.28061904761
+University of Maine - Fort Kent,15,50,439,59954.28061904761
+University of Maine,1,50,436,38637.27375396824
+University of Maine,5,50,436,55474.29411904763
+University of Maine,10,50,436,70552.02035714284
+University of Maine,15,50,436,70552.02035714284
+University of Southern Maine,1,50,479,37829.92046525696
+University of Southern Maine,5,50,479,50621.35419877345
+University of Southern Maine,10,50,479,61279.94131349207
+University of Southern Maine,15,50,479,61279.94131349207
+University of Maine - Machias,1,50,440,31695.7091414974
+University of Maine - Machias,5,50,440,39530.96744877345
+University of Maine - Machias,10,50,440,46394.07365800867
+University of Maine - Machias,15,50,440,46394.07365800867
+University of Massachusetts - Lowell,1,50,443,51346.610591269855
+University of Massachusetts - Lowell,5,50,443,74437.8201666667
+University of Massachusetts - Lowell,10,50,443,91430.00166666668
+University of Massachusetts - Lowell,15,50,443,91430.00166666668
+Massachusetts College of Art and Design,1,50,213,32638.179321428575
+Massachusetts College of Art and Design,5,50,213,51151.03892857143
+Massachusetts College of Art and Design,10,50,213,64501.84789285716
+Massachusetts College of Art and Design,15,50,213,64501.84789285716
+Massachusetts Maritime Academy,1,50,215,73442.53119047616
+Massachusetts Maritime Academy,5,50,215,98664.09954365078
+Massachusetts Maritime Academy,10,50,215,109747.80666666669
+Massachusetts Maritime Academy,15,50,215,109747.80666666669
+Bridgewater State University,1,50,29,37771.91731746032
+Bridgewater State University,5,50,29,58572.65513564214
+Bridgewater State University,10,50,29,71966.53827380952
+Bridgewater State University,15,50,29,71966.53827380952
+Fitchburg State University,1,50,106,42356.62904365078
+Fitchburg State University,5,50,106,59562.70013095238
+Fitchburg State University,10,50,106,73040.33268253968
+Fitchburg State University,15,50,106,73040.33268253968
+Framingham State University,1,50,109,39527.5994047619
+Framingham State University,5,50,109,59145.00532142857
+Framingham State University,10,50,109,72604.01654761905
+Framingham State University,15,50,109,72604.01654761905
+Massachusetts College of Liberal Arts,1,50,214,32874.0072579365
+Massachusetts College of Liberal Arts,5,50,214,48237.84727777779
+Massachusetts College of Liberal Arts,10,50,214,62889.73
+Massachusetts College of Liberal Arts,15,50,214,62889.73
+Salem State University,1,50,329,43865.700392857165
+Salem State University,5,50,329,62775.266738095226
+Salem State University,10,50,329,78097.1989047619
+Salem State University,15,50,329,78097.1989047619
+Westfield State University,1,50,541,38223.18727106226
+Westfield State University,5,50,541,58015.79871428574
+Westfield State University,10,50,541,70892.72396428572
+Westfield State University,15,50,541,70892.72396428572
+Worcester State University,1,50,546,41739.8790595238
+Worcester State University,5,50,546,62712.41750000001
+Worcester State University,10,50,546,78012.47988095238
+Worcester State University,15,50,546,78012.47988095238
+University of Massachusetts at Dartmouth,1,50,445,47200.0510873016
+University of Massachusetts at Dartmouth,5,50,445,68100.42388095238
+University of Massachusetts at Dartmouth,10,50,445,85960.364
+University of Massachusetts at Dartmouth,15,50,445,85960.364
+University of Massachusetts - Amherst,1,50,442,45832.04321825397
+University of Massachusetts - Amherst,5,50,442,68618.95418253966
+University of Massachusetts - Amherst,10,50,442,88117.60873809524
+University of Massachusetts - Amherst,15,50,442,88117.60873809524
+University of Massachusetts at Boston,1,50,444,46893.76272619048
+University of Massachusetts at Boston,5,50,444,68946.91939285718
+University of Massachusetts at Boston,10,50,444,86091.17
+University of Massachusetts at Boston,15,50,444,86091.17
+University of Michigan,1,50,446,50294.651475482045
+University of Michigan,5,50,446,74042.74099603175
+University of Michigan,10,50,446,100099.37333802308
+University of Michigan,15,50,446,100099.37333802308
+Augsburg University,1,50,11,45472.252648989896
+Augsburg University,5,50,11,62637.15696428572
+Augsburg University,10,50,11,79905.88483333333
+Augsburg University,15,50,11,79905.88483333333
+Bemidji State University,1,50,17,43071.43323525494
+Bemidji State University,5,50,17,54774.9475753968
+Bemidji State University,10,50,17,65344.85033333334
+Bemidji State University,15,50,17,65344.85033333334
+Bethany Lutheran College,1,50,20,32496.8096168831
+Bethany Lutheran College,5,50,20,47573.57644688644
+Bethany Lutheran College,10,50,20,62328.47429365079
+Bethany Lutheran College,15,50,20,62328.47429365079
+Carleton College,1,50,42,43001.12623268398
+Carleton College,5,50,42,61984.32294444443
+Carleton College,10,50,42,85973.27790476188
+Carleton College,15,50,42,85973.27790476188
+College of St Benedict,1,50,64,43172.809129509376
+College of St Benedict,5,50,64,59594.98652813851
+College of St Benedict,10,50,64,76877.96497619044
+College of St Benedict,15,50,64,76877.96497619044
+St. Catherine University,1,50,361,49633.899489954514
+St. Catherine University,5,50,361,64381.94476190478
+St. Catherine University,10,50,361,75589.12610714285
+St. Catherine University,15,50,361,75589.12610714285
+College of Saint Scholastica,1,50,63,54821.209094155856
+College of Saint Scholastica,5,50,63,67356.96979761908
+College of Saint Scholastica,10,50,63,78483.72054761903
+College of Saint Scholastica,15,50,63,78483.72054761903
+University of St Thomas,1,50,480,48491.3848080253
+University of St Thomas,5,50,480,68623.21940079363
+University of St Thomas,10,50,480,92418.67946031748
+University of St Thomas,15,50,480,92418.67946031748
+Concordia College - Moorhead,1,50,79,39511.03099422799
+Concordia College - Moorhead,5,50,79,54815.328012626254
+Concordia College - Moorhead,10,50,79,70694.73122222221
+Concordia College - Moorhead,15,50,79,70694.73122222221
+Concordia University - Saint Paul,1,50,81,51286.25658680208
+Concordia University - Saint Paul,5,50,81,64612.79164285714
+Concordia University - Saint Paul,10,50,81,80624.65158730157
+Concordia University - Saint Paul,15,50,81,80624.65158730157
+Gustavus Adolphus College,1,50,130,41956.20745454546
+Gustavus Adolphus College,5,50,130,60165.00103571429
+Gustavus Adolphus College,10,50,130,78365.66600000001
+Gustavus Adolphus College,15,50,130,78365.66600000001
+Hamline University,1,50,131,36539.6289368687
+Hamline University,5,50,131,54918.03327669553
+Hamline University,10,50,131,72724.72788095239
+Hamline University,15,50,131,72724.72788095239
+Macalester College,1,50,207,40490.34537698413
+Macalester College,5,50,207,54633.555950577225
+Macalester College,10,50,207,79284.01702380953
+Macalester College,15,50,207,79284.01702380953
+"Minnesota State University, Mankato",1,50,226,42644.079443362185
+"Minnesota State University, Mankato",5,50,226,58182.04311111111
+"Minnesota State University, Mankato",10,50,226,72605.58419047619
+"Minnesota State University, Mankato",15,50,226,72605.58419047619
+Minneapolis College of Art & Design,1,50,224,29422.22167277168
+Minneapolis College of Art & Design,5,50,224,44640.63863492063
+Minneapolis College of Art & Design,10,50,224,58316.90245238096
+Minneapolis College of Art & Design,15,50,224,58316.90245238096
+Minnesota State University Moorhead,1,50,225,37860.350822510816
+Minnesota State University Moorhead,5,50,225,52311.97273809523
+Minnesota State University Moorhead,10,50,225,64620.71533333334
+Minnesota State University Moorhead,15,50,225,64620.71533333334
+University of Northwestern- St Paul,1,50,465,39257.732461926964
+University of Northwestern- St Paul,5,50,465,53408.21559920636
+University of Northwestern- St Paul,10,50,465,66753.12483333332
+University of Northwestern- St Paul,15,50,465,66753.12483333332
+Southwest Minnesota State University,1,50,356,38942.94336790987
+Southwest Minnesota State University,5,50,356,52248.28122619046
+Southwest Minnesota State University,10,50,356,63047.16419047617
+Southwest Minnesota State University,15,50,356,63047.16419047617
+St. Cloud State University,1,50,362,41196.973461531925
+St. Cloud State University,5,50,362,57112.08720238095
+St. Cloud State University,10,50,362,72858.0156118326
+St. Cloud State University,15,50,362,72858.0156118326
+Saint John's University,1,50,326,47834.87200613274
+Saint John's University,5,50,326,68383.99514285712
+Saint John's University,10,50,326,95966.72340476193
+Saint John's University,15,50,326,95966.72340476193
+Saint Mary's University of Minnesota,1,50,328,49468.91762276613
+Saint Mary's University of Minnesota,5,50,328,65157.28014285712
+Saint Mary's University of Minnesota,10,50,328,78161.03919047621
+Saint Mary's University of Minnesota,15,50,328,78161.03919047621
+St Olaf College,1,50,360,39796.168850649345
+St Olaf College,5,50,360,56887.417650793635
+St Olaf College,10,50,360,79764.20476190474
+St Olaf College,15,50,360,79764.20476190474
+University of Minnesota  Duluth,1,50,447,39976.84757897658
+University of Minnesota  Duluth,5,50,447,59429.4425566378
+University of Minnesota  Duluth,10,50,447,77441.21217857144
+University of Minnesota  Duluth,15,50,447,77441.21217857144
+University of Minnesota Morris,1,50,451,36001.31961580087
+University of Minnesota Morris,5,50,451,51550.63809523811
+University of Minnesota Morris,10,50,451,65447.36399999999
+University of Minnesota Morris,15,50,451,65447.36399999999
+Winona State University,1,50,543,42747.204255577766
+Winona State University,5,50,543,58217.8739585137
+Winona State University,10,50,543,71730.47273809524
+Winona State University,15,50,543,71730.47273809524
+University of Central Missouri,1,50,412,37698.206086510734
+University of Central Missouri,5,50,412,49335.60489718614
+University of Central Missouri,10,50,412,60139.106404761915
+University of Central Missouri,15,50,412,60139.106404761915
+Harris - Stowe State University,1,50,135,34568.24723394662
+Harris - Stowe State University,5,50,135,44613.2024047619
+Harris - Stowe State University,10,50,135,54382.659908730144
+Harris - Stowe State University,15,50,135,54382.659908730144
+Lincoln University,1,50,196,34761.906895021646
+Lincoln University,5,50,196,44754.24801190477
+Lincoln University,10,50,196,52023.52416666666
+Lincoln University,15,50,196,52023.52416666666
+Missouri Southern State University,1,50,227,37540.59452208903
+Missouri Southern State University,5,50,227,47823.609825396816
+Missouri Southern State University,10,50,227,55950.3224310967
+Missouri Southern State University,15,50,227,55950.3224310967
+Missouri Western State University,1,50,230,38161.09920834721
+Missouri Western State University,5,50,230,49401.00826406927
+Missouri Western State University,10,50,230,61128.465966810974
+Missouri Western State University,15,50,230,61128.465966810974
+Truman State University,1,50,401,33149.58965750916
+Truman State University,5,50,401,54296.778123931625
+Truman State University,10,50,401,69747.27743650792
+Truman State University,15,50,401,69747.27743650792
+Northwest Missouri State University,1,50,252,35446.87460082971
+Northwest Missouri State University,5,50,252,48864.52735028861
+Northwest Missouri State University,10,50,252,59333.02691666668
+Northwest Missouri State University,15,50,252,59333.02691666668
+Southeast Missouri State University,1,50,343,34869.92068303919
+Southeast Missouri State University,5,50,343,48527.51441522366
+Southeast Missouri State University,10,50,343,57658.08854689755
+Southeast Missouri State University,15,50,343,57658.08854689755
+Missouri State University,1,50,228,34451.46585353535
+Missouri State University,5,50,228,49539.736143578644
+Missouri State University,10,50,228,61997.94372619047
+Missouri State University,15,50,228,61997.94372619047
+University of Missouri - Columbia,1,50,452,41765.674485791984
+University of Missouri - Columbia,5,50,452,59214.37321212122
+University of Missouri - Columbia,10,50,452,79201.64442857142
+University of Missouri - Columbia,15,50,452,79201.64442857142
+Missouri University of Science and Technology,1,50,229,68088.99484998336
+Missouri University of Science and Technology,5,50,229,85959.6530436508
+Missouri University of Science and Technology,10,50,229,107114.03267460322
+Missouri University of Science and Technology,15,50,229,107114.03267460322
+University of Missouri - Kansas City,1,50,453,41758.692665822746
+University of Missouri - Kansas City,5,50,453,57221.350035714306
+University of Missouri - Kansas City,10,50,453,71963.67649206347
+University of Missouri - Kansas City,15,50,453,71963.67649206347
+University of Missouri - Saint Louis,1,50,454,40689.0292018537
+University of Missouri - Saint Louis,5,50,454,53608.56161544011
+University of Missouri - Saint Louis,10,50,454,67659.47914357866
+University of Missouri - Saint Louis,15,50,454,67659.47914357866
+Montana State University - Billings,1,50,233,36927.45641738327
+Montana State University - Billings,5,50,233,49064.15729596792
+Montana State University - Billings,10,50,233,59379.134312770584
+Montana State University - Billings,15,50,233,59379.134312770584
+Montana Technological University,1,50,236,64295.20855558331
+Montana Technological University,5,50,236,80781.89416239319
+Montana Technological University,10,50,236,97522.8166583694
+Montana Technological University,15,50,236,97522.8166583694
+Montana State University Bozeman,1,50,235,39635.307005661
+Montana State University Bozeman,5,50,235,57314.07850649351
+Montana State University Bozeman,10,50,235,71999.00005844155
+Montana State University Bozeman,15,50,235,71999.00005844155
+Montana State University - Northern,1,50,234,43258.632144119765
+Montana State University - Northern,5,50,234,54534.58396933621
+Montana State University - Northern,10,50,234,62168.45612337663
+Montana State University - Northern,15,50,234,62168.45612337663
+University of Montana (The),1,50,455,31855.94529583571
+University of Montana (The),5,50,455,48218.64494547121
+University of Montana (The),10,50,455,62066.78545238095
+University of Montana (The),15,50,455,62066.78545238095
+University of Montana Western (The),1,50,456,34460.41092568542
+University of Montana Western (The),5,50,456,46538.68485894662
+University of Montana Western (The),10,50,456,56103.70857539682
+University of Montana Western (The),15,50,456,56103.70857539682
+CUNY Brooklyn College,1,50,33,40751.58376504051
+CUNY Brooklyn College,5,50,33,64231.433001443016
+CUNY Brooklyn College,10,50,33,82998.23197841045
+CUNY Brooklyn College,15,50,33,82998.23197841045
+City College of New York - CUNY,1,50,52,44682.52338553112
+City College of New York - CUNY,5,50,52,66629.06494094797
+City College of New York - CUNY,10,50,52,84951.80565151517
+City College of New York - CUNY,15,50,52,84951.80565151517
+CUNY Hunter College,1,50,35,40997.33107112332
+CUNY Hunter College,5,50,35,63495.45291378069
+CUNY Hunter College,10,50,35,80717.55791522365
+CUNY Hunter College,15,50,35,80717.55791522365
+CUNY Queens College,1,50,39,40338.89098351649
+CUNY Queens College,5,50,39,65789.2694673382
+CUNY Queens College,10,50,39,83957.87479365079
+CUNY Queens College,15,50,39,83957.87479365079
+CUNY John Jay College of Criminal Justice,1,50,36,41949.30275362384
+CUNY John Jay College of Criminal Justice,5,50,36,61997.77344047617
+CUNY John Jay College of Criminal Justice,10,50,36,78533.35807395384
+CUNY John Jay College of Criminal Justice,15,50,36,78533.35807395384
+New York City College of Technology of the City University of New York,1,50,241,49282.89795701522
+New York City College of Technology of the City University of New York,5,50,241,67721.87741450215
+New York City College of Technology of the City University of New York,10,50,241,78909.34364466088
+New York City College of Technology of the City University of New York,15,50,241,78909.34364466088
+College of Staten Island/CUNY,1,50,65,42641.34502032689
+College of Staten Island/CUNY,5,50,65,68110.93835569984
+College of Staten Island/CUNY,10,50,65,88063.18573304472
+College of Staten Island/CUNY,15,50,65,88063.18573304472
+State University of New York at Albany,1,50,370,35959.48473500112
+State University of New York at Albany,5,50,370,62114.25928607506
+State University of New York at Albany,10,50,370,81626.39893722945
+State University of New York at Albany,15,50,370,81626.39893722945
+Binghamton University,1,50,22,42651.14089579132
+Binghamton University,5,50,22,71681.38032800533
+Binghamton University,10,50,22,93910.0559271284
+Binghamton University,15,50,22,93910.0559271284
+State University of New York at Buffalo,1,50,371,40611.50969117648
+State University of New York at Buffalo,5,50,371,62873.67585137086
+State University of New York at Buffalo,10,50,371,82242.34594047615
+State University of New York at Buffalo,15,50,371,82242.34594047615
+State University of New York at Stony Brook,1,50,375,42362.1527189167
+State University of New York at Stony Brook,5,50,375,70280.99634812408
+State University of New York at Stony Brook,10,50,375,93767.92630266956
+State University of New York at Stony Brook,15,50,375,93767.92630266956
+State University of New York Downstate Medical Center,1,50,367,97364.88691891439
+State University of New York Downstate Medical Center,5,50,367,109948.84804761907
+State University of New York Downstate Medical Center,10,50,367,120649.21030339108
+State University of New York Downstate Medical Center,15,50,367,120649.21030339108
+State University of New York Upstate Medical University,1,50,369,72807.04900761737
+State University of New York Upstate Medical University,5,50,369,83729.07091810968
+State University of New York Upstate Medical University,10,50,369,92643.39201226555
+State University of New York Upstate Medical University,15,50,369,92643.39201226555
+State University of New York College at Brockport,1,50,363,34899.67654319292
+State University of New York College at Brockport,5,50,363,51600.34730627704
+State University of New York College at Brockport,10,50,363,62724.107176046164
+State University of New York College at Brockport,15,50,363,62724.107176046164
+SUNY College at Buffalo,1,50,309,32478.508700438462
+SUNY College at Buffalo,5,50,309,49717.13853535355
+SUNY College at Buffalo,10,50,309,60391.05414468865
+SUNY College at Buffalo,15,50,309,60391.05414468865
+SUNY College at Cortland,1,50,310,32470.12715712066
+SUNY College at Cortland,5,50,310,57170.04437012988
+SUNY College at Cortland,10,50,310,69073.9887507215
+SUNY College at Cortland,15,50,310,69073.9887507215
+SUNY at Fredonia,1,50,321,31280.11994769121
+SUNY at Fredonia,5,50,321,50350.00220634921
+SUNY at Fredonia,10,50,321,61122.2983968254
+SUNY at Fredonia,15,50,321,61122.2983968254
+SUNY College at Geneseo,1,50,311,34102.26117229993
+SUNY College at Geneseo,5,50,311,58545.54830194807
+SUNY College at Geneseo,10,50,311,73150.6668647186
+SUNY College at Geneseo,15,50,311,73150.6668647186
+State University of New York at New Paltz,1,50,373,33948.756786519036
+State University of New York at New Paltz,5,50,373,57041.009353896115
+State University of New York at New Paltz,10,50,373,72735.08194191918
+State University of New York at New Paltz,15,50,373,72735.08194191918
+"State University of New York, College at Oneonta",1,50,376,32915.1198986977
+"State University of New York, College at Oneonta",5,50,376,54428.811543290045
+"State University of New York, College at Oneonta",10,50,376,68014.61706746035
+"State University of New York, College at Oneonta",15,50,376,68014.61706746035
+State University of New York at Oswego,1,50,374,33371.32681163282
+State University of New York at Oswego,5,50,374,53570.10865079362
+State University of New York at Oswego,10,50,374,65008.80985714286
+State University of New York at Oswego,15,50,374,65008.80985714286
+State University of New York College at Plattsburgh,1,50,364,34896.970794475135
+State University of New York College at Plattsburgh,5,50,364,53278.45586219337
+State University of New York College at Plattsburgh,10,50,364,65670.72005158728
+State University of New York College at Plattsburgh,15,50,364,65670.72005158728
+State University of New York College at Potsdam,1,50,365,29974.336273462646
+State University of New York College at Potsdam,5,50,365,49936.08282359306
+State University of New York College at Potsdam,10,50,365,59780.20015115439
+State University of New York College at Potsdam,15,50,365,59780.20015115439
+SUNY College of Environment Science & Forestry,1,50,316,35517.038314132515
+SUNY College of Environment Science & Forestry,5,50,316,53631.281995920755
+SUNY College of Environment Science & Forestry,10,50,316,69679.54657828284
+SUNY College of Environment Science & Forestry,15,50,316,69679.54657828284
+SUNY Maritime College,1,50,320,74741.83174420023
+SUNY Maritime College,5,50,320,107671.42777705625
+SUNY Maritime College,10,50,320,126456.89177555777
+SUNY Maritime College,15,50,320,126456.89177555777
+SUNY College of Technology at Alfred,1,50,317,47182.329354797985
+SUNY College of Technology at Alfred,5,50,317,63990.19529545454
+SUNY College of Technology at Alfred,10,50,317,79665.9922142857
+SUNY College of Technology at Alfred,15,50,317,79665.9922142857
+State University of New York College of Technology at Canton,1,50,366,39319.16989935064
+State University of New York College of Technology at Canton,5,50,366,53156.17367543568
+State University of New York College of Technology at Canton,10,50,366,63364.77194300145
+State University of New York College of Technology at Canton,15,50,366,63364.77194300145
+SUNY College of Agriculture & Technology at Cobleskill,1,50,314,35519.71581254855
+SUNY College of Agriculture & Technology at Cobleskill,5,50,314,49640.05943253969
+SUNY College of Agriculture & Technology at Cobleskill,10,50,314,61027.93628571429
+SUNY College of Agriculture & Technology at Cobleskill,15,50,314,61027.93628571429
+SUNY College of Technology at Delhi,1,50,318,53614.122274531015
+SUNY College of Technology at Delhi,5,50,318,62195.35753174602
+SUNY College of Technology at Delhi,10,50,318,70728.25153968255
+SUNY College of Technology at Delhi,15,50,318,70728.25153968255
+State University of New York at Farmingdale,1,50,372,48415.41668745141
+State University of New York at Farmingdale,5,50,372,70655.70252777777
+State University of New York at Farmingdale,10,50,372,87265.57053968257
+State University of New York at Farmingdale,15,50,372,87265.57053968257
+SUNY College of Agriculture & Technology at Morrisville,1,50,315,36514.037323010336
+SUNY College of Agriculture & Technology at Morrisville,5,50,315,49705.199107142864
+SUNY College of Agriculture & Technology at Morrisville,10,50,315,62636.00855339106
+SUNY College of Agriculture & Technology at Morrisville,15,50,315,62636.00855339106
+Fashion Institute of Technology,1,50,104,46744.18962215565
+Fashion Institute of Technology,5,50,104,68810.18777536353
+Fashion Institute of Technology,10,50,104,85023.79876578976
+Fashion Institute of Technology,15,50,104,85023.79876578976
+Bowling Green State University,1,50,26,36729.2119010434
+Bowling Green State University,5,50,26,52550.502591408585
+Bowling Green State University,10,50,26,65305.69942063493
+Bowling Green State University,15,50,26,65305.69942063493
+Central State University,1,50,44,33166.788270909645
+Central State University,5,50,44,44157.38927561327
+Central State University,10,50,44,51743.61662518037
+Central State University,15,50,44,51743.61662518037
+Cleveland State University,1,50,58,40619.68751792651
+Cleveland State University,5,50,58,55236.19625552227
+Cleveland State University,10,50,58,67077.07020634919
+Cleveland State University,15,50,58,67077.07020634919
+Franklin University,1,50,112,40143.24549458875
+Franklin University,5,50,112,52955.40689285715
+Franklin University,10,50,112,55731.053903318876
+Franklin University,15,50,112,55731.053903318876
+Kent State University,1,50,187,37358.91401434677
+Kent State University,5,50,187,53014.68846073371
+Kent State University,10,50,187,65650.88695743147
+Kent State University,15,50,187,65650.88695743147
+Lorain County Community College,1,50,199,37965.07840778666
+Lorain County Community College,5,50,199,51662.192464646454
+Lorain County Community College,10,50,199,59094.639591269835
+Lorain County Community College,15,50,199,59094.639591269835
+Miami University,1,50,219,46018.329030497276
+Miami University,5,50,219,65518.45934457209
+Miami University,10,50,219,87413.50098809524
+Miami University,15,50,219,87413.50098809524
+Wright State University,1,50,547,39968.18768775668
+Wright State University,5,50,547,54895.52248457097
+Wright State University,10,50,547,67418.77129761904
+Wright State University,15,50,547,67418.77129761904
+Ohio State University,1,50,256,43181.76248212898
+Ohio State University,5,50,256,61527.88212304359
+Ohio State University,10,50,256,78728.2354862915
+Ohio State University,15,50,256,78728.2354862915
+Ohio University,1,50,257,46514.51241548729
+Ohio University,5,50,257,59810.711598484864
+Ohio University,10,50,257,73255.58379761904
+Ohio University,15,50,257,73255.58379761904
+Sinclair Community College,1,50,335,41846.08067784504
+Sinclair Community College,5,50,335,59619.24008225108
+Sinclair Community College,10,50,335,68672.0733845599
+Sinclair Community College,15,50,335,68672.0733845599
+University of Akron (The),1,50,406,42790.6929481001
+University of Akron (The),5,50,406,57398.216863830596
+University of Akron (The),10,50,406,69735.96348809522
+University of Akron (The),15,50,406,69735.96348809522
+University of Cincinnati,1,50,414,47243.27306326042
+University of Cincinnati,5,50,414,62207.86930086581
+University of Cincinnati,10,50,414,77418.1211031746
+University of Cincinnati,15,50,414,77418.1211031746
+University Of Toledo,1,50,405,43257.33078100004
+University Of Toledo,5,50,405,60735.318338134086
+University Of Toledo,10,50,405,74017.58792388166
+University Of Toledo,15,50,405,74017.58792388166
+Youngstown State University,1,50,549,38379.558050061045
+Youngstown State University,5,50,549,53212.64205167056
+Youngstown State University,10,50,549,64639.6978932179
+Youngstown State University,15,50,549,64639.6978932179
+Cameron University,1,50,41,34816.4915515873
+Cameron University,5,50,41,48734.17491666666
+Cameron University,10,50,41,59729.132507936505
+Cameron University,15,50,41,59729.132507936505
+University of Central Oklahoma,1,50,413,38978.996880952385
+University of Central Oklahoma,5,50,413,51966.08342857142
+University of Central Oklahoma,10,50,413,62529.44033333333
+University of Central Oklahoma,15,50,413,62529.44033333333
+East Central University,1,50,91,38541.64255555556
+East Central University,5,50,91,50468.88007142857
+East Central University,10,50,91,60123.937416666675
+East Central University,15,50,91,60123.937416666675
+Langston University,1,50,190,37549.40869841271
+Langston University,5,50,190,48083.24408333334
+Langston University,10,50,190,56676.67577958153
+Langston University,15,50,190,56676.67577958153
+Northeastern State University,1,50,248,38125.67024675324
+Northeastern State University,5,50,248,49351.7141984127
+Northeastern State University,10,50,248,57946.43095238095
+Northeastern State University,15,50,248,57946.43095238095
+Northwestern Oklahoma State University,1,50,253,37722.205824675315
+Northwestern Oklahoma State University,5,50,253,48934.24326190478
+Northwestern Oklahoma State University,10,50,253,53233.17483333333
+Northwestern Oklahoma State University,15,50,253,53233.17483333333
+University of Science & Arts of Oklahoma,1,50,472,32353.428015873018
+University of Science & Arts of Oklahoma,5,50,472,43532.10427380952
+University of Science & Arts of Oklahoma,10,50,472,55417.52025
+University of Science & Arts of Oklahoma,15,50,472,55417.52025
+Rogers State University,1,50,306,40509.065809523796
+Rogers State University,5,50,306,55054.12433333333
+Rogers State University,10,50,306,64643.06854761905
+Rogers State University,15,50,306,64643.06854761905
+Oklahoma State University,1,50,259,43582.63921428571
+Oklahoma State University,5,50,259,61157.84861904759
+Oklahoma State University,10,50,259,74372.08
+Oklahoma State University,15,50,259,74372.08
+Oklahoma State University Institute of Technology - Okmulgee,1,50,261,59773.31535714287
+Oklahoma State University Institute of Technology - Okmulgee,5,50,261,79185.0396031746
+Oklahoma State University Institute of Technology - Okmulgee,10,50,261,81163.32711111111
+Oklahoma State University Institute of Technology - Okmulgee,15,50,261,81163.32711111111
+Oklahoma Panhandle State University,1,50,258,43911.477063492064
+Oklahoma Panhandle State University,5,50,258,57659.42730411255
+Oklahoma Panhandle State University,10,50,258,59678.38244047618
+Oklahoma Panhandle State University,15,50,258,59678.38244047618
+Southeastern Oklahoma State University,1,50,345,38182.291932900436
+Southeastern Oklahoma State University,5,50,345,51213.66174242426
+Southeastern Oklahoma State University,10,50,345,57965.19927777778
+Southeastern Oklahoma State University,15,50,345,57965.19927777778
+Southwestern Oklahoma State University,1,50,357,42758.56351587302
+Southwestern Oklahoma State University,5,50,357,53891.882904761915
+Southwestern Oklahoma State University,10,50,357,63392.59716666667
+Southwestern Oklahoma State University,15,50,357,63392.59716666667
+University of Oklahoma,1,50,466,42381.660480158724
+University of Oklahoma,5,50,466,63122.700476190446
+University of Oklahoma,10,50,466,78517.31
+University of Oklahoma,15,50,466,78517.31
+University of Oklahoma - Health Sciences Center,1,50,467,63689.9803452381
+University of Oklahoma - Health Sciences Center,5,50,467,71481.40267857145
+University of Oklahoma - Health Sciences Center,10,50,467,81390.00333333334
+University of Oklahoma - Health Sciences Center,15,50,467,81390.00333333334
+Eastern Oregon University,1,50,96,39951.4317943723
+Eastern Oregon University,5,50,96,52621.22861399711
+Eastern Oregon University,10,50,96,63830.505913780646
+Eastern Oregon University,15,50,96,63830.505913780646
+Western Oregon University,1,50,540,34582.56683516482
+Western Oregon University,5,50,540,50531.61780952382
+Western Oregon University,10,50,540,63316.32841558442
+Western Oregon University,15,50,540,63316.32841558442
+Oregon State University,1,50,265,40960.00526906426
+Oregon State University,5,50,265,61012.77100721499
+Oregon State University,10,50,265,79215.75799603172
+Oregon State University,15,50,265,79215.75799603172
+Oregon Institute of Technology,1,50,264,67586.0431583139
+Oregon Institute of Technology,5,50,264,80587.19101659453
+Oregon Institute of Technology,10,50,264,91202.30687698413
+Oregon Institute of Technology,15,50,264,91202.30687698413
+Portland State University,1,50,290,39266.81325011101
+Portland State University,5,50,290,56276.58025166502
+Portland State University,10,50,290,71369.65667748918
+Portland State University,15,50,290,71369.65667748918
+Southern Oregon University,1,50,350,33326.6779416417
+Southern Oregon University,5,50,350,50219.38141161617
+Southern Oregon University,10,50,350,62156.21645707071
+Southern Oregon University,15,50,350,62156.21645707071
+University of Oregon,1,50,468,35252.03280902431
+University of Oregon,5,50,468,55375.25181962483
+University of Oregon,10,50,468,71619.44193287268
+University of Oregon,15,50,468,71619.44193287268
+Pennsylvania State University (The),1,50,268,48422.84358713509
+Pennsylvania State University (The),5,50,268,70219.10557142853
+Pennsylvania State University (The),10,50,268,91301.80984992781
+Pennsylvania State University (The),15,50,268,91301.80984992781
+Pennsylvania State University (The) - Lehigh Valley,1,50,280,38345.34591819291
+Pennsylvania State University (The) - Lehigh Valley,5,50,280,59269.80870526693
+Pennsylvania State University (The) - Lehigh Valley,10,50,280,76736.70441269838
+Pennsylvania State University (The) - Lehigh Valley,15,50,280,76736.70441269838
+Pennsylvania State University (The) - Altoona,1,50,270,37990.37424181375
+Pennsylvania State University (The) - Altoona,5,50,270,50560.93586752136
+Pennsylvania State University (The) - Altoona,10,50,270,61700.225571428564
+Pennsylvania State University (The) - Altoona,15,50,270,61700.225571428564
+Pennsylvania State University (The) - Beaver,1,50,271,37595.87551484627
+Pennsylvania State University (The) - Beaver,5,50,271,54425.61929220779
+Pennsylvania State University (The) - Beaver,10,50,271,64688.40437193365
+Pennsylvania State University (The) - Beaver,15,50,271,64688.40437193365
+"Pennsylvania State University (The) - Erie, The Behrend College",1,50,275,47990.46652822177
+"Pennsylvania State University (The) - Erie, The Behrend College",5,50,275,68303.67634620935
+"Pennsylvania State University (The) - Erie, The Behrend College",10,50,275,85238.06632503607
+"Pennsylvania State University (The) - Erie, The Behrend College",15,50,275,85238.06632503607
+Pennsylvania State University (The) - Berks,1,50,272,43709.534490037746
+Pennsylvania State University (The) - Berks,5,50,272,61309.98848088023
+Pennsylvania State University (The) - Berks,10,50,272,74370.5908888889
+Pennsylvania State University (The) - Berks,15,50,272,74370.5908888889
+Pennsylvania State University (The) - DuBois,1,50,274,34371.42807894881
+Pennsylvania State University (The) - DuBois,5,50,274,44700.11363455989
+Pennsylvania State University (The) - DuBois,10,50,274,57043.82789574315
+Pennsylvania State University (The) - DuBois,15,50,274,57043.82789574315
+Pennsylvania State University (The) - Fayette,1,50,276,44039.43236322013
+Pennsylvania State University (The) - Fayette,5,50,276,54342.74461688313
+Pennsylvania State University (The) - Fayette,10,50,276,59911.49223015872
+Pennsylvania State University (The) - Fayette,15,50,276,59911.49223015872
+Pennsylvania State University (The) - Hazleton,1,50,279,37746.481499639245
+Pennsylvania State University (The) - Hazleton,5,50,279,54061.9409433622
+Pennsylvania State University (The) - Hazleton,10,50,279,66584.30534920635
+Pennsylvania State University (The) - Hazleton,15,50,279,66584.30534920635
+Penn State World Campus,1,50,267,59388.5845262238
+Penn State World Campus,5,50,267,64860.335731684994
+Penn State World Campus,10,50,267,87290.80265079366
+Penn State World Campus,15,50,267,87290.80265079366
+Pennsylvania State University (The) - Greater Allegheny,1,50,277,36130.337395188144
+Pennsylvania State University (The) - Greater Allegheny,5,50,277,56927.232617965376
+Pennsylvania State University (The) - Greater Allegheny,10,50,277,74857.97357142856
+Pennsylvania State University (The) - Greater Allegheny,15,50,277,74857.97357142856
+Pennsylvania State University (The) - Mont Alto,1,50,281,47151.88938958263
+Pennsylvania State University (The) - Mont Alto,5,50,281,59138.260496642244
+Pennsylvania State University (The) - Mont Alto,10,50,281,66541.71205555557
+Pennsylvania State University (The) - Mont Alto,15,50,281,66541.71205555557
+Pennsylvania State University (The) - New Kensington,1,50,282,42822.56919176656
+Pennsylvania State University (The) - New Kensington,5,50,282,63000.47842424242
+Pennsylvania State University (The) - New Kensington,10,50,282,80145.46178327227
+Pennsylvania State University (The) - New Kensington,15,50,282,80145.46178327227
+Pennsylvania State University (The) - Abington,1,50,269,42397.53052561328
+Pennsylvania State University (The) - Abington,5,50,269,58825.31701820403
+Pennsylvania State University (The) - Abington,10,50,269,72640.70309343436
+Pennsylvania State University (The) - Abington,15,50,269,72640.70309343436
+Pennsylvania State University (The) - Schuylkill,1,50,283,35980.781755411255
+Pennsylvania State University (The) - Schuylkill,5,50,283,50654.737241341994
+Pennsylvania State University (The) - Schuylkill,10,50,283,55058.47798557
+Pennsylvania State University (The) - Schuylkill,15,50,283,55058.47798557
+Pennsylvania State University (The) - Scranton,1,50,284,38200.076340465086
+Pennsylvania State University (The) - Scranton,5,50,284,51271.946869408355
+Pennsylvania State University (The) - Scranton,10,50,284,64490.13470274172
+Pennsylvania State University (The) - Scranton,15,50,284,64490.13470274172
+Pennsylvania State University (The) - Shenango,1,50,285,39514.01648783161
+Pennsylvania State University (The) - Shenango,5,50,285,50155.755102111936
+Pennsylvania State University (The) - Shenango,10,50,285,53608.19078174603
+Pennsylvania State University (The) - Shenango,15,50,285,53608.19078174603
+Pennsylvania State University (The) - Wilkes-Barre,1,50,286,38427.34449650348
+Pennsylvania State University (The) - Wilkes-Barre,5,50,286,53389.78393362193
+Pennsylvania State University (The) - Wilkes-Barre,10,50,286,72063.98867261903
+Pennsylvania State University (The) - Wilkes-Barre,15,50,286,72063.98867261903
+Pennsylvania State University (The) - York,1,50,287,42123.416260239756
+Pennsylvania State University (The) - York,5,50,287,59362.07536269285
+Pennsylvania State University (The) - York,10,50,287,74557.04989782441
+Pennsylvania State University (The) - York,15,50,287,74557.04989782441
+Pennsylvania State University (The) - Harrisburg,1,50,278,45602.826576839834
+Pennsylvania State University (The) - Harrisburg,5,50,278,62200.91028793431
+Pennsylvania State University (The) - Harrisburg,10,50,278,74346.64477272729
+Pennsylvania State University (The) - Harrisburg,15,50,278,74346.64477272729
+Pennsylvania State University (The) - Brandywine,1,50,273,39753.23405080884
+Pennsylvania State University (The) - Brandywine,5,50,273,56994.19904464979
+Pennsylvania State University (The) - Brandywine,10,50,273,70714.17096320346
+Pennsylvania State University (The) - Brandywine,15,50,273,70714.17096320346
+Bryant University,1,50,30,56477.68199603174
+Bryant University,5,50,30,85096.21107142855
+Bryant University,10,50,30,117638.5425
+Bryant University,15,50,30,117638.5425
+Providence College,1,50,293,49586.13160497837
+Providence College,5,50,293,75382.8365952381
+Providence College,10,50,293,96689.58779761902
+Providence College,15,50,293,96689.58779761902
+Allen University,1,50,5,29130.635282634044
+Allen University,5,50,5,35821.722435064934
+Allen University,10,50,5,43313.7224014319
+Allen University,15,50,5,43313.7224014319
+Charleston Southern University,1,50,46,38349.446790764785
+Charleston Southern University,5,50,46,48175.011300865815
+Charleston Southern University,10,50,46,58770.627714285714
+Charleston Southern University,15,50,46,58770.627714285714
+Southern Wesleyan University,1,50,355,44560.85048848372
+Southern Wesleyan University,5,50,355,53877.83249891775
+Southern Wesleyan University,10,50,355,61592.88453354979
+Southern Wesleyan University,15,50,355,61592.88453354979
+"Citadel, the Military College of South Carolina",1,50,51,46711.24492392657
+"Citadel, the Military College of South Carolina",5,50,51,63913.54191269843
+"Citadel, the Military College of South Carolina",10,50,51,85639.375484127
+"Citadel, the Military College of South Carolina",15,50,51,85639.375484127
+Claflin University,1,50,53,33234.911642563326
+Claflin University,5,50,53,42702.15080844156
+Claflin University,10,50,53,50475.08497222223
+Claflin University,15,50,53,50475.08497222223
+Clemson University,1,50,57,45938.91570795872
+Clemson University,5,50,57,64284.06300252529
+Clemson University,10,50,57,83403.8420436508
+Clemson University,15,50,57,83403.8420436508
+Coker University,1,50,60,33991.408404817405
+Coker University,5,50,60,43151.194132756136
+Coker University,10,50,60,50277.5391933622
+Coker University,15,50,60,50277.5391933622
+College of Charleston,1,50,61,35171.397615051625
+College of Charleston,5,50,61,52442.290243506475
+College of Charleston,10,50,61,67564.52180735934
+College of Charleston,15,50,61,67564.52180735934
+Columbia International University,1,50,75,29354.40641319791
+Columbia International University,5,50,75,39411.31970004995
+Columbia International University,10,50,75,49840.98281601733
+Columbia International University,15,50,75,49840.98281601733
+Columbia College of South Carolina,1,50,74,37963.359585900216
+Columbia College of South Carolina,5,50,74,44326.62909559883
+Columbia College of South Carolina,10,50,74,53382.32959806859
+Columbia College of South Carolina,15,50,74,53382.32959806859
+Converse College,1,50,83,33998.482159923406
+Converse College,5,50,83,44265.3060544733
+Converse College,10,50,83,54638.69419841271
+Converse College,15,50,83,54638.69419841271
+Erskine College,1,50,100,33299.12222061271
+Erskine College,5,50,100,49262.7908546176
+Erskine College,10,50,100,61003.617026334774
+Erskine College,15,50,100,61003.617026334774
+Furman University,1,50,114,39005.726641122776
+Furman University,5,50,114,59383.3873791209
+Furman University,10,50,114,79931.22619083695
+Furman University,15,50,114,79931.22619083695
+Lander University,1,50,189,35400.28294436119
+Lander University,5,50,189,46956.611054639805
+Lander University,10,50,189,55284.1693073593
+Lander University,15,50,189,55284.1693073593
+Limestone University,1,50,195,40525.38866644467
+Limestone University,5,50,195,49438.64747871574
+Limestone University,10,50,195,55886.84842063491
+Limestone University,15,50,195,55886.84842063491
+Morris College,1,50,238,29136.05809894273
+Morris College,5,50,238,37196.71996176045
+Morris College,10,50,238,42815.338345238095
+Morris College,15,50,238,42815.338345238095
+Newberry College,1,50,242,35904.71494150295
+Newberry College,5,50,242,46949.500750055515
+Newberry College,10,50,242,56033.53804761906
+Newberry College,15,50,242,56033.53804761906
+North Greenville University,1,50,246,31725.92500915752
+North Greenville University,5,50,246,43027.699813492065
+North Greenville University,10,50,246,53284.03569841269
+North Greenville University,15,50,246,53284.03569841269
+Presbyterian College,1,50,292,37318.44291869241
+Presbyterian College,5,50,292,52438.887700216445
+Presbyterian College,10,50,292,66831.09261327561
+Presbyterian College,15,50,292,66831.09261327561
+South Carolina State University,1,50,337,30979.7466045621
+South Carolina State University,5,50,337,44834.71545310246
+South Carolina State University,10,50,337,53603.229055555545
+South Carolina State University,15,50,337,53603.229055555545
+Spartanburg Methodist College,1,50,358,42739.84073809524
+Spartanburg Methodist College,5,50,358,54175.98166666668
+Spartanburg Methodist College,10,50,358,63392.59716666667
+Spartanburg Methodist College,15,50,358,63392.59716666667
+University of South Carolina - Columbia,1,50,475,39569.50242284104
+University of South Carolina - Columbia,5,50,475,56252.52966305916
+University of South Carolina - Columbia,10,50,475,71521.14336904763
+University of South Carolina - Columbia,15,50,475,71521.14336904763
+University of South Carolina - Aiken,1,50,473,37942.72755755355
+University of South Carolina - Aiken,5,50,473,48781.00526479077
+University of South Carolina - Aiken,10,50,473,59151.83671428572
+University of South Carolina - Aiken,15,50,473,59151.83671428572
+University of South Carolina - Beaufort,1,50,474,37129.710083694066
+University of South Carolina - Beaufort,5,50,474,49614.01621645023
+University of South Carolina - Beaufort,10,50,474,57504.059992784976
+University of South Carolina - Beaufort,15,50,474,57504.059992784976
+Coastal Carolina University,1,50,59,32711.429877414266
+Coastal Carolina University,5,50,59,49393.21342102343
+Coastal Carolina University,10,50,59,60426.79737301587
+Coastal Carolina University,15,50,59,60426.79737301587
+Voorhees College,1,50,526,32436.190185517095
+Voorhees College,5,50,526,40985.36839135864
+Voorhees College,10,50,526,47265.96315367965
+Voorhees College,15,50,526,47265.96315367965
+Winthrop University,1,50,544,34814.196422077934
+Winthrop University,5,50,544,47794.13609632035
+Winthrop University,10,50,544,57593.55384523811
+Winthrop University,15,50,544,57593.55384523811
+Wofford College,1,50,545,37839.44271239871
+Wofford College,5,50,545,61210.290479437215
+Wofford College,10,50,545,83282.47858080806
+Wofford College,15,50,545,83282.47858080806
+Black Hills State University,1,50,23,35244.31930194805
+Black Hills State University,5,50,23,47676.73458297258
+Black Hills State University,10,50,23,56413.867079365074
+Black Hills State University,15,50,23,56413.867079365074
+Dakota State University,1,50,85,42639.74377747252
+Dakota State University,5,50,85,54730.60147077922
+Dakota State University,10,50,85,65357.66369877345
+Dakota State University,15,50,85,65357.66369877345
+Northern State University,1,50,251,36672.12665995116
+Northern State University,5,50,251,47985.98801839827
+Northern State University,10,50,251,56376.10173748474
+Northern State University,15,50,251,56376.10173748474
+South Dakota School of Mines and Technology,1,50,338,68245.03297607947
+South Dakota School of Mines and Technology,5,50,338,87548.3298156843
+South Dakota School of Mines and Technology,10,50,338,104310.57910930738
+South Dakota School of Mines and Technology,15,50,338,104310.57910930738
+South Dakota State University,1,50,339,44647.17890515041
+South Dakota State University,5,50,339,58577.41555266956
+South Dakota State University,10,50,339,71649.04321176045
+South Dakota State University,15,50,339,71649.04321176045
+University of South Dakota,1,50,477,39156.07605810856
+University of South Dakota,5,50,477,53370.37281204904
+University of South Dakota,10,50,477,64874.265496031745
+University of South Dakota,15,50,477,64874.265496031745
+Covenant College,1,50,84,34321.104468253965
+Covenant College,5,50,84,48193.55607142856
+Covenant College,10,50,84,54299.05419841271
+Covenant College,15,50,84,54299.05419841271
+Angelo State University,1,50,7,37897.23604082846
+Angelo State University,5,50,7,53862.88660278613
+Angelo State University,10,50,7,63919.4080952381
+Angelo State University,15,50,7,63919.4080952381
+Texas A&M University - Commerce,1,50,386,42464.331699203576
+Texas A&M University - Commerce,5,50,386,54530.63258910536
+Texas A&M University - Commerce,10,50,386,61382.94508766236
+Texas A&M University - Commerce,15,50,386,61382.94508766236
+Grayson College,1,50,128,81137.8489078144
+Grayson College,5,50,128,47903.482812770555
+Grayson College,10,50,128,58138.44155555555
+Grayson College,15,50,128,58138.44155555555
+Lamar University,1,50,188,45916.16060639362
+Lamar University,5,50,188,59380.35991305919
+Lamar University,10,50,188,69229.97653282828
+Lamar University,15,50,188,69229.97653282828
+Laredo College,1,50,191,38255.89010714287
+Laredo College,5,50,191,49175.6180952381
+Laredo College,10,50,191,60587.02224603175
+Laredo College,15,50,191,60587.02224603175
+Midwestern State University,1,50,222,48663.23667648871
+Midwestern State University,5,50,222,61394.45809054834
+Midwestern State University,10,50,222,70524.4139484127
+Midwestern State University,15,50,222,70524.4139484127
+University of North Texas,1,50,460,41501.860834027095
+University of North Texas,5,50,460,59057.90450324674
+University of North Texas,10,50,460,70204.58002922077
+University of North Texas,15,50,460,70204.58002922077
+Odessa College,1,50,255,59695.38075838051
+Odessa College,5,50,255,52609.430797979796
+Odessa College,10,50,255,61962.271966089436
+Odessa College,15,50,255,61962.271966089436
+University of Texas Rio Grande Valley,1,50,486,43600.92688233988
+University of Texas Rio Grande Valley,5,50,486,57363.3282907648
+University of Texas Rio Grande Valley,10,50,486,63852.900142857136
+University of Texas Rio Grande Valley,15,50,486,63852.900142857136
+Sam Houston State University,1,50,330,41224.297422105665
+Sam Houston State University,5,50,330,58334.63959299032
+Sam Houston State University,10,50,330,68473.07678571428
+Sam Houston State University,15,50,330,68473.07678571428
+San Jacinto Community College District,1,50,331,41224.297422105665
+San Jacinto Community College District,5,50,331,58334.63959299032
+San Jacinto Community College District,10,50,331,68473.07678571428
+San Jacinto Community College District,15,50,331,68473.07678571428
+University Of Houston - Downtown,1,50,403,48944.22712429237
+University Of Houston - Downtown,5,50,403,66268.42834379511
+University Of Houston - Downtown,10,50,403,74886.07489421689
+University Of Houston - Downtown,15,50,403,74886.07489421689
+Texas State University,1,50,393,40301.34719448689
+Texas State University,5,50,393,59578.60727056277
+Texas State University,10,50,393,70119.42697619049
+Texas State University,15,50,393,70119.42697619049
+Stephen F Austin State University,1,50,377,40536.77100522517
+Stephen F Austin State University,5,50,377,56551.102304195796
+Stephen F Austin State University,10,50,377,65617.01511075036
+Stephen F Austin State University,15,50,377,65617.01511075036
+Sul Ross State University,1,50,378,35692.145837079595
+Sul Ross State University,5,50,378,50837.91425865801
+Sul Ross State University,10,50,378,59281.20803246754
+Sul Ross State University,15,50,378,59281.20803246754
+Prairie View Agricultural & Mechanical University,1,50,291,42184.15458036408
+Prairie View Agricultural & Mechanical University,5,50,291,61966.066022893756
+Prairie View Agricultural & Mechanical University,10,50,291,72701.84755086579
+Prairie View Agricultural & Mechanical University,15,50,291,72701.84755086579
+Tarleton State University,1,50,380,42518.41449134197
+Tarleton State University,5,50,380,56960.44835092687
+Tarleton State University,10,50,380,66120.28368290044
+Tarleton State University,15,50,380,66120.28368290044
+Texas A&M University,1,50,384,50962.85968897769
+Texas A&M University,5,50,384,72144.31348046398
+Texas A&M University,10,50,384,95343.6373401876
+Texas A&M University,15,50,384,95343.6373401876
+Texas A&M University - Kingsville,1,50,388,39915.72932676636
+Texas A&M University - Kingsville,5,50,388,56784.08194907868
+Texas A&M University - Kingsville,10,50,388,65664.19438461539
+Texas A&M University - Kingsville,15,50,388,65664.19438461539
+Texas Southern University,1,50,391,39065.44828541719
+Texas Southern University,5,50,391,56339.50046694971
+Texas Southern University,10,50,391,67587.3994992785
+Texas Southern University,15,50,391,67587.3994992785
+Texas Tech University,1,50,394,44977.14907341271
+Texas Tech University,5,50,394,64532.68948340549
+Texas Tech University,10,50,394,81551.42561904762
+Texas Tech University,15,50,394,81551.42561904762
+Texas Womans University,1,50,397,50652.282547914496
+Texas Womans University,5,50,397,64418.4520079365
+Texas Womans University,10,50,397,72830.97852380952
+Texas Womans University,15,50,397,72830.97852380952
+Tyler Junior College,1,50,402,55292.77258982683
+Tyler Junior College,5,50,402,54296.778123931625
+Tyler Junior College,10,50,402,70533.2841031746
+Tyler Junior College,15,50,402,70533.2841031746
+University of Houston,1,50,425,47116.539450382945
+University of Houston,5,50,425,67388.2197598235
+University of Houston,10,50,425,81773.09460317463
+University of Houston,15,50,425,81773.09460317463
+University of Texas at Arlington,1,50,488,60318.200835137075
+University of Texas at Arlington,5,50,488,71346.15004781331
+University of Texas at Arlington,10,50,488,82716.34432142855
+University of Texas at Arlington,15,50,488,82716.34432142855
+University of Texas - Austin,1,50,481,55291.11901179376
+University of Texas - Austin,5,50,481,74298.21013178489
+University of Texas - Austin,10,50,481,100530.0944126984
+University of Texas - Austin,15,50,481,100530.0944126984
+University of Texas Health Science Center at San Antonio,1,50,483,70617.8671477689
+University of Texas Health Science Center at San Antonio,5,50,483,82306.53963492061
+University of Texas Health Science Center at San Antonio,10,50,483,92771.52684126982
+University of Texas Health Science Center at San Antonio,15,50,483,92771.52684126982
+University of Texas at El Paso,1,50,490,47644.095958569225
+University of Texas at El Paso,5,50,490,62268.167256965266
+University of Texas at El Paso,10,50,490,68529.24491161616
+University of Texas at El Paso,15,50,490,68529.24491161616
+Weatherford College,1,50,529,34243.13765584416
+Weatherford College,5,50,529,77029.69622222224
+Weatherford College,10,50,529,120237.00197619053
+Weatherford College,15,50,529,120237.00197619053
+West Texas A&M University,1,50,531,43211.67986855956
+West Texas A&M University,5,50,531,57979.550495671
+West Texas A&M University,10,50,531,65858.69203968254
+West Texas A&M University,15,50,531,65858.69203968254
+Dixie State University,1,50,88,41976.56069444444
+Dixie State University,5,50,88,57804.788539682544
+Dixie State University,10,50,88,71198.59228571429
+Dixie State University,15,50,88,71198.59228571429
+University of Utah,1,50,494,43885.27828174604
+University of Utah,5,50,494,63371.21654761906
+University of Utah,10,50,494,82398.64546428573
+University of Utah,15,50,494,82398.64546428573
+Utah State University,1,50,514,40595.787965728705
+Utah State University,5,50,514,60256.94345238094
+Utah State University,10,50,514,78619.575
+Utah State University,15,50,514,78619.575
+Southern Utah University,1,50,353,36202.81953571428
+Southern Utah University,5,50,353,53669.24289285714
+Southern Utah University,10,50,353,66674.24109523809
+Southern Utah University,15,50,353,66674.24109523809
+Snow College,1,50,336,33976.49168253967
+Snow College,5,50,336,44536.92711976913
+Snow College,10,50,336,53603.229055555545
+Snow College,15,50,336,53603.229055555545
+Weber State University,1,50,530,48934.0761060606
+Weber State University,5,50,530,63360.884994588756
+Weber State University,10,50,530,79312.7803611111
+Weber State University,15,50,530,79312.7803611111
+Averett University,1,50,15,39763.00725949053
+Averett University,5,50,15,52596.58683333334
+Averett University,10,50,15,61584.6398553391
+Averett University,15,50,15,61584.6398553391
+Bluefield College,1,50,24,44679.08810392384
+Bluefield College,5,50,24,53314.48597688424
+Bluefield College,10,50,24,60093.355994588754
+Bluefield College,15,50,24,60093.355994588754
+Bridgewater College,1,50,28,35852.835161782656
+Bridgewater College,5,50,28,51446.21067518592
+Bridgewater College,10,50,28,62149.86037698412
+Bridgewater College,15,50,28,62149.86037698412
+College of William & Mary,1,50,66,44381.251402208916
+College of William & Mary,5,50,66,65260.306623015895
+College of William & Mary,10,50,66,91343.21783333336
+College of William & Mary,15,50,66,91343.21783333336
+Christopher Newport University,1,50,49,36448.86778119103
+Christopher Newport University,5,50,49,55426.34640379067
+Christopher Newport University,10,50,49,67441.76744841269
+Christopher Newport University,15,50,49,67441.76744841269
+Eastern Mennonite University,1,50,95,50534.92345998447
+Eastern Mennonite University,5,50,95,58088.99438209011
+Eastern Mennonite University,10,50,95,66373.06214682541
+Eastern Mennonite University,15,50,95,66373.06214682541
+Emory & Henry College,1,50,99,30276.2694383117
+Emory & Henry College,5,50,99,47316.43599098126
+Emory & Henry College,10,50,99,58453.33787778887
+Emory & Henry College,15,50,99,58453.33787778887
+Ferrum College,1,50,105,35464.448926715435
+Ferrum College,5,50,105,47853.80939124763
+Ferrum College,10,50,105,55381.91003787878
+Ferrum College,15,50,105,55381.91003787878
+Hampden Sydney College,1,50,132,41047.96169669219
+Hampden Sydney College,5,50,132,62312.44815945166
+Hampden Sydney College,10,50,132,89570.61022691202
+Hampden Sydney College,15,50,132,89570.61022691202
+Hampton University,1,50,133,39112.892566433555
+Hampton University,5,50,133,58643.94808497058
+Hampton University,10,50,133,75220.51955699855
+Hampton University,15,50,133,75220.51955699855
+Hollins University,1,50,136,31038.552289405052
+Hollins University,5,50,136,42354.23341197691
+Hollins University,10,50,136,55757.07554581529
+Hollins University,15,50,136,55757.07554581529
+Longwood University,1,50,198,37965.07840778666
+Longwood University,5,50,198,51662.192464646454
+Longwood University,10,50,198,59094.639591269835
+Longwood University,15,50,198,59094.639591269835
+University of Lynchburg,1,50,435,38177.32652256078
+University of Lynchburg,5,50,435,53113.30688972138
+University of Lynchburg,10,50,435,64461.5992579365
+University of Lynchburg,15,50,435,64461.5992579365
+James Madison University,1,50,183,42755.78259456917
+James Madison University,5,50,183,66211.56621031744
+James Madison University,10,50,183,83996.24591450216
+James Madison University,15,50,183,83996.24591450216
+Mary Baldwin University,1,50,211,35433.188003441
+Mary Baldwin University,5,50,211,47317.50229329005
+Mary Baldwin University,10,50,211,54283.02104617604
+Mary Baldwin University,15,50,211,54283.02104617604
+Marymount University,1,50,212,48243.85822108448
+Marymount University,5,50,212,65550.3042705628
+Marymount University,10,50,212,80829.44628571431
+Marymount University,15,50,212,80829.44628571431
+Old Dominion University,1,50,262,41150.43245969062
+Old Dominion University,5,50,262,57739.63290404043
+Old Dominion University,10,50,262,68549.1765952381
+Old Dominion University,15,50,262,68549.1765952381
+Radford University,1,50,300,38146.34301764903
+Radford University,5,50,300,53912.52955194808
+Radford University,10,50,300,64515.76917460317
+Radford University,15,50,300,64515.76917460317
+Randolph-Macon College,1,50,302,37213.78914543789
+Randolph-Macon College,5,50,302,56168.903233516474
+Randolph-Macon College,10,50,302,70175.22073412698
+Randolph-Macon College,15,50,302,70175.22073412698
+Randolph College,1,50,301,30686.238816905312
+Randolph College,5,50,301,49473.17064163614
+Randolph College,10,50,301,62243.25636904761
+Randolph College,15,50,301,62243.25636904761
+Virginia Commonwealth University,1,50,519,38632.70076265401
+Virginia Commonwealth University,5,50,519,55592.85187426463
+Virginia Commonwealth University,10,50,519,68703.08122979799
+Virginia Commonwealth University,15,50,519,68703.08122979799
+Roanoke College,1,50,305,36813.96194680319
+Roanoke College,5,50,305,53930.295998307265
+Roanoke College,10,50,305,69166.48946092794
+Roanoke College,15,50,305,69166.48946092794
+Shenandoah University,1,50,334,41883.09496355933
+Shenandoah University,5,50,334,59619.24008225108
+Shenandoah University,10,50,334,68672.0733845599
+Shenandoah University,15,50,334,68672.0733845599
+Southern Virginia University,1,50,354,32993.41525974027
+Southern Virginia University,5,50,354,47672.53326587302
+Southern Virginia University,10,50,354,60938.39807936507
+Southern Virginia University,15,50,354,60938.39807936507
+Sweet Briar College,1,50,379,32750.625886363625
+Sweet Briar College,5,50,379,52198.67888691866
+Sweet Briar College,10,50,379,61512.64665359641
+Sweet Briar College,15,50,379,61512.64665359641
+University of Richmond,1,50,469,53163.35418328892
+University of Richmond,5,50,469,75275.3607128427
+University of Richmond,10,50,469,107078.37837301582
+University of Richmond,15,50,469,107078.37837301582
+University of Virginia,1,50,495,57198.46986013986
+University of Virginia,5,50,495,74932.65571822623
+University of Virginia,10,50,495,109129.30555916304
+University of Virginia,15,50,495,109129.30555916304
+University of Mary Washington,1,50,441,37713.05143728495
+University of Mary Washington,5,50,441,57973.826107142864
+University of Mary Washington,10,50,441,74767.25817857143
+University of Mary Washington,15,50,441,74767.25817857143
+University of Virginia's College at Wise (The),1,50,496,34361.449029148964
+University of Virginia's College at Wise (The),5,50,496,48521.79469588744
+University of Virginia's College at Wise (The),10,50,496,54540.640454906184
+University of Virginia's College at Wise (The),15,50,496,54540.640454906184
+George Mason University,1,50,116,47957.94913467089
+George Mason University,5,50,116,70252.04941269843
+George Mason University,10,50,116,89870.78590476188
+George Mason University,15,50,116,89870.78590476188
+Virginia Intermont College,1,50,520,30871.9030595238
+Virginia Intermont College,5,50,520,41478.50016630592
+Virginia Intermont College,10,50,520,47916.381290293044
+Virginia Intermont College,15,50,520,47916.381290293044
+Virginia Military Institute,1,50,521,50499.6637131757
+Virginia Military Institute,5,50,521,72901.83598809525
+Virginia Military Institute,10,50,521,98187.13401190475
+Virginia Military Institute,15,50,521,98187.13401190475
+Virginia Polytechnic Institute & State University,1,50,522,52063.771855574974
+Virginia Polytechnic Institute & State University,5,50,522,73258.66955869131
+Virginia Polytechnic Institute & State University,10,50,522,95871.43612770565
+Virginia Polytechnic Institute & State University,15,50,522,95871.43612770565
+Virginia State University,1,50,523,34171.880650734485
+Virginia State University,5,50,523,49322.49594264068
+Virginia State University,10,50,523,58775.01206782109
+Virginia State University,15,50,523,58775.01206782109
+Norfolk State University,1,50,244,34774.151034104776
+Norfolk State University,5,50,244,49534.338551226545
+Norfolk State University,10,50,244,60217.03840728716
+Norfolk State University,15,50,244,60217.03840728716
+Virginia Union University,1,50,524,32831.60167177267
+Virginia Union University,5,50,524,46150.147301587305
+Virginia Union University,10,50,524,58382.14374603177
+Virginia Union University,15,50,524,58382.14374603177
+Virginia Wesleyan University,1,50,525,35631.808656541165
+Virginia Wesleyan University,5,50,525,50539.794162698425
+Virginia Wesleyan University,10,50,525,59742.199550865815
+Virginia Wesleyan University,15,50,525,59742.199550865815
+Washington and Lee University,1,50,528,34243.13765584416
+Washington and Lee University,5,50,528,76800.43900000001
+Washington and Lee University,10,50,528,119895.26197619055
+Washington and Lee University,15,50,528,119895.26197619055
+Bluefield State University,1,50,25,40624.122426795424
+Bluefield State University,5,50,25,50341.9576010101
+Bluefield State University,10,50,25,57032.52942099566
+Bluefield State University,15,50,25,57032.52942099566
+Concord University,1,50,78,33114.43966991342
+Concord University,5,50,78,45278.67505086579
+Concord University,10,50,78,53675.14331746031
+Concord University,15,50,78,53675.14331746031
+Fairmont State University,1,50,103,35230.079213369965
+Fairmont State University,5,50,103,49300.19054148629
+Fairmont State University,10,50,103,57930.81746825396
+Fairmont State University,15,50,103,57930.81746825396
+Marshall University,1,50,209,35313.39557814408
+Marshall University,5,50,209,49773.05600385724
+Marshall University,10,50,209,61033.5829920635
+Marshall University,15,50,209,61033.5829920635
+West Virginia University,1,50,532,40498.6171084055
+West Virginia University,5,50,532,60883.940670274154
+West Virginia University,10,50,532,77498.21284126985
+West Virginia University,15,50,532,77498.21284126985
+West Virginia University - Institute of Technology,1,50,533,49899.30566594517
+West Virginia University - Institute of Technology,5,50,533,67541.64236291488
+West Virginia University - Institute of Technology,10,50,533,81408.94642135645
+West Virginia University - Institute of Technology,15,50,533,81408.94642135645
+West Virginia University - Potomac State College,1,50,535,31313.644162698427
+West Virginia University - Potomac State College,5,50,535,43380.94319047619
+West Virginia University - Potomac State College,10,50,535,54524.020777777776
+West Virginia University - Potomac State College,15,50,535,54524.020777777776
+West Virginia University - Parkersburg,1,50,534,35762.92755289155
+West Virginia University - Parkersburg,5,50,534,48362.70787362638
+West Virginia University - Parkersburg,10,50,534,54723.43816117218
+West Virginia University - Parkersburg,15,50,534,54723.43816117218
+University of Wisconsin - Madison,1,50,501,44729.295960269264
+University of Wisconsin - Madison,5,50,501,65810.03882756132
+University of Wisconsin - Madison,10,50,501,87921.68245562771
+University of Wisconsin - Madison,15,50,501,87921.68245562771
+University of Wisconsin - Milwaukee,1,50,502,41668.289080058814
+University of Wisconsin - Milwaukee,5,50,502,57820.48537576313
+University of Wisconsin - Milwaukee,10,50,502,70765.53317893218
+University of Wisconsin - Milwaukee,15,50,502,70765.53317893218
+University of Wisconsin Colleges,1,50,511,40705.91437595738
+University of Wisconsin Colleges,5,50,511,54876.77232786657
+University of Wisconsin Colleges,10,50,511,66528.48028052501
+University of Wisconsin Colleges,15,50,511,66528.48028052501
+University of Wisconsin - Green Bay,1,50,499,37947.28396279455
+University of Wisconsin - Green Bay,5,50,499,50677.913626984126
+University of Wisconsin - Green Bay,10,50,499,60114.926757936526
+University of Wisconsin - Green Bay,15,50,499,60114.926757936526
+University of Wisconsin - Stout,1,50,508,44593.911590159834
+University of Wisconsin - Stout,5,50,508,58699.97044189143
+University of Wisconsin - Stout,10,50,508,70300.52896825396
+University of Wisconsin - Stout,15,50,508,70300.52896825396
+University of Wisconsin - Eau Claire,1,50,498,40598.74088450437
+University of Wisconsin - Eau Claire,5,50,498,57188.19987662336
+University of Wisconsin - Eau Claire,10,50,498,69767.27048809525
+University of Wisconsin - Eau Claire,15,50,498,69767.27048809525
+University of Wisconsin - LaCrosse,1,50,500,38306.319726911956
+University of Wisconsin - LaCrosse,5,50,500,56192.10379528804
+University of Wisconsin - LaCrosse,10,50,500,68470.46712409813
+University of Wisconsin - LaCrosse,15,50,500,68470.46712409813
+University of Wisconsin - Oshkosh,1,50,503,41603.9128997114
+University of Wisconsin - Oshkosh,5,50,503,54673.23266425243
+University of Wisconsin - Oshkosh,10,50,503,64730.863033882786
+University of Wisconsin - Oshkosh,15,50,503,64730.863033882786
+University of Wisconsin - Platteville,1,50,505,47983.03881682209
+University of Wisconsin - Platteville,5,50,505,62266.21735569987
+University of Wisconsin - Platteville,10,50,505,74942.16542857143
+University of Wisconsin - Platteville,15,50,505,74942.16542857143
+University of Wisconsin - River Falls,1,50,506,37832.867660769785
+University of Wisconsin - River Falls,5,50,506,53161.693944777435
+University of Wisconsin - River Falls,10,50,506,65274.136822871595
+University of Wisconsin - River Falls,15,50,506,65274.136822871595
+University of Wisconsin - Stevens Point,1,50,507,34690.28880200355
+University of Wisconsin - Stevens Point,5,50,507,50284.998752885986
+University of Wisconsin - Stevens Point,10,50,507,59745.53070238096
+University of Wisconsin - Stevens Point,15,50,507,59745.53070238096
+University of Wisconsin - Superior,1,50,509,35035.178226773234
+University of Wisconsin - Superior,5,50,509,48899.37882425907
+University of Wisconsin - Superior,10,50,509,58699.49946392494
+University of Wisconsin - Superior,15,50,509,58699.49946392494
+University of Wisconsin - Whitewater,1,50,510,38771.23837948164
+University of Wisconsin - Whitewater,5,50,510,54785.7156611999
+University of Wisconsin - Whitewater,10,50,510,66422.586280525
+University of Wisconsin - Whitewater,15,50,510,66422.586280525
+University of Wyoming,1,50,512,43141.995861111114
+University of Wyoming,5,50,512,59192.03981349207
+University of Wyoming,10,50,512,69243.34614285713
+University of Wyoming,15,50,512,69243.34614285713
+Dalton State College,1,50,86,42659.46466050616
+Dalton State College,5,50,86,52454.34100613277
+Dalton State College,10,50,86,63518.16305555554
+Dalton State College,15,50,86,63518.16305555554
+University of Minnesota - Twin Cities,1,50,450,43745.15465842492
+University of Minnesota - Twin Cities,5,50,450,64570.3494047619
+University of Minnesota - Twin Cities,10,50,450,85078.87686904761
+University of Minnesota - Twin Cities,15,50,450,85078.87686904761
+University of Minnesota - Rochester,1,50,449,43106.87478607504
+University of Minnesota - Rochester,5,50,449,68429.83094444443
+University of Minnesota - Rochester,10,50,449,68617.74196428571
+University of Minnesota - Rochester,15,50,449,68617.74196428571
+Greenville Technical College,1,50,129,82326.37
+Greenville Technical College,5,50,129,60090.751535714284
+Greenville Technical College,10,50,129,76335.15642857144
+Greenville Technical College,15,50,129,76335.15642857144
+Utah Valley University,1,50,515,44867.366178571436
+Utah Valley University,5,50,515,63325.54490800866
+Utah Valley University,10,50,515,81450.52472222222
+Utah Valley University,15,50,515,81450.52472222222
+National American University - Indianapolis,1,50,239,29136.05809894273
+National American University - Indianapolis,5,50,239,37196.71996176045
+National American University - Indianapolis,10,50,239,42519.78917857143
+National American University - Indianapolis,15,50,239,42519.78917857143
+University of Minnesota - Crookston,1,50,448,46513.48157770008
+University of Minnesota - Crookston,5,50,448,58602.68625396825
+University of Minnesota - Crookston,10,50,448,68345.60529761904
+University of Minnesota - Crookston,15,50,448,68345.60529761904
+Colorado Mountain College,1,50,69,43017.24716838716
+Colorado Mountain College,5,50,69,50023.206476190484
+Colorado Mountain College,10,50,69,62380.76368795095
+Colorado Mountain College,15,50,69,62380.76368795095
+University of Colorado Denver,1,50,417,43708.991982166524
+University of Colorado Denver,5,50,417,59529.010941197674
+University of Colorado Denver,10,50,417,75433.08562698416
+University of Colorado Denver,15,50,417,75433.08562698416
+University of Colorado Colorado Springs,1,50,416,40307.2970096606
+University of Colorado Colorado Springs,5,50,416,54994.38750341326
+University of Colorado Colorado Springs,10,50,416,68906.95574242424
+University of Colorado Colorado Springs,15,50,416,68906.95574242424
+International Business College,1,50,181,33512.608038961036
+International Business College,5,50,181,58831.87715476193
+International Business College,10,50,181,70355.75546428568
+International Business College,15,50,181,70355.75546428568
+CUNY York College,1,50,40,44500.445817654574
+CUNY York College,5,50,40,60959.51571717171
+CUNY York College,10,50,40,73656.1448946609
+CUNY York College,15,50,40,73656.1448946609
+CUNY Graduate School & University Center,1,50,34,59615.063445582215
+CUNY Graduate School & University Center,5,50,34,68499.13681926407
+CUNY Graduate School & University Center,10,50,34,78533.74825396825
+CUNY Graduate School & University Center,15,50,34,78533.74825396825
+Clark State College,1,50,55,37327.85307142858
+Clark State College,5,50,55,55229.300210317466
+Clark State College,10,50,55,67287.54305375183
+Clark State College,15,50,55,67287.54305375183
+Texas A&M University System Health Science Center,1,50,389,70046.02926977187
+Texas A&M University System Health Science Center,5,50,389,75308.17340320791
+Texas A&M University System Health Science Center,10,50,389,76366.46309956709
+Texas A&M University System Health Science Center,15,50,389,76366.46309956709
+University of Texas Health Science Center at Houston,1,50,482,78246.54179711138
+University of Texas Health Science Center at Houston,5,50,482,89570.80390043292
+University of Texas Health Science Center at Houston,10,50,482,103829.16956837608
+University of Texas Health Science Center at Houston,15,50,482,103829.16956837608
+University of Texas Medical Branch at Galveston,1,50,485,77409.03664445276
+University of Texas Medical Branch at Galveston,5,50,485,90531.285063492
+University of Texas Medical Branch at Galveston,10,50,485,103357.12348484849
+University of Texas Medical Branch at Galveston,15,50,485,103357.12348484849
+Galveston College,1,50,115,39005.726641122776
+Galveston College,5,50,115,59383.3873791209
+Galveston College,10,50,115,79931.22619083695
+Galveston College,15,50,115,79931.22619083695
+University of Wisconsin - Parkside,1,50,504,37394.89222566323
+University of Wisconsin - Parkside,5,50,504,53405.787035714275
+University of Wisconsin - Parkside,10,50,504,64937.85719083692
+University of Wisconsin - Parkside,15,50,504,64937.85719083692
+North Central State College,1,50,245,34774.151034104776
+North Central State College,5,50,245,49534.338551226545
+North Central State College,10,50,245,60217.03840728716
+North Central State College,15,50,245,60217.03840728716
+Saint Francis Medical Center College of Nursing,1,50,325,58232.082658369414
+Saint Francis Medical Center College of Nursing,5,50,325,65284.54652380952
+Saint Francis Medical Center College of Nursing,10,50,325,78562.5051525974
+Saint Francis Medical Center College of Nursing,15,50,325,78562.5051525974
+Chamberlain University - Indianapolis,1,50,45,60450.25195360196
+Chamberlain University - Indianapolis,5,50,45,44157.38927561327
+Chamberlain University - Indianapolis,10,50,45,51743.61662518037
+Chamberlain University - Indianapolis,15,50,45,51743.61662518037
+Jefferson College of Health Sciences,1,50,184,66874.08618919966
+Jefferson College of Health Sciences,5,50,184,83898.79873665224
+Jefferson College of Health Sciences,10,50,184,97587.92645959597
+Jefferson College of Health Sciences,15,50,184,97587.92645959597
+University of Maine - Augusta,1,50,437,36934.42022649572
+University of Maine - Augusta,5,50,437,43984.144135281385
+University of Maine - Augusta,10,50,437,48591.78318253968
+University of Maine - Augusta,15,50,437,48591.78318253968
+SUNY College at Purchase,1,50,313,33750.62254306804
+SUNY College at Purchase,5,50,313,51135.27753318903
+SUNY College at Purchase,10,50,313,66284.19183766234
+SUNY College at Purchase,15,50,313,66284.19183766234
+University of South Carolina Upstate,1,50,476,40860.22846048395
+University of South Carolina Upstate,5,50,476,50297.53499622599
+University of South Carolina Upstate,10,50,476,59656.884769119766
+University of South Carolina Upstate,15,50,476,59656.884769119766
+CUNY Lehman College,1,50,37,46221.783814352304
+CUNY Lehman College,5,50,37,63437.30417593519
+CUNY Lehman College,10,50,37,74742.30259432236
+CUNY Lehman College,15,50,37,74742.30259432236
+SUNY College at Old Westbury,1,50,312,39459.19990675663
+SUNY College at Old Westbury,5,50,312,60201.39645165946
+SUNY College at Old Westbury,10,50,312,75418.03455880229
+SUNY College at Old Westbury,15,50,312,75418.03455880229
+Holy Cross College,1,50,137,33995.56913383839
+Holy Cross College,5,50,137,46608.18516666666
+Holy Cross College,10,50,137,55757.07554581529
+Holy Cross College,15,50,137,55757.07554581529
+CUNY Bernard M. Baruch College,1,50,32,49422.09597924298
+CUNY Bernard M. Baruch College,5,50,32,75076.11316214343
+CUNY Bernard M. Baruch College,10,50,32,95429.32130663781
+CUNY Bernard M. Baruch College,15,50,32,95429.32130663781
+Brazosport College,1,50,27,79602.8083914974
+Brazosport College,5,50,27,106231.97809126985
+Brazosport College,10,50,27,123011.03280952381
+Brazosport College,15,50,27,123011.03280952381
+Front Range Community College-Westminster Campus,1,50,113,39005.726641122776
+Front Range Community College-Westminster Campus,5,50,113,59383.3873791209
+Front Range Community College-Westminster Campus,10,50,113,79931.22619083695
+Front Range Community College-Westminster Campus,15,50,113,79931.22619083695
+Louisiana State University Health Sciences Center in Shreveport,1,50,202,67127.6488279776
+Louisiana State University Health Sciences Center in Shreveport,5,50,202,85965.7161523199
+Louisiana State University Health Sciences Center in Shreveport,10,50,202,98500.44908333335
+Louisiana State University Health Sciences Center in Shreveport,15,50,202,98500.44908333335
+Pikes Peak Community College,1,50,289,43300.984259157514
+Pikes Peak Community College,5,50,289,56594.74334798535
+Pikes Peak Community College,10,50,289,71386.38167748917
+Pikes Peak Community College,15,50,289,71386.38167748917
+Clayton State University,1,50,56,43963.89885209234
+Clayton State University,5,50,56,56374.23555916306
+Clayton State University,10,50,56,67287.54305375183
+Clayton State University,15,50,56,67287.54305375183
+Bethel University,1,50,21,49215.797579725826
+Bethel University,5,50,21,64050.61200324676
+Bethel University,10,50,21,80267.84499999999
+Bethel University,15,50,21,80267.84499999999
+Francis Marion University,1,50,110,34840.99558313907
+Francis Marion University,5,50,110,46153.798053210674
+Francis Marion University,10,50,110,55681.599903318885
+Francis Marion University,15,50,110,55681.599903318885
+University of Illinois at Springfield,1,50,430,41189.25031313131
+University of Illinois at Springfield,5,50,430,54967.82022366523
+University of Illinois at Springfield,10,50,430,67049.2805
+University of Illinois at Springfield,15,50,430,67049.2805
+Georgia Highlands College,1,50,119,68171.12869444444
+Georgia Highlands College,5,50,119,79815.06135714285
+Georgia Highlands College,10,50,119,69020.16583333332
+Georgia Highlands College,15,50,119,69020.16583333332
+Community College of Denver,1,50,77,68620.95031746032
+Community College of Denver,5,50,77,51047.90950946275
+Community College of Denver,10,50,77,61618.91173953826
+Community College of Denver,15,50,77,61618.91173953826
+Red Rocks Community College,1,50,303,37213.78914543789
+Red Rocks Community College,5,50,303,56168.903233516474
+Red Rocks Community College,10,50,303,70183.96073412697
+Red Rocks Community College,15,50,303,70183.96073412697
+Oklahoma State University - Oklahoma City,1,50,260,70082.66004761905
+Oklahoma State University - Oklahoma City,5,50,260,79434.92899999999
+Oklahoma State University - Oklahoma City,10,50,260,76252.21333333333
+Oklahoma State University - Oklahoma City,15,50,260,76252.21333333333
+Texas A&M International University,1,50,383,39230.60995200634
+Texas A&M International University,5,50,383,56216.468856782085
+Texas A&M International University,10,50,383,64239.704384920624
+Texas A&M International University,15,50,383,64239.704384920624
+University of Texas at Dallas,1,50,489,53274.530578726815
+University of Texas at Dallas,5,50,489,71593.3202621545
+University of Texas at Dallas,10,50,489,89284.8500609668
+University of Texas at Dallas,15,50,489,89284.8500609668
+University of North Texas Health Science Center at Fort Worth,1,50,461,41501.860834027095
+University of North Texas Health Science Center at Fort Worth,5,50,461,59057.90450324674
+University of North Texas Health Science Center at Fort Worth,10,50,461,70204.58002922077
+University of North Texas Health Science Center at Fort Worth,15,50,461,70204.58002922077
+Midland College,1,50,221,60678.41425549449
+Midland College,5,50,221,76519.96032034633
+Midland College,10,50,221,98789.04536904761
+Midland College,15,50,221,98789.04536904761
+University of Texas of the Permian Basin,1,50,493,49381.48094001749
+University of Texas of the Permian Basin,5,50,493,58148.91680411255
+University of Texas of the Permian Basin,10,50,493,65164.915007936535
+University of Texas of the Permian Basin,15,50,493,65164.915007936535
+Shawnee State University,1,50,333,36923.36796997447
+Shawnee State University,5,50,333,49589.21785989011
+Shawnee State University,10,50,333,61804.77292352091
+Shawnee State University,15,50,333,61804.77292352091
+Morgan Community College,1,50,237,64295.20855558331
+Morgan Community College,5,50,237,80781.89416239319
+Morgan Community College,10,50,237,97522.8166583694
+Morgan Community College,15,50,237,97522.8166583694
+Saint Anthony College of Nursing,1,50,323,64201.30369769119
+Saint Anthony College of Nursing,5,50,323,71015.39374025977
+Saint Anthony College of Nursing,10,50,323,83746.91934920636
+Saint Anthony College of Nursing,15,50,323,83746.91934920636
+University of Texas Southwestern Medical Center (The),1,50,487,62255.053531746045
+University of Texas Southwestern Medical Center (The),5,50,487,73524.02135045512
+University of Texas Southwestern Medical Center (The),10,50,487,85263.77684054837
+University of Texas Southwestern Medical Center (The),15,50,487,85263.77684054837
+CUNY Medgar Evers College,1,50,38,47834.68867230645
+CUNY Medgar Evers College,5,50,38,63676.17152597403
+CUNY Medgar Evers College,10,50,38,76282.26632936504
+CUNY Medgar Evers College,15,50,38,76282.26632936504
+University of Texas at San Antonio,1,50,491,45391.75001151136
+University of Texas at San Antonio,5,50,491,60214.83358483184
+University of Texas at San Antonio,10,50,491,70274.34015079364
+University of Texas at San Antonio,15,50,491,70274.34015079364
+SUNY Empire State College,1,50,319,60195.65925886368
+SUNY Empire State College,5,50,319,69063.00601936951
+SUNY Empire State College,10,50,319,76365.37149603174
+SUNY Empire State College,15,50,319,76365.37149603174
+Texas A & M University at Galveston,1,50,382,48877.64236122211
+Texas A & M University at Galveston,5,50,382,66510.59003182928
+Texas A & M University at Galveston,10,50,382,81431.76569805195
+Texas A & M University at Galveston,15,50,382,81431.76569805195
+Cincinnati State Technical & Community College,1,50,50,36448.86778119103
+Cincinnati State Technical & Community College,5,50,50,55426.34640379067
+Cincinnati State Technical & Community College,10,50,50,67650.15203174602
+Cincinnati State Technical & Community College,15,50,50,67650.15203174602
+Metropolitan State University,1,50,217,50829.76223015875
+Metropolitan State University,5,50,217,64885.390833333346
+Metropolitan State University,10,50,217,76828.13361904764
+Metropolitan State University,15,50,217,76828.13361904764
+Texas Tech University Health Sciences Center,1,50,395,72008.6038292541
+Texas Tech University Health Sciences Center,5,50,395,82134.22416233768
+Texas Tech University Health Sciences Center,10,50,395,96506.65528968256
+Texas Tech University Health Sciences Center,15,50,395,96506.65528968256
+East Georgia State College,1,50,92,76269.77846103895
+East Georgia State College,5,50,92,50650.53192857143
+East Georgia State College,10,50,92,59900.01411904761
+East Georgia State College,15,50,92,59900.01411904761
+Lone Star College System,1,50,197,34761.906895021646
+Lone Star College System,5,50,197,44773.316345238105
+Lone Star College System,10,50,197,52095.62557142857
+Lone Star College System,15,50,197,52095.62557142857
+Texas A&M University - Corpus Christi,1,50,387,41918.37033408259
+Texas A&M University - Corpus Christi,5,50,387,58689.86561951937
+Texas A&M University - Corpus Christi,10,50,387,67679.29359920633
+Texas A&M University - Corpus Christi,15,50,387,67679.29359920633
+University of Texas at Tyler,1,50,492,51764.371163475436
+University of Texas at Tyler,5,50,492,60716.5506298979
+University of Texas at Tyler,10,50,492,70037.88567207791
+University of Texas at Tyler,15,50,492,70037.88567207791
+State University of New York Polytechnic Institute,1,50,368,47542.02135656584
+State University of New York Polytechnic Institute,5,50,368,66795.1526760462
+State University of New York Polytechnic Institute,10,50,368,81416.9712142857
+State University of New York Polytechnic Institute,15,50,368,81416.9712142857
+University of Houston-Clear Lake,1,50,427,47922.27232298258
+University of Houston-Clear Lake,5,50,427,62436.5747987013
+University of Houston-Clear Lake,10,50,427,71483.46260642135
+University of Houston-Clear Lake,15,50,427,71483.46260642135
+Austin Community College,1,50,14,74115.68800000001
+Austin Community College,5,50,14,55872.858730158725
+Austin Community College,10,50,14,67190.07112012985
+Austin Community College,15,50,14,67190.07112012985
+Atlanta Metropolitan  State College,1,50,10,38107.328404761894
+Atlanta Metropolitan  State College,5,50,10,61188.69694877344
+Atlanta Metropolitan  State College,10,50,10,78537.91809415583
+Atlanta Metropolitan  State College,15,50,10,78537.91809415583
+South University - Columbia,1,50,342,43626.534501665
+South University - Columbia,5,50,342,49144.70313888888
+South University - Columbia,10,50,342,51383.54206349206
+South University - Columbia,15,50,342,51383.54206349206
+University of Houston - Victoria,1,50,426,45634.77349643413
+University of Houston - Victoria,5,50,426,59619.10212301586
+University of Houston - Victoria,10,50,426,65609.2775324675
+University of Houston - Victoria,15,50,426,65609.2775324675
+Liberty University,1,50,193,41891.854615551114
+Liberty University,5,50,193,52711.933294733055
+Liberty University,10,50,193,63191.54879004329
+Liberty University,15,50,193,63191.54879004329
+Life University,1,50,194,35864.274047619045
+Life University,5,50,194,52711.933294733055
+Life University,10,50,194,62703.77429004329
+Life University,15,50,194,62703.77429004329
+University of Hawaii - West Oahu,1,50,421,40807.648017205014
+University of Hawaii - West Oahu,5,50,421,53148.62903571428
+University of Hawaii - West Oahu,10,50,421,63214.42876190477
+University of Hawaii - West Oahu,15,50,421,63214.42876190477
+Pueblo Community College,1,50,294,63270.30364285715
+Pueblo Community College,5,50,294,76118.23564285715
+Pueblo Community College,10,50,294,100733.392
+Pueblo Community College,15,50,294,100733.392
+Martin University,1,50,210,32913.5277972583
+Martin University,5,50,210,47285.68638744588
+Martin University,10,50,210,61033.5829920635
+Martin University,15,50,210,61033.5829920635
+Saint Augustine College,1,50,324,38329.03736951935
+Saint Augustine College,5,50,324,43268.128821428574
+Saint Augustine College,10,50,324,50392.14266666667
+Saint Augustine College,15,50,324,50392.14266666667
+Goodwin University,1,50,124,56803.5500674603
+Goodwin University,5,50,124,61106.96545238095
+Goodwin University,10,50,124,69592.6215981241
+Goodwin University,15,50,124,69592.6215981241
+Collin County Community College District,1,50,67,70907.1498452381
+Collin County Community College District,5,50,67,65260.306623015895
+Collin County Community College District,10,50,67,91343.21783333336
+Collin County Community College District,15,50,67,91343.21783333336
+University of Texas M.D. Anderson Cancer Center,1,50,484,69312.24558376586
+University of Texas M.D. Anderson Cancer Center,5,50,484,84388.39731204904
+University of Texas M.D. Anderson Cancer Center,10,50,484,100651.7653611111
+University of Texas M.D. Anderson Cancer Center,15,50,484,100651.7653611111
+Texas Southmost College,1,50,392,45897.57866486292
+Texas Southmost College,5,50,392,53000.73195995672
+Texas Southmost College,10,50,392,56634.153690476196
+Texas Southmost College,15,50,392,56634.153690476196
+Regent University,1,50,304,40899.827697885456
+Regent University,5,50,304,52462.75051226549
+Regent University,10,50,304,62279.42374114773
+Regent University,15,50,304,62279.42374114773
+South Texas College,1,50,341,38820.056093434345
+South Texas College,5,50,341,54341.67450793653
+South Texas College,10,50,341,61308.85479761905
+South Texas College,15,50,341,61308.85479761905
+Texas A & M University - Texarkana,1,50,381,39382.80965440115
+Texas A & M University - Texarkana,5,50,381,48528.32823809523
+Texas A & M University - Texarkana,10,50,381,55582.42463095237
+Texas A & M University - Texarkana,15,50,381,55582.42463095237
+Charter Oak State College,1,50,47,62956.95029961705
+Charter Oak State College,5,50,47,73684.95142382615
+Charter Oak State College,10,50,47,82139.9285
+Charter Oak State College,15,50,47,82139.9285
+Southern Methodist College,1,50,349,40743.66340018316
+Southern Methodist College,5,50,349,57083.533512043534
+Southern Methodist College,10,50,349,70210.72217063492
+Southern Methodist College,15,50,349,70210.72217063492
+Western Governors University,1,50,538,69251.55389943552
+Western Governors University,5,50,538,76447.21135642137
+Western Governors University,10,50,538,78191.47411111112
+Western Governors University,15,50,538,78191.47411111112
+Georgia Gwinnett College,1,50,118,38909.31951190477
+Georgia Gwinnett College,5,50,118,52923.409511183265
+Georgia Gwinnett College,10,50,118,67934.92003968253
+Georgia Gwinnett College,15,50,118,67934.92003968253
+Colorado State University - Global Campus,1,50,72,64150.558095238084
+Colorado State University - Global Campus,5,50,72,79243.41516666667
+Colorado State University - Global Campus,10,50,72,90987.13647619048
+Colorado State University - Global Campus,15,50,72,90987.13647619048
+Texas A&M University - Central Texas,1,50,385,40814.470612554105
+Texas A&M University - Central Texas,5,50,385,55143.6899992785
+Texas A&M University - Central Texas,10,50,385,67548.30286868686
+Texas A&M University - Central Texas,15,50,385,67548.30286868686
+University of North Texas at Dallas,1,50,462,45824.31635714287
+University of North Texas at Dallas,5,50,462,61211.40461904762
+University of North Texas at Dallas,10,50,462,62600.166584415594
+University of North Texas at Dallas,15,50,462,62600.166584415594
+Texas A&M University-San Antonio,1,50,390,40342.36048989899
+Texas A&M University-San Antonio,5,50,390,57639.04686904763
+Texas A&M University-San Antonio,10,50,390,63535.00438095237
+Texas A&M University-San Antonio,15,50,390,63535.00438095237
+Texas Tech University Health Sciences Center El Paso,1,50,396,69878.54086507935
+Texas Tech University Health Sciences Center El Paso,5,50,396,82125.29182900435
+Texas Tech University Health Sciences Center El Paso,10,50,396,96427.5586230159
+Texas Tech University Health Sciences Center El Paso,15,50,396,96427.5586230159
+Indiana Wesleyan University - NGM Building,1,50,149,61136.5895
+Indiana Wesleyan University - NGM Building,5,50,149,71068.59028571431
+Indiana Wesleyan University - NGM Building,10,50,149,82248.42333333332
+Indiana Wesleyan University - NGM Building,15,50,149,82248.42333333332
