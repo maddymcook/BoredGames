@@ -1,4 +1,5 @@
 import mlflow
+import requests
 
 from data5580_hw.models.prediction import Model
 
@@ -10,6 +11,11 @@ class MLFlowGateway:
     def init_app(self, app):
         mlflow.set_tracking_uri(app.config['TRACKING_URI'])
         self.models = app.config['MODELS']
+
+        response = requests.get(app.config['TRACKING_URI'])
+
+        if response.status_code != 200:
+            raise Exception(f'MLFlow tracking server not listening at {app.config["TRACKING_URI"]}. Start server with cmd: mlflow server --port 8080 --backend-store-uri sqlite:///mlruns.db')
 
         for model in self.models.keys():
             for version in self.models[model].keys():

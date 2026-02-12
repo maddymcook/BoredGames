@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 from sklearn.datasets import fetch_california_housing
 from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 
@@ -39,7 +40,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 # ----------------------------
 with mlflow.start_run() as run:
 
-    model = LinearRegression()
+    model = DecisionTreeRegressor()
     model.fit(X_train, y_train)
 
     predictions = model.predict(X_test)
@@ -49,8 +50,8 @@ with mlflow.start_run() as run:
     r2 = r2_score(y_test, predictions)
 
     # Log parameters
-    mlflow.log_param("model_type", "LinearRegression")
-    mlflow.log_param("fit_intercept", model.fit_intercept)
+    mlflow.log_param("model_type", "DecisionTreeRegressor")
+    # mlflow.log_param("fit_intercept", model.fit_intercept)
 
     # Log metrics
     mlflow.log_metric("mse", mse)

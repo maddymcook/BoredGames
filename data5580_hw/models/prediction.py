@@ -1,6 +1,7 @@
 from typing import Dict, Union, Optional
 
 from datetime import datetime
+import pandas as pd
 
 from pydantic import Field
 
@@ -30,4 +31,6 @@ class Prediction(LocalBaseModel):
     created: datetime = Field(default_factory=datetime.now)
     updated: datetime = Field(default_factory=datetime.now)
 
+    def get_pandas_frame_of_inputs(self):
 
+        return pd.DataFrame([self.features], index=[0])

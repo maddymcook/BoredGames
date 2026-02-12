@@ -28,7 +28,7 @@ class PredictionController:
 
         prediction.model = model
 
-        label = model_service.create_inference(Model, prediction=prediction)
+        label = model_service.create_inference(model, prediction=prediction)
 
         prediction.label = label
 

@@ -1,4 +1,5 @@
 from typing import Union
+import pandas as pd
 
 from flask import Flask
 
@@ -9,7 +10,7 @@ class ModelService:
 
     @staticmethod
     def create_inference(model: Model, prediction: Prediction) -> Union[str, int, float]:
-        return 10_000
+        return model._model.predict(prediction.get_pandas_frame_of_inputs())[0]
 
 
 model_service = ModelService()

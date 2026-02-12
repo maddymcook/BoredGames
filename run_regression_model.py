@@ -16,7 +16,7 @@ y = housing.target  # Median house value in $100,000s
 
 host="http://127.0.0.1:5000"
 model_name = 'california-housing'
-model_version = '1'
+model_version = '2'
 
 data = {"features": X.iloc[0].to_dict()}
 
