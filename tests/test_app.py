@@ -5,6 +5,7 @@ import pytest
 from data5580_hw.app import create_app
 
 
+
 @pytest.fixture
 def client():
     app = create_app()

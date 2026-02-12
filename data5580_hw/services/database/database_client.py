@@ -10,6 +10,8 @@ db = SQLAlchemy(model_class=BaseModel)
 
 
 def init_db(app) -> None:
+    import data5580_hw.services.database.user_model
+    import data5580_hw.services.database.prediction
 
     db.init_app(app)
 
