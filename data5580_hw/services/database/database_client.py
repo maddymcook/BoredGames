@@ -1,13 +1,20 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 
+
 class BaseModel(DeclarativeBase):
-    pass    
+
+    pass
 
 db = SQLAlchemy(model_class=BaseModel)
 
+
 def init_db(app) -> None:
+    import data5580_hw.services.database.user_model
+    import data5580_hw.services.database.prediction
+
     db.init_app(app)
+
     with app.app_context():
         try:
             db.drop_all()
@@ -16,4 +23,3 @@ def init_db(app) -> None:
         finally:
             db.create_all()
             db.session.commit()
-            
