@@ -8,3 +8,6 @@ def init_blueprints(app):
 
     from data5580_hw.routes.prediction import prediction
     app.register_blueprint(prediction)
+
+    from data5580_hw.routes.model_compare import model_compare
+    app.register_blueprint(model_compare)

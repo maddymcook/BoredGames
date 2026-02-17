@@ -18,6 +18,8 @@ from data5580_hw.monitoring import init_metrics
 from data5580_hw.gateways.mlflow_gateway import mlflow_gateway
 
 logging.basicConfig(level=logging.DEBUG)
+# Avoid urllib3 DEBUG on stderr so PowerShell does not treat it as an error
+logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 

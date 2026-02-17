@@ -1,4 +1,5 @@
 flask
+mlflow
 pytest
 pytest-cov
 requests

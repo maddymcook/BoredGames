@@ -1,7 +1,12 @@
+import logging
+import os
 import mlflow
 import requests
+from mlflow.tracking import MlflowClient
 
 from data5580_hw.models.prediction import Model
+
+logger = logging.getLogger(__name__)
 
 
 class MLFlowGateway:
@@ -10,17 +15,27 @@ class MLFlowGateway:
 
     def init_app(self, app):
         mlflow.set_tracking_uri(app.config['TRACKING_URI'])
-        self.models = app.config['MODELS']
+        self.models = app.config.get('MODELS', {})
 
-        response = requests.get(app.config['TRACKING_URI'])
+        if app.config.get('TESTING') or os.environ.get('TESTING'):
+            return
 
-        if response.status_code != 200:
-            raise Exception(f'MLFlow tracking server not listening at {app.config["TRACKING_URI"]}. Start server with cmd: mlflow server --port 8080 --backend-store-uri sqlite:///mlruns.db')
-
-        for model in self.models.keys():
-            for version in self.models[model].keys():
-                flavor_ = self.models[model][version].get('mlflow_flavor', 'pyfunc')
-                self.models[model][version]["model"] = self._load_model(self._get_model_uri(model, version), flavor_)
+        try:
+            response = requests.get(app.config['TRACKING_URI'], timeout=2)
+            if response.status_code != 200:
+                raise Exception(f'MLFlow server returned {response.status_code}')
+            for model in self.models.keys():
+                for version in self.models[model].keys():
+                    flavor_ = self.models[model][version].get('mlflow_flavor', 'pyfunc')
+                    self.models[model][version]["model"] = self._load_model(
+                        self._get_model_uri(model, version), flavor_
+                    )
+        except Exception as e:
+            logger.warning(
+                "MLFlow not available at %s: %s. App will start; /models/compare and prediction need MLFlow. Start with: mlflow server --port 8080 --backend-store-uri sqlite:///mlruns.db (on Windows add --workers 1).",
+                app.config['TRACKING_URI'],
+                e,
+            )
 
     def _get_model_uri(self, model_name, model_version):
         return f"models:/{model_name}/{model_version}"
@@ -52,6 +67,20 @@ class MLFlowGateway:
         model._model = model_['model']
 
         return model
+
+    def get_run_metrics(self, run_id: str):
+        """
+        Get run and its metrics from MLFlow by run ID.
+        Returns dict with run_id, metrics, artifact_uri.
+        Raises Exception if run_id is invalid or run not found.
+        """
+        client = MlflowClient()
+        run = client.get_run(run_id)
+        return {
+            "run_id": run.info.run_id,
+            "metrics": dict(run.data.metrics) if run.data.metrics else {},
+            "artifact_uri": run.info.artifact_uri,
+        }
 
 
 mlflow_gateway: MLFlowGateway = MLFlowGateway()
