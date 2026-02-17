@@ -3,3 +3,7 @@ pytest
 pytest-cov
 requests
 pydantic
+flask_sqlalchemy
+prometheus_client
+pydantic[email]
+email-validator
