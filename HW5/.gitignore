@@ -1,0 +1,12 @@
+.venv
+**.db
+
+logs
+*.log
+
+.idea
+
+mlruns
+mlartifacts
+*.ipynb
+**__pycache__**
