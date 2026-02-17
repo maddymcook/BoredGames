@@ -10,13 +10,14 @@ from data5580_hw.models.user import User, UserUpdate
 
 logger = logging.getLogger(__name__)
 
-
 def _validation_error_message(e: ValidationError) -> str:
     """Return a specific message for validation failures (e.g. invalid email)."""
     for err in e.errors():
-        if "email" in str(err.get("loc", [])).lower():
+        loc = err.get("loc", ())
+        field = loc[-1] if loc else None
+        if field == "email":
             return "Invalid email format"
-        if "name" in str(err.get("loc", [])).lower():
+        if field == "name":
             return "Invalid or missing name"
     return "Validation failed: " + str(e.errors())
 
@@ -40,7 +41,7 @@ class UserController:
             db.session.rollback()
             return jsonify({"error": "email is already in use"}), 400
 
-        logger.info("user created, %s for %s", user.id, user.email)
+        logger.info(f"user created, {user.id} for {user.email}")
         return jsonify(user.model_dump()), 200
 
     @staticmethod
