@@ -3,4 +3,5 @@ __pycache__/
 mlruns/
 
 coverage.xml
-*.csv
+.coverage
+htmlcov/
