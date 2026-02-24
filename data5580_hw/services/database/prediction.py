@@ -24,7 +24,7 @@ class ModelSql(db.Model):
     predictions: Mapped[List['PredictionSQL']] = relationship("PredictionSQL", back_populates="model")
 
     @classmethod
-    def from_model(cls, model: Model) -> 'ModelSQL':
+    def from_model(cls, model: Model) -> 'ModelSql':
 
         model_ = db.session.query(ModelSql).filter(
             (ModelSql.model_name == model.name)
