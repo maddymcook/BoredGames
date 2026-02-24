@@ -1,6 +1,7 @@
 import logging
 
 from flask import jsonify, request
+from pydantic import ValidationError
 
 from sqlalchemy.exc import IntegrityError
 
@@ -21,28 +22,104 @@ class PredictionController:
 
     @staticmethod
     def create_prediction(model_name: str, model_version: str) -> tuple[str, int]:
+        """
+        POST /<model_name>/version/<model_version>/predict
 
-        model: Model = mlflow_gateway.get_model(model_name, model_version)
+        Expects JSON body with at least:
+        {
+          "features": { ... },
+          "tags": { ... }   # optional
+        }
+        """
+        logger.info(
+            "Prediction request received",
+            extra={"model_name": model_name, "model_version": model_version},
+        )
 
-        prediction = Prediction.model_validate(request.get_json(force=True))
+        # Load model (REGRESSION)
+        try:
+            model: Model = mlflow_gateway.get_model(model_name, model_version)
+        except KeyError:
+            logger.warning(
+                "Requested model not found",
+                extra={"model_name": model_name, "model_version": model_version},
+            )
+            return (
+                jsonify(
+                    {
+                        "error": f"Model '{model_name}' version '{model_version}' not found."
+                    }
+                ),
+                404,
+            )
+        except Exception:
+            logger.exception("Error loading model for prediction")
+            return jsonify({"error": "Internal error loading model."}), 500
+
+        # Parse and validate input payload
+        try:
+            data = request.get_json(force=True) or {}
+            prediction = Prediction.model_validate(data)
+        except ValidationError as e:
+            logger.warning(
+                "Invalid prediction input",
+                extra={"errors": e.errors()},
+            )
+            return (
+                jsonify(
+                    {
+                        "error": "Invalid input data.",
+                        "details": [err.get("msg") for err in e.errors()],
+                    }
+                ),
+                400,
+            )
 
         prediction.model = model
 
-        label = model_service.create_inference(model, prediction=prediction)
+        # Run inference on regression model
+        try:
+            label = model_service.create_inference(model, prediction=prediction)
+        except ValueError as e:
+            # Typical for bad feature shape / incompatible input
+            logger.warning(
+                "Prediction input mismatch for regression model",
+                extra={"model_name": model.name, "model_version": model.version},
+            )
+            return (
+                jsonify({"error": f"Invalid input data: {str(e)}"}),
+                400,
+            )
+        except Exception:
+            logger.exception("Error during regression prediction")
+            return jsonify({"error": "Internal error during prediction."}), 500
 
         prediction.label = label
 
+        # Persist prediction for auditing
         model_sql = ModelSql.from_model(model)
-
         prediction_sql = PredictionSQL.from_prediction(prediction, model_sql)
 
         db.session.add(prediction_sql)
-
         db.session.commit()
 
-        prediction_sql: PredictionSQL = db.session.query(PredictionSQL).filter(PredictionSQL.id == prediction.id).first()
+        prediction_sql: PredictionSQL = (
+            db.session.query(PredictionSQL)
+            .filter(PredictionSQL.id == prediction.id)
+            .first()
+        )
 
         prediction = prediction_sql.to_prediction()
+
+        logger.info(
+            "Prediction completed",
+            extra={
+                "prediction_id": prediction.id,
+                "model_name": prediction.model.name if prediction.model else None,
+                "model_version": prediction.model.version if prediction.model else None,
+                "label": prediction.label,
+            },
+        )
 
         return prediction.model_dump_json(), 200
 

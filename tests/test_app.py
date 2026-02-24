@@ -292,3 +292,30 @@ def test_prediction_route_fails_without_mlflow(client):
         except Exception:
             # TESTING=True can propagate exceptions; route and controller were still exercised
             pass
+
+
+def test_prediction_invalid_model_returns_404(client):
+    """Invalid model name/version returns 404 with error."""
+    response = client.post(
+        "/unknown-model/version/1/predict",
+        json={"features": {"x": 1}, "tags": {}},
+        content_type="application/json",
+    )
+    assert response.status_code == 404
+    assert "error" in response.json
+    assert "not found" in response.json["error"].lower()
+
+
+def test_prediction_input_mismatch_returns_400(client):
+    """Input incompatibility with regression model returns 400 and clear message."""
+    with patch("data5580_hw.controllers.prediction.model_service") as mock_svc:
+        mock_svc.create_inference.side_effect = ValueError(
+            "Expected 4 features, but received 3."
+        )
+        response = client.post(
+            "/california-housing/version/2/predict",
+            json={"features": {"feature_1": 1, "feature_2": 2, "feature_3": 3}, "tags": {}},
+            content_type="application/json",
+        )
+    assert response.status_code == 400
+    assert "Invalid input data" in response.json["error"]

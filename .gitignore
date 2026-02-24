@@ -1,6 +1,10 @@
 __pycache__/
 *.pyc
+.pytest_cache/
 mlruns/
+*.db
+mlruns.db
+data.db
 
 coverage.xml
 .coverage
