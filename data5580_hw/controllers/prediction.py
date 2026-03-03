@@ -11,7 +11,8 @@ from data5580_hw.models.user import User
 
 from data5580_hw.models.prediction import Prediction, Model
 from data5580_hw.services.model_service import model_service
-from data5580_hw.services.database.prediction import PredictionSQL, ModelSql
+from data5580_hw.services.explainer_service import explainer_service
+from data5580_hw.services.database.prediction import PredictionSQL, ModelSql, ExplanationSql
 
 
 logger = logging.getLogger(__name__)
@@ -22,45 +23,47 @@ class PredictionController:
     @staticmethod
     def create_prediction(model_name: str, model_version: str) -> tuple[str, int]:
 
+        # Get the model
         model: Model = mlflow_gateway.get_model(model_name, model_version)
-
         prediction = Prediction.model_validate(request.get_json(force=True))
-
         prediction.model = model
 
+        # Create prediction
         label = model_service.create_inference(model, prediction=prediction)
-
         prediction.label = label
 
-        model_sql = ModelSql.from_model(model)
+        # Create explanation
+        if prediction.model._explainer:
+            explanations = explainer_service.create_explanation(model, prediction=prediction)
+            prediction.explanations = explanations
 
+        # Create database objects and store
+        model_sql = ModelSql.from_model(model)
         prediction_sql = PredictionSQL.from_prediction(prediction, model_sql)
 
-        db.session.add(prediction_sql)
+        if prediction.explanations:
+            explanations_sql = ExplanationSql.from_prediction(prediction)
+            db.session.add_all(explanations_sql)
 
+        db.session.add(prediction_sql)
         db.session.commit()
 
+        # Read from database and return
         prediction_sql: PredictionSQL = db.session.query(PredictionSQL).filter(PredictionSQL.id == prediction.id).first()
-
         prediction = prediction_sql.to_prediction()
 
         return prediction.model_dump_json(), 200
 
     @staticmethod
-    def get_prediction_by_id(prediction: str) -> tuple[str, int]:
-        ...
-        # logger.debug(f'Got user_id {user_id}')
-        #
-        # user_sql = db.session.query(UserSQL).filter(UserSQL.id == user_id).first()
-        #
-        # user = User.model_validate(user_sql, from_attributes=True)
-        #
-        # if not user:
-        #     return jsonify({}), 404
-        #
-        # logging.info(f"user created, {user.id} for {user.email}")
-        #
-        # return user.model_dump_json(), 200
+    def get_prediction_by_id(prediction_id: str) -> tuple[str, int]:
+
+        logger.debug(f'Got prediction_id {prediction_id}')
+
+        prediction_sql: PredictionSQL = db.session.query(PredictionSQL).filter(PredictionSQL.id == prediction_id).first()
+
+        prediction = prediction_sql.to_prediction()
+
+        return prediction.model_dump_json(), 200
 
     @staticmethod
     def update_actual(prediction_id: str) -> tuple[str, int]:

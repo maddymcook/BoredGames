@@ -6,7 +6,28 @@ from sqlalchemy import CLOB, ForeignKey
 from sqlalchemy.orm import relationship, mapped_column, Mapped
 
 from data5580_hw.services.database.database_client import db
-from data5580_hw.models.prediction import Prediction, Model
+from data5580_hw.models.prediction import Prediction, Model, Explanations, Explanation
+
+
+class ExplanationSql(db.Model):
+    __tablename__ = "explanations"
+
+    id: Mapped[str] = mapped_column(db.String(120), primary_key=True)
+
+    name: Mapped[str] = mapped_column(db.String(120), nullable=False)
+    values: Mapped[dict] = mapped_column(CLOB, nullable=False)
+    updated: Mapped[datetime] = mapped_column(db.DateTime, nullable=True)
+    created: Mapped[datetime] = mapped_column(db.DateTime, nullable=True)
+
+    prediction_id: Mapped[str] = mapped_column(db.String(120), ForeignKey('predictions.id'), nullable=False)
+
+    @classmethod
+    def from_prediction(cls, prediction: Prediction) -> List['ExplanationSql']:
+        return [cls(id=prediction.explanations.explanations[idx].id
+                    , name=prediction.explanations.explanations[idx].name
+                    , values=json.dumps(prediction.explanations.explanations[idx].values)
+                    , prediction_id=prediction.id
+                    ) for idx in range(0, len(prediction.explanations.explanations))]
 
 
 class ModelSql(db.Model):
@@ -63,6 +84,7 @@ class PredictionSQL(db.Model):
 
     model_id: Mapped[str] = mapped_column(db.String(120), ForeignKey('models.id'), nullable=False)
     model: Mapped['ModelSql'] = relationship("ModelSql", back_populates="predictions")
+    explanations: Mapped['ExplanationSql'] = relationship("ExplanationSql", uselist=True)
 
     @classmethod
     def from_prediction(cls, prediction: Prediction, model: Model) -> 'PredictionSQL':
@@ -79,7 +101,7 @@ class PredictionSQL(db.Model):
         )
 
     def to_prediction(self) -> Prediction:
-        return Prediction(
+        prediction_ = Prediction(
             id=self.id,
             features=json.loads(self.features),
             tags=json.loads(self.tags),
@@ -93,8 +115,29 @@ class PredictionSQL(db.Model):
                 name=self.model.model_name,
                 version=self.model.model_version,
                 type=self.model.model_type,
-            )
+            ),
         )
+
+        if self.explanations:
+            explanations_ = Explanations()
+
+            if isinstance(self.explanations, (ExplanationSql,)):
+                explanation_sql = [self.explanations]
+            else:
+                explanation_sql = self.explanations
+
+            for explanations in explanation_sql:
+                explanations_.explanations.append(
+                    Explanation(
+                        id=explanations.id,
+                        name=explanations.name,
+                        values=json.loads(explanations.values)
+                    )
+                )
+
+                prediction_.explanations = explanations_
+
+        return prediction_
 
     def __repr__(self) -> str:
         return f"<Prediction {self.id}>"

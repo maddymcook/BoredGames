@@ -1,12 +1,15 @@
 # mlflow server --port 8080 --backend-store-uri sqlite:///mlruns.db
 
 import mlflow
+from tempfile import TemporaryDirectory
+import pickle
 import mlflow.sklearn
 from mlflow.models import infer_signature
 from mlflow.tracking import MlflowClient
 
 import numpy as np
 import pandas as pd
+import shap
 from sklearn.datasets import fetch_california_housing
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
@@ -34,6 +37,18 @@ y = housing.target  # Median house value in $100,000s
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
+
+
+# Define a custom pyfunc model
+class SHAPModel(mlflow.pyfunc.PythonModel):
+    def load_context(self, context):
+        # Load model and SHAP explainer
+        with open(context.artifacts["model"], 'rb') as fin:
+            self.model = pickle.load(fin)
+
+    def predict(self, context, model_input):
+        # Calculate SHAP values
+        return self.model.shap_values(model_input)
 
 # ----------------------------
 # Train + Log
@@ -70,5 +85,29 @@ with mlflow.start_run() as run:
     run_id = run.info.run_id
 
     print(logged_model)
+
+    # log an explainer
+    explainer = shap.Explainer(model)
+
+    with TemporaryDirectory() as temp_dir:
+        local_path = temp_dir + '/explainer.pkl'
+
+        with open(local_path, 'wb') as fout:
+            pickle.dump(explainer, fout)
+
+        artifacts = {
+            "model": local_path
+        }
+
+        response = mlflow.pyfunc.log_model(
+            artifact_path='model-explainer'
+            , python_model=SHAPModel()
+            , artifacts=artifacts
+            , input_example=X_test.fillna(0).sample(n=10, random_state=123)
+            , signature=mlflow.models.signature.infer_signature(model_input=X_test,
+                                                                model_output=explainer.shap_values(X_test))
+            , extra_pip_requirements=['shap']
+        )
+
 
 print(f"Run logged with ID: {run_id}")
