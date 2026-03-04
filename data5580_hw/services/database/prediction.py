@@ -102,6 +102,7 @@ class PredictionSQL(db.Model):
 
     def to_prediction(self) -> Prediction:
         prediction_ = Prediction(
+        return Prediction(
             id=self.id,
             features=json.loads(self.features),
             tags=json.loads(self.tags),

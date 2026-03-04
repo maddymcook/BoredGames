@@ -10,3 +10,10 @@ flask-sqlalchemy
 faker
 pydantic[email]
 prometheus-client
+mlflow
+pytest-cov
+pydantic
+flask_sqlalchemy
+prometheus_client
+pydantic[email]
+email-validator
