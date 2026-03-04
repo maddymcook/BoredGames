@@ -1,3 +1,5 @@
+from unittest import TestCase
+
 import os
 import pytest
 from unittest.mock import patch
@@ -46,6 +48,9 @@ def test_create_user_duplicate_email(client):
     assert response.status_code == 400
     assert response.json.get("error") == "email is already in use"
 
+    payload['id'] = id
+    response = client.get("/user/{}".format(id))
+    TestCase().assertDictEqual(response.get_json(force=True), payload)
 
 def test_create_user_missing_email(client):
     response = client.post("/users", json={"name": "john"})

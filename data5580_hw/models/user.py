@@ -1,5 +1,8 @@
-from pydantic import BaseModel, Field, EmailStr, model_validator
 import uuid
+
+from data5580_hw.models.base import LocalBaseModel
+from pydantic import BaseModel, Field, EmailStr, model_validator
+
 
 def get_id():
     return uuid.uuid4().hex

@@ -1,3 +1,15 @@
+.venv
+**.db
+
+logs
+*.log
+
+.idea
+
+mlruns
+mlartifacts
+*.ipynb
+**__pycache__**
 __pycache__/
 *.pyc
 .pytest_cache/

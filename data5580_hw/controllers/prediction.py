@@ -22,6 +22,48 @@ class PredictionController:
 
     @staticmethod
     def create_prediction(model_name: str, model_version: str) -> tuple[str, int]:
+
+        # Get the model
+        model: Model = mlflow_gateway.get_model(model_name, model_version)
+        prediction = Prediction.model_validate(request.get_json(force=True))
+        prediction.model = model
+
+        # Create prediction
+        label = model_service.create_inference(model, prediction=prediction)
+        prediction.label = label
+
+        # Create explanation
+        if prediction.model._explainer:
+            explanations = explainer_service.create_explanation(model, prediction=prediction)
+            prediction.explanations = explanations
+
+        # Create database objects and store
+        model_sql = ModelSql.from_model(model)
+        prediction_sql = PredictionSQL.from_prediction(prediction, model_sql)
+
+        if prediction.explanations:
+            explanations_sql = ExplanationSql.from_prediction(prediction)
+            db.session.add_all(explanations_sql)
+
+        db.session.add(prediction_sql)
+        db.session.commit()
+
+        # Read from database and return
+        prediction_sql: PredictionSQL = db.session.query(PredictionSQL).filter(PredictionSQL.id == prediction.id).first()
+        prediction = prediction_sql.to_prediction()
+
+        return prediction.model_dump_json(), 200
+
+    @staticmethod
+    def get_prediction_by_id(prediction_id: str) -> tuple[str, int]:
+
+        logger.debug(f'Got prediction_id {prediction_id}')
+
+        prediction_sql: PredictionSQL = db.session.query(PredictionSQL).filter(PredictionSQL.id == prediction_id).first()
+
+        prediction = prediction_sql.to_prediction()
+
+        return prediction.model_dump_json(), 200
         """
         POST /<model_name>/version/<model_version>/predict
 

@@ -1,3 +1,5 @@
+from sqlalchemy import UniqueConstraint
+
 from data5580_hw.services.database.database_client import db
 
 

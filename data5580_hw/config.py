@@ -8,7 +8,7 @@ class Config:
     TRACKING_URI = "http://localhost:8080"
     MODELS = {
         "california-housing": {
-            "2": {
+            "4": {
                 "model": None
                 , "model_type": "REGRESSION"
                 , "mlflow_flavor": "sklearn"
