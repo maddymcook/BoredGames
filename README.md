@@ -1,4 +1,4 @@
-DATA 5580 Homework Application
+DATA 5580 | Machine Learning Operations | Homework Application
 ==============================
 
 This repository contains a small Flask web application used for DATA 5580 homework assignments. It demonstrates how to build and test a web API around machine‑learning models, with a focus on reproducibility, observability, and interpretability.
