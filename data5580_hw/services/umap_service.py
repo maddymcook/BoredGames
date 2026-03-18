@@ -105,6 +105,7 @@ class UMAPEmbeddingService:
             X = X.reshape(1, -1)
         if X.ndim != 2:
             raise ValueError(f"UMAP embedding input must be 2D, got shape {X.shape}.")
+
         n_samples, n_features = X.shape
         if n_samples < 1:
             raise ValueError("UMAP embedding input must contain at least one sample.")
@@ -114,47 +115,59 @@ class UMAPEmbeddingService:
             params.update({k: v for k, v in umap_params.items() if v is not None})
 
         # Filter to the parameters that UMAP understands.
-        filtered_params = {k: v for k, v in params.items() if k in self._ALLOWED_UMAP_PARAMS}
-        missing = set(filtered_params.keys()) - set(params.keys())
-        _ = missing
+        filtered_params = {
+            k: v for k, v in params.items() if k in self._ALLOWED_UMAP_PARAMS
+        }
+
+        # UMAP can't be fit on a single sample.
+        # Since this API commonly receives `features` as a single row (`n_samples == 1`),
+        # we fall back to treating each feature dimension as a "sample" and then
+        # aggregate the resulting embeddings into a single vector for the input row.
+        if n_samples == 1:
+            if n_features < 2:
+                # Degenerate case: no meaningful manifold can be learned.
+                n_components = int(filtered_params.get("n_components", 2))
+                return [[0.0] * n_components]
+
+            X_alt = X.T  # (n_features, 1)
+            n_alt_samples = X_alt.shape[0]
+
+            n_neighbors = int(filtered_params.get("n_neighbors", 15))
+            filtered_params["n_neighbors"] = min(n_neighbors, n_alt_samples - 1)
+            if filtered_params["n_neighbors"] < 1:
+                filtered_params["n_neighbors"] = 1
+
+            model = UMAP(**filtered_params)
+            embeddings_alt = model.fit_transform(X_alt)
+            embedding = embeddings_alt.mean(axis=0)  # (n_components,)
+            return [embedding.astype(float).tolist()]
+
+        # Multi-sample case: fit once (first time for a given param+feature shape),
+        # persist, and reuse on subsequent calls for consistent embeddings.
+        n_neighbors = int(filtered_params.get("n_neighbors", 15))
+        filtered_params["n_neighbors"] = min(n_neighbors, n_samples - 1)
+        if filtered_params["n_neighbors"] < 1:
+            filtered_params["n_neighbors"] = 1
 
         key = self._canonical_key(filtered_params, n_features=n_features)
-        model_path, training_path = self._paths(key)
+        model_path, _training_path = self._paths(key)
         lock = self._get_lock(key)
 
         with lock:
-            if key in self._model_cache:
-                model = self._model_cache[key]
-            else:
+            model = self._model_cache.get(key)
+            if model is None:
                 model = self._load_model(model_path)
                 if model is not None:
                     self._model_cache[key] = model
 
             if model is None:
-                # Accumulate training data until we can fit.
-                training_X = self._load_training_matrix(training_path)
-                if training_X is None:
-                    training_X = X
-                else:
-                    training_X = np.vstack([training_X, X])
-
-                self._save_training_matrix(training_path, training_X)
-
-                min_samples = self._min_samples_required(filtered_params)
-                if training_X.shape[0] < min_samples:
-                    raise ValueError(
-                        "UMAP model not fitted yet: provide more samples "
-                        f"(need at least {min_samples} rows, have {training_X.shape[0]})."
-                    )
-
                 model = UMAP(**filtered_params)
-                model.fit(training_X)
+                model.fit(X)
                 self._save_model(model_path, model)
                 self._model_cache[key] = model
 
-            # Fit model exists: transform the current input.
             embeddings = model.transform(X)
-            return embeddings.tolist()
+            return embeddings.astype(float).tolist()
 
 
 umap_embedding_service = UMAPEmbeddingService()
