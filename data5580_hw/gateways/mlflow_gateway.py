@@ -17,6 +17,10 @@ class MLFlowGateway:
         mlflow.set_tracking_uri(app.config['TRACKING_URI'])
         self.models = app.config['MODELS']
 
+        # Unit tests run without a live MLflow server.
+        if app.config.get('TESTING') or os.environ.get('TESTING'):
+            return
+
         response = requests.get(app.config['TRACKING_URI'])
 
         if response.status_code != 200:
@@ -95,11 +99,6 @@ class MLFlowGateway:
 
         return model
 
-
-mlflow_gateway: MLFlowGateway = MLFlowGateway()
-
-        return model
-
     def get_run_metrics(self, run_id: str):
         """
         Get run and its metrics from MLFlow by run ID.
@@ -113,6 +112,5 @@ mlflow_gateway: MLFlowGateway = MLFlowGateway()
             "metrics": dict(run.data.metrics) if run.data.metrics else {},
             "artifact_uri": run.info.artifact_uri,
         }
-
 
 mlflow_gateway: MLFlowGateway = MLFlowGateway()

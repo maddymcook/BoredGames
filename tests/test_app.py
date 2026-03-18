@@ -40,7 +40,10 @@ def test_create_user(client):
 
 
 def test_create_user_duplicate_email(client):
-    client.post("/users", json={"name": "john", "email": "john@example.com"})
+    payload = client.post(
+        "/users", json={"name": "john", "email": "john@example.com"}
+    ).json
+    id = payload["id"]
     response = client.post(
         "/users",
         json={"name": "jane", "email": "john@example.com"},
@@ -48,8 +51,7 @@ def test_create_user_duplicate_email(client):
     assert response.status_code == 400
     assert response.json.get("error") == "email is already in use"
 
-    payload['id'] = id
-    response = client.get("/user/{}".format(id))
+    response = client.get("/users/{}".format(id))
     TestCase().assertDictEqual(response.get_json(force=True), payload)
 
 def test_create_user_missing_email(client):

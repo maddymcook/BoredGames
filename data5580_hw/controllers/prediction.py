@@ -12,6 +12,7 @@ from data5580_hw.models.user import User
 
 from data5580_hw.models.prediction import Prediction, Model
 from data5580_hw.services.model_service import model_service
+from data5580_hw.services.umap_service import umap_embedding_service
 from data5580_hw.services.database.prediction import PredictionSQL, ModelSql
 
 
@@ -23,14 +24,62 @@ class PredictionController:
     @staticmethod
     def create_prediction(model_name: str, model_version: str) -> tuple[str, int]:
 
-        # Get the model
-        model: Model = mlflow_gateway.get_model(model_name, model_version)
-        prediction = Prediction.model_validate(request.get_json(force=True))
+        # Load model
+        try:
+            model: Model = mlflow_gateway.get_model(model_name, model_version)
+        except KeyError:
+            return (
+                jsonify(
+                    {
+                        "error": f"Model '{model_name}' version '{model_version}' not found."
+                    }
+                ),
+                404,
+            )
+
+        # Parse and validate input payload
+        try:
+            data = request.get_json(force=True) or {}
+            prediction = Prediction.model_validate(data)
+        except ValidationError as e:
+            return (
+                jsonify(
+                    {
+                        "error": "Invalid input data.",
+                        "details": [err.get("msg") for err in e.errors()],
+                    }
+                ),
+                400,
+            )
+
         prediction.model = model
 
-        # Create prediction
-        label = model_service.create_inference(model, prediction=prediction)
+        # Create prediction (regression)
+        try:
+            label = model_service.create_inference(model, prediction=prediction)
+        except ValueError as e:
+            return jsonify({"error": f"Invalid input data: {str(e)}"}), 400
+        except Exception:
+            logger.exception("Error during prediction")
+            return jsonify({"error": "Internal error during prediction."}), 500
+
         prediction.label = label
+
+        # Create UMAP embeddings for interpretability/downstream analysis.
+        try:
+            inputs_df = prediction.get_pandas_frame_of_inputs()
+            X = inputs_df.to_numpy(dtype=float)
+            prediction.embeddings = umap_embedding_service.compute_embeddings(
+                X, umap_params=prediction.umap_params
+            )
+        except ValueError as e:
+            logger.warning("UMAP embedding calculation failed: %s", str(e))
+            return jsonify({"error": f"UMAP embedding calculation failed: {str(e)}"}), 400
+        except Exception:
+            logger.exception("Internal error during UMAP embedding calculation")
+            return jsonify(
+                {"error": "Internal error during UMAP embedding calculation."}
+            ), 500
 
         # Create explanation
         if prediction.model._explainer:
@@ -52,7 +101,7 @@ class PredictionController:
         prediction_sql: PredictionSQL = db.session.query(PredictionSQL).filter(PredictionSQL.id == prediction.id).first()
         prediction = prediction_sql.to_prediction()
 
-        return prediction.model_dump_json(), 200
+        return jsonify(prediction.model_dump()), 200
 
     @staticmethod
     def get_prediction_by_id(prediction_id: str) -> tuple[str, int]:
@@ -63,7 +112,7 @@ class PredictionController:
 
         prediction = prediction_sql.to_prediction()
 
-        return prediction.model_dump_json(), 200
+        return jsonify(prediction.model_dump()), 200
         """
         POST /<model_name>/version/<model_version>/predict
 

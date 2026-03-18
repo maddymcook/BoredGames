@@ -13,6 +13,7 @@ prometheus-client
 mlflow
 pytest-cov
 pydantic
+umap-learn
 flask_sqlalchemy
 prometheus_client
 pydantic[email]

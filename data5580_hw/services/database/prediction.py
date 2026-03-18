@@ -76,6 +76,7 @@ class PredictionSQL(db.Model):
     features: Mapped[dict] = mapped_column(CLOB, nullable=False)
     tags: Mapped[dict] = mapped_column(CLOB)
     label: Mapped[str] = mapped_column(db.String(120), nullable=False)
+    embeddings: Mapped[str] = mapped_column(CLOB, nullable=True)
     actual: Mapped[str] = mapped_column(db.String(120), nullable=True)
     threshold: Mapped[float] = mapped_column(db.Float, nullable=True)
 
@@ -93,6 +94,7 @@ class PredictionSQL(db.Model):
             features=json.dumps(prediction.features),
             tags=json.dumps(prediction.tags),
             label=prediction.label,
+            embeddings=json.dumps(prediction.embeddings) if prediction.embeddings is not None else None,
             actual=prediction.actual,
             threshold=prediction.threshold,
             created=prediction.created,
@@ -102,11 +104,11 @@ class PredictionSQL(db.Model):
 
     def to_prediction(self) -> Prediction:
         prediction_ = Prediction(
-        return Prediction(
             id=self.id,
             features=json.loads(self.features),
             tags=json.loads(self.tags),
             label=self.label,
+            embeddings=json.loads(self.embeddings) if self.embeddings else None,
             actual=self.actual,
             threshold=self.threshold,
             created=self.created,
@@ -122,21 +124,22 @@ class PredictionSQL(db.Model):
         if self.explanations:
             explanations_ = Explanations()
 
+            # `relationship(..., uselist=True)` should be a list, but keep this defensive.
             if isinstance(self.explanations, (ExplanationSql,)):
                 explanation_sql = [self.explanations]
             else:
                 explanation_sql = self.explanations
 
-            for explanations in explanation_sql:
+            for explanation_sql in explanation_sql:
                 explanations_.explanations.append(
                     Explanation(
-                        id=explanations.id,
-                        name=explanations.name,
-                        values=json.loads(explanations.values)
+                        id=explanation_sql.id,
+                        name=explanation_sql.name,
+                        values=json.loads(explanation_sql.values),
                     )
                 )
 
-                prediction_.explanations = explanations_
+            prediction_.explanations = explanations_
 
         return prediction_
 
