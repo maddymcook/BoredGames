@@ -13,7 +13,8 @@ from data5580_hw.models.user import User
 from data5580_hw.models.prediction import Prediction, Model
 from data5580_hw.services.model_service import model_service
 from data5580_hw.services.umap_service import umap_embedding_service
-from data5580_hw.services.database.prediction import PredictionSQL, ModelSql
+from data5580_hw.services.explainer_service import explainer_service
+from data5580_hw.services.database.prediction import PredictionSQL, ModelSql, ExplanationSql
 
 
 logger = logging.getLogger(__name__)
@@ -214,36 +215,10 @@ class PredictionController:
 
         return prediction.model_dump_json(), 200
 
-    @staticmethod
-    def get_prediction_by_id(prediction: str) -> tuple[str, int]:
-        ...
-        # logger.debug(f'Got user_id {user_id}')
-        #
-        # user_sql = db.session.query(UserSQL).filter(UserSQL.id == user_id).first()
-        #
-        # user = User.model_validate(user_sql, from_attributes=True)
-        #
-        # if not user:
-        #     return jsonify({}), 404
-        #
-        # logging.info(f"user created, {user.id} for {user.email}")
-        #
-        # return user.model_dump_json(), 200
-
-    @staticmethod
-    def update_actual(prediction_id: str) -> tuple[str, int]:
-        ...
-        #
-        # user = User.model_validate(request.get_json(force=True))
-        #
-        # user_sql = db.session.query(UserSQL).filter(UserSQL.id == user_id).first()
-        #
-        # user_sql.name = user.name
-        # user_sql.email = user.email
-        #
-        # db.session.commit()
-        #
-        # return user.model_dump_json(), 200
+    # NOTE: This project originally contained stub methods for additional
+    # features (e.g., updating actual values). They were accidentally
+    # duplicating names and overwriting the real DB-backed implementations.
+    # The actual endpoints were not implemented in this assignment.
 
 
 prediction_controller = PredictionController()
