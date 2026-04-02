@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 
 from data5580_hw.services.database.database_client import db
 from data5580_hw.gateways.mlflow_gateway import mlflow_gateway
+from data5580_hw.gateways.arize_gateway import arize_gateway
 from data5580_hw.services.database.user_model import UserSQL
 from data5580_hw.models.user import User
 
@@ -18,6 +19,15 @@ from data5580_hw.services.database.prediction import PredictionSQL, ModelSql, Ex
 
 
 logger = logging.getLogger(__name__)
+
+
+def _should_log_arize_request() -> bool:
+    """Honor ?arize_log=false or X-Arize-Log: false when global Arize is enabled."""
+    if request.args.get("arize_log", "true").lower() in ("0", "false", "no"):
+        return False
+    if request.headers.get("X-Arize-Log", "").lower() in ("0", "false", "no"):
+        return False
+    return True
 
 
 class PredictionController:
@@ -101,6 +111,9 @@ class PredictionController:
         # Read from database and return
         prediction_sql: PredictionSQL = db.session.query(PredictionSQL).filter(PredictionSQL.id == prediction.id).first()
         prediction = prediction_sql.to_prediction()
+
+        if _should_log_arize_request() and prediction.model:
+            arize_gateway.log_inference(prediction.model, prediction)
 
         return jsonify(prediction.model_dump()), 200
 
