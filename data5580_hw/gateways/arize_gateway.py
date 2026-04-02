@@ -4,7 +4,8 @@ Arize ML observability integration.
 Environment variables (also surfaced on Flask app.config):
   ARIZE_ENABLED — set to 1/true to send inference logs.
   ARIZE_API_KEY — API key (or rely on SDK defaults).
-  ARIZE_SPACE_KEY — Space ID in Arize (used as space_id for uploads).
+  ARIZE_SPACE_KEY — Space ID for uploads. Prefer the numeric Space ID from Space settings.
+    A Base64 UI value (decodes to "Space:<digits>:...") is normalized to that numeric ID.
   ARIZE_ENVIRONMENT — development | staging | production (maps to Arize Environments;
     inference without ground truth uses PRODUCTION so uploads validate).
   ARIZE_FALLBACK_PATH — JSONL file for records when the Arize API fails.
@@ -14,9 +15,12 @@ Environment variables (also surfaced on Flask app.config):
 
 from __future__ import annotations
 
+import base64
+import binascii
 import json
 import logging
 import os
+import re
 from pathlib import Path
 from typing import Any
 
@@ -42,6 +46,38 @@ def _env_testing(app_config: dict) -> bool:
     if "TESTING" in app_config:
         return bool(app_config["TESTING"])
     return bool(os.environ.get("TESTING"))
+
+
+def _normalize_arize_space_id(raw: str) -> str:
+    """
+    The UI sometimes shows a Base64 Relay ID (e.g. decodes to 'Space:39299:2kEU').
+    ML uploads expect the numeric space id for Grpc-Metadata-arize-space-id.
+    """
+    s = (raw or "").strip()
+    if not s:
+        return s
+    if os.environ.get("ARIZE_SPACE_KEY_NO_DECODE", "").lower() in ("1", "true", "yes"):
+        return s
+    try:
+        pad = "=" * (-len(s) % 4)
+        decoded = base64.b64decode(s + pad).decode("ascii")
+        if decoded.startswith("Space:"):
+            m = re.match(r"Space:(\d+):", decoded)
+            if m:
+                n = m.group(1)
+                logger.info(
+                    "ARIZE_SPACE_KEY looked like an encoded Space id; using numeric space_id %s",
+                    n,
+                )
+                return n
+            logger.info(
+                "ARIZE_SPACE_KEY decoded to %r; using decoded value as space_id.",
+                decoded,
+            )
+            return decoded
+    except (ValueError, UnicodeDecodeError, binascii.Error):
+        pass
+    return s
 
 
 def _parse_region(value: str) -> Region | None:
@@ -106,7 +142,9 @@ class ArizeGateway:
     def init_app(self, app) -> None:
         cfg = app.config
         self._enabled = bool(cfg.get("ARIZE_ENABLED"))
-        self._space_id = (cfg.get("ARIZE_SPACE_KEY") or "").strip()
+        self._space_id = _normalize_arize_space_id(
+            str(cfg.get("ARIZE_SPACE_KEY") or "")
+        )
         self._fallback_path = Path(
             cfg.get("ARIZE_FALLBACK_PATH")
             or "instance/arize_failed.jsonl"
@@ -169,6 +207,13 @@ class ArizeGateway:
                 model_version=model.version,
                 batch_id=batch_id,
                 validate=True,
+            )
+            logger.info(
+                "Arize: logged inference model=%s version=%s env=%s prediction_id=%s",
+                model.name,
+                model.version,
+                env.name,
+                prediction.id,
             )
         except Exception as e:
             logger.error(

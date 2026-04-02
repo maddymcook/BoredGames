@@ -8,7 +8,7 @@ import pytest
 from flask import Flask
 
 from data5580_hw.controllers.prediction import _should_log_arize_request
-from data5580_hw.gateways.arize_gateway import ArizeGateway
+from data5580_hw.gateways.arize_gateway import ArizeGateway, _normalize_arize_space_id
 from data5580_hw.models.prediction import Model, Prediction
 
 
@@ -38,6 +38,21 @@ def _app_config(tmp_path, **overrides):
     }
     base.update(overrides)
     return base
+
+
+def test_normalize_space_id_decodes_relay_base64():
+    """UI Space copy may be Base64(Space:<numeric_id>:suffix); SDK needs the number."""
+    assert _normalize_arize_space_id("U3BhY2U6MzkyOTk6MmtFVQ==") == "39299"
+
+
+def test_normalize_space_id_plain_unchanged():
+    assert _normalize_arize_space_id("test-space-id") == "test-space-id"
+
+
+def test_normalize_space_id_respects_no_decode(monkeypatch):
+    monkeypatch.setenv("ARIZE_SPACE_KEY_NO_DECODE", "1")
+    raw = "U3BhY2U6MzkyOTk6MmtFVQ=="
+    assert _normalize_arize_space_id(raw) == raw
 
 
 def test_should_log_arize_request_defaults_true():

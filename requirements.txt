@@ -11,6 +11,7 @@ faker
 pydantic[email]
 prometheus-client
 mlflow
+shap
 pytest-cov
 pydantic
 umap-learn

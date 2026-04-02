@@ -18,6 +18,12 @@ class Config:
     TRACKING_URI = "http://localhost:8080"
     MODELS = {
         "california-housing": {
+            # Version 1 is created by generate_regression_model.py on first register.
+            "1": {
+                "model": None,
+                "model_type": "REGRESSION",
+                "mlflow_flavor": "sklearn",
+            },
             "2": {
                 "model": None
                 , "model_type": "REGRESSION"
