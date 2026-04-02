@@ -14,8 +14,9 @@ def _env_bool(name: str, default: bool = False) -> bool:
 
 class Config:
 
-    # MLFlow
-    TRACKING_URI = "http://localhost:8080"
+    # MLflow — use the server where your registered models live (see Models in UI).
+    # Override with MLFLOW_TRACKING_URI, e.g. http://localhost:8080 (not an empty server on another port).
+    TRACKING_URI = os.environ.get("MLFLOW_TRACKING_URI", "http://localhost:8080")
     MODELS = {
         "california-housing": {
             # Version 1 is created by generate_regression_model.py on first register.

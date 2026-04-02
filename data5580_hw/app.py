@@ -1,12 +1,15 @@
 import os
 import tempfile
 
+# Before Numba/UMAP import: reduce compiler debug noise (optional override via env)
+os.environ.setdefault("NUMBA_DEBUG", "0")
+
 from flask.cli import load_dotenv
 
 os.environ['PROMETHEUS_MULTIPROC_DIR'] = tempfile.mkdtemp()
 
 # Standardlibrary
-import  logging
+import logging
 
 # Installed
 from flask import Flask, jsonify
@@ -21,6 +24,9 @@ from data5580_hw.gateways.arize_gateway import arize_gateway
 logging.basicConfig(level=logging.DEBUG)
 # Avoid urllib3 DEBUG on stderr so PowerShell does not treat it as an error
 logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
+# Suppress Numba JIT-compiler internal DEBUG spam (UMAP / scipy.sparse paths)
+logging.getLogger("numba").setLevel(logging.WARNING)
+logging.getLogger("llvmlite").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
