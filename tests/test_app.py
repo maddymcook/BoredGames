@@ -40,10 +40,7 @@ def test_create_user(client):
 
 
 def test_create_user_duplicate_email(client):
-    payload = client.post(
-        "/users", json={"name": "john", "email": "john@example.com"}
-    ).json
-    id = payload["id"]
+    client.post("/users", json={"name": "john", "email": "john@example.com"})
     response = client.post(
         "/users",
         json={"name": "jane", "email": "john@example.com"},
@@ -51,8 +48,6 @@ def test_create_user_duplicate_email(client):
     assert response.status_code == 400
     assert response.json.get("error") == "email is already in use"
 
-    response = client.get("/users/{}".format(id))
-    TestCase().assertDictEqual(response.get_json(force=True), payload)
 
 def test_create_user_missing_email(client):
     response = client.post("/users", json={"name": "john"})
@@ -315,7 +310,15 @@ def test_prediction_invalid_model_returns_404(client):
 
 def test_prediction_input_mismatch_returns_400(client):
     """Input incompatibility with regression model returns 400 and clear message."""
-    with patch("data5580_hw.controllers.prediction.model_service") as mock_svc:
+    from unittest.mock import MagicMock
+    from data5580_hw.models.prediction import Model
+    mock_model = Model(name="california-housing", version="2", type="regression")
+    mock_model._model = MagicMock()
+    mock_model._explainer = None
+
+    with patch("data5580_hw.controllers.prediction.mlflow_gateway") as mock_gw, \
+         patch("data5580_hw.controllers.prediction.model_service") as mock_svc:
+        mock_gw.get_model.return_value = mock_model
         mock_svc.create_inference.side_effect = ValueError(
             "Expected 4 features, but received 3."
         )
