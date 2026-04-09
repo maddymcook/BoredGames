@@ -9,6 +9,7 @@ from data5580_hw.models.prediction import Prediction, Model
 from data5580_hw.services.model_service import model_service
 from data5580_hw.services.database.prediction import PredictionSQL, ModelSql
 from data5580_hw.services.explainer_service import explainer_service
+from data5580_hw.gateways.arize_gateway import arize_gateway
 
 
 logger = logging.getLogger(__name__)
@@ -109,6 +110,18 @@ class PredictionController:
             .first()
         )
         prediction = prediction_sql.to_prediction()
+
+        # Log to Arize (non-blocking; errors are caught inside the gateway)
+        arize_gateway.log_inference(
+            prediction_id=prediction.id,
+            model_name=model.name,
+            model_version=model.version,
+            model_type=model.type,
+            features=prediction.features,
+            prediction_label=prediction.label,
+            timestamp=prediction.created,
+            tags=prediction.tags or None,
+        )
 
         logger.info(
             "Prediction completed",
