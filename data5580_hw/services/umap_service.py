@@ -11,19 +11,8 @@ from umap import UMAP
 
 
 class UMAPEmbeddingService:
-    """
-    Computes UMAP embeddings and persists the fitted model across calls.
-
-    Note: UMAP requires enough samples to fit. If a model is not yet fitted
-    and there are insufficient samples, this service raises a ValueError
-    with a descriptive message.
-    """
-
     DEFAULT_PARAMS: Dict[str, Any] = {
-        # Keep defaults intentionally small so the service can fit quickly
-        # when the API is called with a small number of samples.
-        # UMAP requires n_neighbors >= 2.
-        "n_neighbors": 2,
+        "n_neighbors": 15,
         "min_dist": 0.1,
         "n_components": 2,
         "metric": "euclidean",
@@ -31,14 +20,20 @@ class UMAPEmbeddingService:
         "n_jobs": -1,
     }
 
-    _ALLOWED_UMAP_PARAMS = {"n_neighbors", "min_dist", "n_components", "metric", "random_state", "n_jobs"}
+    _ALLOWED_UMAP_PARAMS = {
+        "n_neighbors",
+        "min_dist",
+        "n_components",
+        "metric",
+        "random_state",
+        "n_jobs",
+    }
 
     def __init__(self, persist_dir: Optional[str] = None):
         self._persist_dir = Path(
             persist_dir or os.environ.get("UMAP_PERSIST_DIR", ".umap_cache")
         ).resolve()
         self._persist_dir.mkdir(parents=True, exist_ok=True)
-
         self._model_cache: Dict[str, UMAP] = {}
         self._locks: Dict[str, threading.Lock] = {}
         self._global_lock = threading.Lock()
@@ -60,12 +55,9 @@ class UMAPEmbeddingService:
         return model_path, training_path
 
     def _min_samples_required(self, params: Dict[str, Any]) -> int:
-        # UMAP needs enough samples to build a neighbor graph.
         n_neighbors = int(params.get("n_neighbors", 15))
         n_components = int(params.get("n_components", 2))
-        # `n_neighbors + 1` ensures n_neighbors < n_samples.
-        # `n_components` ensures the embedding dimensionality is feasible.
-        return max(n_neighbors + 1, n_components)
+        return max(n_neighbors + 1, n_components + 1, 3)
 
     def _load_training_matrix(self, training_path: Path) -> Optional[np.ndarray]:
         if not training_path.exists():
@@ -90,14 +82,6 @@ class UMAPEmbeddingService:
         X: np.ndarray,
         umap_params: Optional[Dict[str, Any]] = None,
     ) -> List[List[float]]:
-        """
-        Args:
-            X: numpy array of shape (n_samples, n_features)
-            umap_params: UMAP hyperparameters overriding defaults
-
-        Returns:
-            embeddings: list of shape (n_samples, n_components)
-        """
         if X is None:
             raise ValueError("UMAP embedding input X cannot be null.")
 
@@ -115,21 +99,13 @@ class UMAPEmbeddingService:
         if umap_params:
             params.update({k: v for k, v in umap_params.items() if v is not None})
 
-        # Filter to the parameters that UMAP understands.
         filtered_params = {
             k: v for k, v in params.items() if k in self._ALLOWED_UMAP_PARAMS
         }
 
-        # If there is only one input feature, there is no meaningful manifold
-        # to learn for multi-dimensional embedding.
         if n_features < 2:
             n_components = int(filtered_params.get("n_components", 2))
             return [[0.0] * n_components for _ in range(n_samples)]
-
-        # Use real historical rows for fitting instead of synthetic augmentation.
-        # This keeps embeddings stable and semantically meaningful across calls.
-        min_required = self._min_samples_required(filtered_params)
-        requested_n_neighbors = int(filtered_params.get("n_neighbors", 15))
 
         key = self._canonical_key(filtered_params, n_features=n_features)
         model_path, training_path = self._paths(key)
@@ -142,7 +118,6 @@ class UMAPEmbeddingService:
                 if model is not None:
                     self._model_cache[key] = model
 
-            # Always retain seen rows as reference data for future fitting.
             historical = self._load_training_matrix(training_path)
             if historical is None:
                 combined = X.copy()
@@ -152,18 +127,18 @@ class UMAPEmbeddingService:
 
             if model is None:
                 sample_count = combined.shape[0]
+                min_required = self._min_samples_required(filtered_params)
                 if sample_count < min_required:
                     raise ValueError(
                         "UMAP model is not fitted yet. "
                         f"Collected {sample_count} rows, need at least {min_required}. "
-                        "Send more inferences (or a batch) to warm up the embedding model."
+                        "Send more inferences or a batch to warm up the embedding model."
                     )
 
-                max_allowed = sample_count - 1
                 effective_params = dict(filtered_params)
                 effective_params["n_neighbors"] = min(
-                    max(requested_n_neighbors, 2),
-                    max_allowed,
+                    max(int(effective_params.get("n_neighbors", 15)), 2),
+                    sample_count - 1,
                 )
 
                 model = UMAP(**effective_params)
@@ -176,4 +151,3 @@ class UMAPEmbeddingService:
 
 
 umap_embedding_service = UMAPEmbeddingService()
-

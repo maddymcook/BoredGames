@@ -75,22 +75,17 @@ class PredictionController:
             return jsonify({"error": "Internal error during prediction."}), 500
 
         prediction.label = label
-
-        # Create UMAP embeddings for interpretability/downstream analysis.
+        # Create UMAP embeddings only when the service can fit/transform safely.
         try:
             inputs_df = prediction.get_pandas_frame_of_inputs()
             X = inputs_df.to_numpy(dtype=float)
             prediction.embeddings = umap_embedding_service.compute_embeddings(
                 X, umap_params=prediction.umap_params
             )
-        except ValueError as e:
-            logger.warning("UMAP embedding calculation failed: %s", str(e))
-            return jsonify({"error": f"UMAP embedding calculation failed: {str(e)}"}), 400
         except Exception:
-            logger.exception("Internal error during UMAP embedding calculation")
-            return jsonify(
-                {"error": "Internal error during UMAP embedding calculation."}
-            ), 500
+            logger.exception("UMAP embedding calculation failed")
+            prediction.embeddings = None
+        
 
         # Create explanation
         if prediction.model._explainer:
