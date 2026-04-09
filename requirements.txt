@@ -11,14 +11,10 @@ faker
 pydantic[email]
 prometheus-client
 mlflow
-shap
 pytest-cov
 pydantic
-umap-learn
 flask_sqlalchemy
 prometheus_client
 pydantic[email]
 email-validator
-arize>=8.10,<9
-numpy>=1.26,<2.4
-pandas
+arize[ml-stream]
