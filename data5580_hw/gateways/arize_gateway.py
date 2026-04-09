@@ -1,315 +1,155 @@
 """
-Arize ML observability integration.
+Gateway for Arize model monitoring integration.
 
-Environment variables (also surfaced on Flask app.config):
-  ARIZE_ENABLED — set to 1/true to send inference logs.
-  ARIZE_API_KEY — API key (or rely on SDK defaults).
-  ARIZE_SPACE_KEY — Space ID for uploads. Prefer the numeric Space ID from Space settings.
-    A Base64 UI value (decodes to "Space:<digits>:...") is normalized to that numeric ID.
-  ARIZE_ENVIRONMENT — development | staging | production (maps to Arize Environments;
-    inference without ground truth uses PRODUCTION so uploads validate).
-  ARIZE_FALLBACK_PATH — JSONL file for records when the Arize API fails.
-  ARIZE_REGION — optional, e.g. us-central-1a (see arize.regions.Region).
-  ARIZE_VALIDATION_BATCH_ID — batch id when logging to VALIDATION (staging + labels).
+Initialized once at app startup via init_app(app). Call log_inference()
+after each prediction. All errors are caught and logged locally so that
+a monitoring failure never breaks the prediction response.
 """
-
-from __future__ import annotations
-
-import base64
-import binascii
-import json
 import logging
 import os
-import re
-from pathlib import Path
-from typing import Any
-
-import pandas as pd
-from arize.client import ArizeClient
-from arize.ml.types import Environments, ModelTypes, Schema
-from arize.regions import Region
-
-from data5580_hw.models.prediction import Model, Prediction
+from datetime import datetime
+from typing import Optional, Union
 
 logger = logging.getLogger(__name__)
 
-PREDICTION_ID_COL = "prediction_id"
-TIMESTAMP_COL = "inference_timestamp"
-PRED_SCORE_COL = "prediction_score"
-PRED_LABEL_COL = "prediction_label"
-ACTUAL_SCORE_COL = "actual_score"
-ACTUAL_LABEL_COL = "actual_label"
-
-
-def _env_testing(app_config: dict) -> bool:
-    """True when the Flask app is in test mode (explicit config wins over process env)."""
-    if "TESTING" in app_config:
-        return bool(app_config["TESTING"])
-    return bool(os.environ.get("TESTING"))
-
-
-def _normalize_arize_space_id(raw: str) -> str:
-    """
-    The UI sometimes shows a Base64 Relay ID (e.g. decodes to 'Space:39299:2kEU').
-    ML uploads expect the numeric space id for Grpc-Metadata-arize-space-id.
-    """
-    s = (raw or "").strip()
-    if not s:
-        return s
-    if os.environ.get("ARIZE_SPACE_KEY_NO_DECODE", "").lower() in ("1", "true", "yes"):
-        return s
-    try:
-        pad = "=" * (-len(s) % 4)
-        decoded = base64.b64decode(s + pad).decode("ascii")
-        if decoded.startswith("Space:"):
-            m = re.match(r"Space:(\d+):", decoded)
-            if m:
-                n = m.group(1)
-                logger.info(
-                    "ARIZE_SPACE_KEY looked like an encoded Space id; using numeric space_id %s",
-                    n,
-                )
-                return n
-            logger.info(
-                "ARIZE_SPACE_KEY decoded to %r; using decoded value as space_id.",
-                decoded,
-            )
-            return decoded
-    except (ValueError, UnicodeDecodeError, binascii.Error):
-        pass
-    return s
-
-
-def _parse_region(value: str) -> Region | None:
-    if not value:
-        return None
-    for r in Region:
-        if r.value == value:
-            return r
-    logger.warning("Unknown ARIZE_REGION %r; using SDK default endpoints.", value)
-    return None
-
-
-def _model_type_from_domain(model: Model) -> ModelTypes:
-    t = (model.type or "REGRESSION").upper().replace("-", "_")
-    mapping = {
-        "REGRESSION": ModelTypes.REGRESSION,
-        "NUMERIC": ModelTypes.NUMERIC,
-        "BINARY_CLASSIFICATION": ModelTypes.BINARY_CLASSIFICATION,
-        "MULTI_CLASS": ModelTypes.MULTI_CLASS,
-        "MULTI_CLASS_CLASSIFICATION": ModelTypes.MULTI_CLASS,
-        "SCORE_CATEGORICAL": ModelTypes.SCORE_CATEGORICAL,
-        "RANKING": ModelTypes.RANKING,
-    }
-    return mapping.get(t, ModelTypes.REGRESSION)
-
-
-def _is_numeric_model(mt: ModelTypes) -> bool:
-    return mt in (ModelTypes.REGRESSION, ModelTypes.NUMERIC)
-
-
-def _resolve_log_environment(
-    profile: str, has_actual: bool
-) -> tuple[Environments, str]:
-    """
-    Map deployment profile to Arize Environments + batch_id for VALIDATION.
-    Without ground truth, TRAINING/VALIDATION cannot satisfy SDK validation; use PRODUCTION.
-    """
-    p = (profile or "production").lower()
-    batch_id = ""
-    if not has_actual:
-        return Environments.PRODUCTION, batch_id
-    if p == "production":
-        return Environments.PRODUCTION, batch_id
-    if p == "development":
-        return Environments.TRAINING, batch_id
-    if p == "staging":
-        return Environments.VALIDATION, batch_id
-    return Environments.PRODUCTION, batch_id
-
 
 class ArizeGateway:
-    """Buffers failed payloads to JSONL; never raises to callers."""
+    """Wraps the Arize MLModelsClient and exposes a single log_inference method."""
 
     def __init__(self) -> None:
-        self._client: ArizeClient | None = None
-        self._space_id: str = ""
-        self._fallback_path: Path = Path("instance/arize_failed.jsonl")
-        self._profile: str = "production"
-        self._validation_batch_id: str = "staging-batch"
+        self._client = None
+        self._space_id: Optional[str] = None
+        self._environment = None
         self._enabled: bool = False
 
     def init_app(self, app) -> None:
-        cfg = app.config
-        self._enabled = bool(cfg.get("ARIZE_ENABLED"))
-        self._space_id = _normalize_arize_space_id(
-            str(cfg.get("ARIZE_SPACE_KEY") or "")
-        )
-        self._fallback_path = Path(
-            cfg.get("ARIZE_FALLBACK_PATH")
-            or "instance/arize_failed.jsonl"
-        )
-        self._profile = (cfg.get("ARIZE_ENVIRONMENT") or "production").lower()
-        self._validation_batch_id = (cfg.get("ARIZE_VALIDATION_BATCH_ID") or "staging-batch").strip()
+        """
+        Read config/env vars and create the Arize client.
 
-        self._client = None
-        if _env_testing(cfg):
-            return
-        if not self._enabled:
-            return
-        api_key = (cfg.get("ARIZE_API_KEY") or "").strip()
-        if not api_key or not self._space_id:
-            logger.info(
-                "Arize monitoring is enabled but ARIZE_API_KEY or ARIZE_SPACE_KEY is missing; skipping client init."
+        Required env vars (or app.config keys):
+            ARIZE_API_KEY   – your Arize API key
+            ARIZE_SPACE_ID  – your Arize space ID
+
+        Optional:
+            ARIZE_ENVIRONMENT – PRODUCTION | VALIDATION | TRAINING (default: PRODUCTION)
+        """
+        api_key = os.environ.get("ARIZE_API_KEY") or app.config.get("ARIZE_API_KEY")
+        space_id = os.environ.get("ARIZE_SPACE_ID") or app.config.get("ARIZE_SPACE_ID")
+
+        if not api_key or not space_id:
+            logger.warning(
+                "Arize monitoring disabled: ARIZE_API_KEY and/or ARIZE_SPACE_ID not set."
             )
             return
-        region = _parse_region((cfg.get("ARIZE_REGION") or "").strip())
-        kwargs: dict[str, Any] = {"api_key": api_key}
-        if region is not None:
-            kwargs["region"] = region
-        self._client = ArizeClient(**kwargs)
+
+        env_name = (
+            os.environ.get("ARIZE_ENVIRONMENT")
+            or app.config.get("ARIZE_ENVIRONMENT", "PRODUCTION")
+        ).upper()
+
+        try:
+            from arize import ArizeClient
+            from arize.ml.types import Environments
+
+            env_map = {
+                "PRODUCTION": Environments.PRODUCTION,
+                "VALIDATION": Environments.VALIDATION,
+                "TRAINING": Environments.TRAINING,
+            }
+            self._environment = env_map.get(env_name, Environments.PRODUCTION)
+            self._space_id = space_id
+
+            arize_client = ArizeClient(api_key=api_key)
+            self._client = arize_client.ml
+
+            self._enabled = True
+            logger.info(
+                "Arize monitoring enabled (space_id=%s, environment=%s).",
+                space_id,
+                env_name,
+            )
+        except Exception:
+            logger.exception("Failed to initialize Arize client. Monitoring disabled.")
 
     def log_inference(
         self,
-        model: Model,
-        prediction: Prediction,
         *,
-        batch_id_override: str | None = None,
+        prediction_id: str,
+        model_name: str,
+        model_version: str,
+        model_type: str,
+        features: dict,
+        prediction_label: Union[str, int, float],
+        actual_label: Union[str, int, float, None] = None,
+        timestamp: Optional[datetime] = None,
+        tags: Optional[dict] = None,
     ) -> None:
+        """
+        Log a single inference to Arize asynchronously.
+
+        Errors are swallowed so that a monitoring failure never affects
+        the prediction response returned to the caller.
+        """
         if not self._enabled or self._client is None:
             return
 
-        has_actual = prediction.actual is not None
-        env, batch_id = _resolve_log_environment(self._profile, has_actual)
-        if env == Environments.VALIDATION:
-            batch_id = batch_id_override or self._validation_batch_id
-
-        mt = _model_type_from_domain(model)
         try:
-            dataframe, schema = self._build_dataframe_and_schema(
-                model, prediction, mt, has_actual
-            )
-        except Exception:
-            logger.exception("Arize: failed to build dataframe/schema for logging")
-            self._write_fallback(
-                model, prediction, "build_dataframe_schema", batch_id, env
-            )
-            return
+            from arize.ml.types import ModelTypes
 
-        try:
-            self._client.ml.log(
+            model_type_map = {
+                "REGRESSION": ModelTypes.REGRESSION,
+                "BINARY_CLASSIFICATION": ModelTypes.BINARY_CLASSIFICATION,
+                "SCORE_CATEGORICAL": ModelTypes.SCORE_CATEGORICAL,
+                "NUMERIC": ModelTypes.NUMERIC,
+            }
+            arize_model_type = model_type_map.get(
+                model_type.upper(), ModelTypes.REGRESSION
+            )
+
+            # Arize expects an integer Unix timestamp (seconds)
+            ts = timestamp or datetime.now()
+            prediction_timestamp = int(ts.timestamp())
+
+            # Cast all feature values to types Arize accepts
+            safe_features = {
+                k: (float(v) if isinstance(v, (int, float)) else str(v))
+                for k, v in (features or {}).items()
+            }
+
+            # Cast tags similarly
+            safe_tags: Optional[dict] = None
+            if tags:
+                safe_tags = {
+                    k: (float(v) if isinstance(v, (int, float)) else str(v))
+                    for k, v in tags.items()
+                }
+
+            self._client.log_stream(
                 space_id=self._space_id,
-                model_name=model.name,
-                model_type=mt,
-                dataframe=dataframe,
-                schema=schema,
-                environment=env,
-                model_version=model.version,
-                batch_id=batch_id,
-                validate=True,
-            )
-            logger.info(
-                "Arize: logged inference model=%s version=%s env=%s prediction_id=%s",
-                model.name,
-                model.version,
-                env.name,
-                prediction.id,
-            )
-        except Exception as e:
-            logger.error(
-                "Arize log failed (%s): %s",
-                type(e).__name__,
-                e,
-                exc_info=True,
-            )
-            self._write_fallback(
-                model, prediction, f"{type(e).__name__}: {e}", batch_id, env
+                model_name=model_name,
+                model_type=arize_model_type,
+                environment=self._environment,
+                model_version=model_version,
+                prediction_id=prediction_id,
+                prediction_timestamp=prediction_timestamp,
+                prediction_label=prediction_label,
+                actual_label=actual_label,
+                features=safe_features,
+                tags=safe_tags,
             )
 
-    def _build_dataframe_and_schema(
-        self,
-        model: Model,
-        prediction: Prediction,
-        model_type: ModelTypes,
-        has_actual: bool,
-    ) -> tuple[pd.DataFrame, Schema]:
-        inputs = prediction.get_pandas_frame_of_inputs()
-        row = inputs.iloc[:1].copy()
-
-        row[PREDICTION_ID_COL] = str(prediction.id)
-        ts = prediction.created
-        row[TIMESTAMP_COL] = int(pd.Timestamp(ts).timestamp())
-
-        numeric = _is_numeric_model(model_type)
-        if numeric:
-            if prediction.label is not None:
-                row[PRED_SCORE_COL] = float(prediction.label)
-            if has_actual and prediction.actual is not None:
-                row[ACTUAL_SCORE_COL] = float(prediction.actual)
-        else:
-            if prediction.label is not None:
-                row[PRED_LABEL_COL] = str(prediction.label)
-            if has_actual and prediction.actual is not None:
-                row[ACTUAL_LABEL_COL] = str(prediction.actual)
-
-        for key, val in (prediction.tags or {}).items():
-            col = f"tag_{key}"
-            if col in row.columns:
-                col = f"tag_meta_{key}"
-            row[col] = val
-
-        feature_cols = [c for c in inputs.columns.tolist()]
-        tag_cols = [c for c in row.columns if c.startswith("tag_") or c.startswith("tag_meta_")]
-
-        if numeric:
-            schema = Schema(
-                prediction_id_column_name=PREDICTION_ID_COL,
-                timestamp_column_name=TIMESTAMP_COL,
-                feature_column_names=feature_cols,
-                prediction_score_column_name=PRED_SCORE_COL,
-                actual_score_column_name=ACTUAL_SCORE_COL if has_actual else None,
-                tag_column_names=tag_cols or None,
-            )
-        else:
-            schema = Schema(
-                prediction_id_column_name=PREDICTION_ID_COL,
-                timestamp_column_name=TIMESTAMP_COL,
-                feature_column_names=feature_cols,
-                prediction_label_column_name=PRED_LABEL_COL,
-                actual_label_column_name=ACTUAL_LABEL_COL if has_actual else None,
-                tag_column_names=tag_cols or None,
+            logger.debug(
+                "Arize inference logged (prediction_id=%s, model=%s v%s).",
+                prediction_id,
+                model_name,
+                model_version,
             )
 
-        return row, schema
-
-    def _write_fallback(
-        self,
-        model: Model,
-        prediction: Prediction,
-        error: str,
-        batch_id: str,
-        env: Environments,
-    ) -> None:
-        record = {
-            "error": error,
-            "model_name": model.name,
-            "model_version": model.version,
-            "environment": env.name,
-            "batch_id": batch_id,
-            "prediction": prediction.label,
-            "features": prediction.features,
-            "true_value": prediction.actual,
-            "timestamp": prediction.created.isoformat() if prediction.created else None,
-            "prediction_id": prediction.id,
-            "tags": prediction.tags,
-        }
-        path = self._fallback_path
-        try:
-            path.parent.mkdir(parents=True, exist_ok=True)
-            with path.open("a", encoding="utf-8") as f:
-                f.write(json.dumps(record, default=str) + "\n")
-        except OSError:
-            logger.exception("Arize fallback: could not write to %s", path)
+        except Exception:
+            logger.exception(
+                "Arize logging failed for prediction_id=%s. Data not sent.",
+                prediction_id,
+            )
 
 
 arize_gateway = ArizeGateway()

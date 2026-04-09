@@ -1,15 +1,12 @@
 import os
 import tempfile
 
-# Before Numba/UMAP import: reduce compiler debug noise (optional override via env)
-os.environ.setdefault("NUMBA_DEBUG", "0")
-
 from flask.cli import load_dotenv
 
 os.environ['PROMETHEUS_MULTIPROC_DIR'] = tempfile.mkdtemp()
 
 # Standardlibrary
-import logging
+import  logging
 
 # Installed
 from flask import Flask, jsonify
@@ -19,14 +16,10 @@ from data5580_hw.routes import init_blueprints
 from data5580_hw.services.database.database_client import init_db
 from data5580_hw.monitoring import init_metrics
 from data5580_hw.gateways.mlflow_gateway import mlflow_gateway
-from data5580_hw.gateways.arize_gateway import arize_gateway
 
 logging.basicConfig(level=logging.DEBUG)
 # Avoid urllib3 DEBUG on stderr so PowerShell does not treat it as an error
 logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
-# Suppress Numba JIT-compiler internal DEBUG spam (UMAP / scipy.sparse paths)
-logging.getLogger("numba").setLevel(logging.WARNING)
-logging.getLogger("llvmlite").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +48,8 @@ def create_app():
     init_metrics(app)
 
     mlflow_gateway.init_app(app)
+
+    from data5580_hw.gateways.arize_gateway import arize_gateway
     arize_gateway.init_app(app)
 
     return app
