@@ -34,8 +34,7 @@ class ArizeGateway:
             ARIZE_ENVIRONMENT – PRODUCTION | VALIDATION | TRAINING (default: PRODUCTION)
         """
         api_key = os.environ.get("ARIZE_API_KEY") or app.config.get("ARIZE_API_KEY")
-        space_id = os.environ.get("ARIZE_SPACE_ID") or app.config.get("ARIZE_SPACE_ID")
-
+        space_id = os.environ.get("ARIZE_SPACE_KEY") or app.config.get("ARIZE_SPACE_KEY")
         if not api_key or not space_id:
             logger.warning(
                 "Arize monitoring disabled: ARIZE_API_KEY and/or ARIZE_SPACE_ID not set."
