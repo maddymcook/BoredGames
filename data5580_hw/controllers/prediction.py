@@ -7,12 +7,34 @@ from data5580_hw.services.database.database_client import db
 from data5580_hw.gateways.mlflow_gateway import mlflow_gateway
 from data5580_hw.models.prediction import Prediction, Model
 from data5580_hw.services.model_service import model_service
-from data5580_hw.services.database.prediction import PredictionSQL, ModelSql
+from data5580_hw.services.database.prediction import PredictionSQL, ModelSql, ExplanationSql
 from data5580_hw.services.explainer_service import explainer_service
 from data5580_hw.gateways.arize_gateway import arize_gateway
+from data5580_hw.services.umap_service import umap_embedding_service
 
 
 logger = logging.getLogger(__name__)
+
+
+def _should_log_arize_request() -> bool:
+    """
+    Allow callers to opt out of Arize logging per request.
+
+    Query param `arize_log=false` or header `X-Arize-Log: false`
+    disables logging; everything else defaults to enabled.
+    """
+    q = request.args.get("arize_log")
+    h = request.headers.get("X-Arize-Log")
+
+    def _is_false(value):
+        return isinstance(value, str) and value.strip().lower() in {
+            "0",
+            "false",
+            "no",
+            "off",
+        }
+
+    return not (_is_false(q) or _is_false(h))
 
 
 class PredictionController:
@@ -91,17 +113,27 @@ class PredictionController:
             return jsonify({"error": "Internal error during prediction."}), 500
 
         prediction.label = label
-        # Create UMAP embeddings only when the service can fit/transform safely.
+        # Create UMAP embeddings from inputs using a persisted UMAP model cache.
         try:
             inputs_df = prediction.get_pandas_frame_of_inputs()
             X = inputs_df.to_numpy(dtype=float)
             prediction.embeddings = umap_embedding_service.compute_embeddings(
                 X, umap_params=prediction.umap_params
             )
-        except Exception:
+        except Exception as e:
             logger.exception("UMAP embedding calculation failed")
-            prediction.embeddings = None
-        
+            if "not fitted yet" in str(e).lower():
+                prediction.embeddings = None
+            else:
+                return (
+                    jsonify(
+                        {
+                            "error": "UMAP embedding calculation failed.",
+                            "details": str(e),
+                        }
+                    ),
+                    400,
+                )
 
         # Create explanation
         if prediction.model._explainer:
@@ -112,6 +144,9 @@ class PredictionController:
         model_sql = ModelSql.from_model(model)
         prediction_sql = PredictionSQL.from_prediction(prediction, model_sql)
         db.session.add(prediction_sql)
+        if prediction.explanations and prediction.explanations.explanations:
+            for explanation_sql in ExplanationSql.from_prediction(prediction):
+                db.session.add(explanation_sql)
         db.session.commit()
 
         # Read back from database and return
@@ -123,16 +158,18 @@ class PredictionController:
         prediction = prediction_sql.to_prediction()
 
         # Log to Arize (non-blocking; errors are caught inside the gateway)
-        arize_gateway.log_inference(
-            prediction_id=prediction.id,
-            model_name=model.name,
-            model_version=model.version,
-            model_type=model.type,
-            features=prediction.features,
-            prediction_label=prediction.label,
-            timestamp=prediction.created,
-            tags=prediction.tags or None,
-        )
+        if _should_log_arize_request():
+            arize_gateway.log_inference(
+                prediction_id=prediction.id,
+                model_name=model.name,
+                model_version=model.version,
+                model_type=model.type,
+                features=prediction.features,
+                prediction_label=prediction.label,
+                actual_label=prediction.actual,
+                timestamp=prediction.created,
+                tags=prediction.tags or None,
+            )
 
         logger.info(
             "Prediction completed",
@@ -144,7 +181,7 @@ class PredictionController:
             },
         )
 
-        return prediction.model_dump_json(), 200
+        return jsonify(prediction.model_dump()), 200
 
     @staticmethod
     def get_prediction_by_id(prediction_id: str) -> tuple[str, int]:
@@ -158,7 +195,7 @@ class PredictionController:
 
         prediction = prediction_sql.to_prediction()
 
-        return prediction.model_dump_json(), 200
+        return jsonify(prediction.model_dump()), 200
 
     @staticmethod
     def update_actual(prediction_id: str) -> tuple[str, int]:

@@ -55,9 +55,10 @@ class UMAPEmbeddingService:
         return model_path, training_path
 
     def _min_samples_required(self, params: Dict[str, Any]) -> int:
-        n_neighbors = int(params.get("n_neighbors", 15))
+        # Require a minimal warm-up corpus but avoid forcing default
+        # n_neighbors=15 before first fit on small assignments/test sets.
         n_components = int(params.get("n_components", 2))
-        return max(n_neighbors + 1, n_components + 1, 3)
+        return max(n_components + 1, 3)
 
     def _load_training_matrix(self, training_path: Path) -> Optional[np.ndarray]:
         if not training_path.exists():

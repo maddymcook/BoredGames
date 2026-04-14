@@ -78,6 +78,7 @@ class PredictionSQL(db.Model):
     features: Mapped[dict] = mapped_column(CLOB, nullable=False)
     tags: Mapped[dict] = mapped_column(CLOB)
     label: Mapped[str] = mapped_column(db.String(120), nullable=False)
+    embeddings: Mapped[str] = mapped_column(CLOB, nullable=True)
     actual: Mapped[str] = mapped_column(db.String(120), nullable=True)
     threshold: Mapped[float] = mapped_column(db.Float, nullable=True)
 
@@ -95,6 +96,11 @@ class PredictionSQL(db.Model):
             features=json.dumps(prediction.features),
             tags=json.dumps(prediction.tags),
             label=prediction.label,
+            embeddings=(
+                json.dumps(prediction.embeddings)
+                if prediction.embeddings is not None
+                else None
+            ),
             actual=prediction.actual,
             threshold=prediction.threshold,
             created=prediction.created,
@@ -108,6 +114,9 @@ class PredictionSQL(db.Model):
             features=json.loads(self.features),
             tags=json.loads(self.tags),
             label=self.label,
+            embeddings=(
+                json.loads(self.embeddings) if self.embeddings is not None else None
+            ),
             actual=self.actual,
             threshold=self.threshold,
             created=self.created,
