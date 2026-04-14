@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Inbox</h2>
+  {% for item in inbox_messages %}
+    <div class="card">
+      <p><strong>From:</strong> {{ item.sender.username }}</p>
+      <p><strong>Listing:</strong> {{ item.listing.title }}</p>
+      <p>{{ item.content }}</p>
+      <p class="muted">{{ item.created_at }}</p>
+    </div>
+  {% empty %}
+    <p class="muted">No messages yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

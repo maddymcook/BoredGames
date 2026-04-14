@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Browse listings</h2>
+  <form method="get">
+    <p><label>Search <input type="text" name="q" value="{{ request.GET.q }}"></label></p>
+    <p><label>Type
+      <select name="type">
+        <option value="">All</option>
+        <option value="swap" {% if request.GET.type == "swap" %}selected{% endif %}>Swap</option>
+        <option value="buy" {% if request.GET.type == "buy" %}selected{% endif %}>Sale</option>
+      </select>
+    </label></p>
+    <p><label>Genre tag <input type="text" name="tag" value="{{ request.GET.tag }}"></label></p>
+    <button type="submit">Apply filters</button>
+  </form>
+</div>
+<div class="grid">
+{% for listing in listings %}
+  <div class="card">
+    <h3>{{ listing.title }}</h3>
+    <p class="muted">Seller: {{ listing.owner.username }}</p>
+    <p>{{ listing.description|default:"No description" }}</p>
+    {% if listing.listing_type == "buy" %}<p><strong>Price:</strong> ${{ listing.price }}</p>{% else %}<p><strong>ISO:</strong> {{ listing.iso_text }}</p>{% endif %}
+    <p>{% for tag in listing.tags.all %}<span class="pill">{{ tag.name }}</span>{% empty %}<span class="muted">No tags</span>{% endfor %}</p>
+    {% if request.user.is_authenticated %}
+      <a href="/listings/{{ listing.id }}/message/">Message seller</a>
+    {% else %}
+      <a href="/login/">Login to message</a>
+    {% endif %}
+  </div>
+{% empty %}
+  <p class="muted">No listings found.</p>
+{% endfor %}
+</div>
+{% endblock %}

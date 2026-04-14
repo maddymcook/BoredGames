@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>{{ profile.display_name }}</h2>
+  <p><strong>Credentials:</strong> {{ profile.credentials|default:"None yet" }}</p>
+  <p><strong>Looking for:</strong> {{ profile.looking_for|default:"Not specified" }}</p>
+  <p><strong>Genres:</strong>
+    {% for tag in profile.genres.all %}<span class="pill">{{ tag.name }}</span>{% empty %}<span class="muted">No tags selected</span>{% endfor %}
+  </p>
+  <p><a href="/profile/edit/">Edit profile</a></p>
+</div>
+<div class="card">
+  <h3>My listings</h3>
+  {% for listing in listings %}
+    <div class="card">
+      <strong>{{ listing.title }}</strong> - {{ listing.get_listing_type_display }}
+      {% if listing.listing_type == "buy" %}<p>${{ listing.price }}</p>{% else %}<p>ISO: {{ listing.iso_text }}</p>{% endif %}
+    </div>
+  {% empty %}
+    <p class="muted">No listings yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Message seller about: {{ listing.title }}</h2>
+  <p class="muted">The seller's private details stay hidden. Send a message in-app.</p>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Send message</button>
+  </form>
+</div>
+{% endblock %}

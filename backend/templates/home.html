@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card">
+    <h1>Swap and sell board games</h1>
+    <p class="muted">Create your profile, list games for sale or swap, add genre tags, and message sellers privately.</p>
+    <p>
+      <a href="/browse/">Browse listings</a>
+      {% if not request.user.is_authenticated %}| <a href="/signup/">Create account</a>{% endif %}
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Recent Listings</h2>
+    <div class="grid">
+      {% for listing in listings %}
+        <div class="card">
+          <strong>{{ listing.title }}</strong>
+          <p class="muted">By {{ listing.owner.username }} | {{ listing.get_listing_type_display }}</p>
+          {% if listing.listing_type == "buy" %}
+            <p>${{ listing.price }}</p>
+          {% else %}
+            <p>ISO: {{ listing.iso_text }}</p>
+          {% endif %}
+          <a href="/listings/{{ listing.id }}/message/">Message seller</a>
+        </div>
+      {% empty %}
+        <p class="muted">No listings yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
