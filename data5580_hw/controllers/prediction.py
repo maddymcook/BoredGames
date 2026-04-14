@@ -3,67 +3,44 @@ import logging
 from flask import jsonify, request
 from pydantic import ValidationError
 
-from sqlalchemy.exc import IntegrityError
-
 from data5580_hw.services.database.database_client import db
 from data5580_hw.gateways.mlflow_gateway import mlflow_gateway
-from data5580_hw.services.database.user_model import UserSQL
-from data5580_hw.models.user import User
-
 from data5580_hw.models.prediction import Prediction, Model
 from data5580_hw.services.model_service import model_service
-from data5580_hw.services.database.prediction import PredictionSQL, ModelSql
+from data5580_hw.services.database.prediction import PredictionSQL, ModelSql, ExplanationSql
+from data5580_hw.services.explainer_service import explainer_service
+from data5580_hw.gateways.arize_gateway import arize_gateway
+from data5580_hw.services.umap_service import umap_embedding_service
 
 
 logger = logging.getLogger(__name__)
+
+
+def _should_log_arize_request() -> bool:
+    """
+    Allow callers to opt out of Arize logging per request.
+
+    Query param `arize_log=false` or header `X-Arize-Log: false`
+    disables logging; everything else defaults to enabled.
+    """
+    q = request.args.get("arize_log")
+    h = request.headers.get("X-Arize-Log")
+
+    def _is_false(value):
+        return isinstance(value, str) and value.strip().lower() in {
+            "0",
+            "false",
+            "no",
+            "off",
+        }
+
+    return not (_is_false(q) or _is_false(h))
 
 
 class PredictionController:
 
     @staticmethod
     def create_prediction(model_name: str, model_version: str) -> tuple[str, int]:
-
-        # Get the model
-        model: Model = mlflow_gateway.get_model(model_name, model_version)
-        prediction = Prediction.model_validate(request.get_json(force=True))
-        prediction.model = model
-
-        # Create prediction
-        label = model_service.create_inference(model, prediction=prediction)
-        prediction.label = label
-
-        # Create explanation
-        if prediction.model._explainer:
-            explanations = explainer_service.create_explanation(model, prediction=prediction)
-            prediction.explanations = explanations
-
-        # Create database objects and store
-        model_sql = ModelSql.from_model(model)
-        prediction_sql = PredictionSQL.from_prediction(prediction, model_sql)
-
-        if prediction.explanations:
-            explanations_sql = ExplanationSql.from_prediction(prediction)
-            db.session.add_all(explanations_sql)
-
-        db.session.add(prediction_sql)
-        db.session.commit()
-
-        # Read from database and return
-        prediction_sql: PredictionSQL = db.session.query(PredictionSQL).filter(PredictionSQL.id == prediction.id).first()
-        prediction = prediction_sql.to_prediction()
-
-        return prediction.model_dump_json(), 200
-
-    @staticmethod
-    def get_prediction_by_id(prediction_id: str) -> tuple[str, int]:
-
-        logger.debug(f'Got prediction_id {prediction_id}')
-
-        prediction_sql: PredictionSQL = db.session.query(PredictionSQL).filter(PredictionSQL.id == prediction_id).first()
-
-        prediction = prediction_sql.to_prediction()
-
-        return prediction.model_dump_json(), 200
         """
         POST /<model_name>/version/<model_version>/predict
 
@@ -78,7 +55,7 @@ class PredictionController:
             extra={"model_name": model_name, "model_version": model_version},
         )
 
-        # Load model (REGRESSION)
+        # Load model
         try:
             model: Model = mlflow_gateway.get_model(model_name, model_version)
         except KeyError:
@@ -119,13 +96,12 @@ class PredictionController:
 
         prediction.model = model
 
-        # Run inference on regression model
+        # Run inference
         try:
             label = model_service.create_inference(model, prediction=prediction)
         except ValueError as e:
-            # Typical for bad feature shape / incompatible input
             logger.warning(
-                "Prediction input mismatch for regression model",
+                "Prediction input mismatch",
                 extra={"model_name": model.name, "model_version": model.version},
             )
             return (
@@ -133,25 +109,74 @@ class PredictionController:
                 400,
             )
         except Exception:
-            logger.exception("Error during regression prediction")
+            logger.exception("Error during prediction")
             return jsonify({"error": "Internal error during prediction."}), 500
 
         prediction.label = label
+        # Create UMAP embeddings from inputs using a persisted UMAP model cache.
+        try:
+            inputs_df = prediction.get_pandas_frame_of_inputs()
+            X = inputs_df.to_numpy(dtype=float)
+            prediction.embeddings = umap_embedding_service.compute_embeddings(
+                X, umap_params=prediction.umap_params
+            )
+        except Exception as e:
+            logger.exception("UMAP embedding calculation failed")
+            error_text = str(e).lower()
+            # Graceful degradation for warm-up and known runtime/JIT instability
+            # paths (seen in CI with numba/umap transform compilation).
+            if (
+                "not fitted yet" in error_text
+                or isinstance(e, AssertionError)
+                or "numba" in error_text
+            ):
+                prediction.embeddings = None
+            else:
+                return (
+                    jsonify(
+                        {
+                            "error": "UMAP embedding calculation failed.",
+                            "details": str(e),
+                        }
+                    ),
+                    400,
+                )
 
-        # Persist prediction for auditing
+        # Create explanation
+        if prediction.model._explainer:
+            explanations = explainer_service.create_explanation(model, prediction=prediction)
+            prediction.explanations = explanations
+
+        # Persist prediction
         model_sql = ModelSql.from_model(model)
         prediction_sql = PredictionSQL.from_prediction(prediction, model_sql)
-
         db.session.add(prediction_sql)
+        if prediction.explanations and prediction.explanations.explanations:
+            for explanation_sql in ExplanationSql.from_prediction(prediction):
+                db.session.add(explanation_sql)
         db.session.commit()
 
+        # Read back from database and return
         prediction_sql: PredictionSQL = (
             db.session.query(PredictionSQL)
             .filter(PredictionSQL.id == prediction.id)
             .first()
         )
-
         prediction = prediction_sql.to_prediction()
+
+        # Log to Arize (non-blocking; errors are caught inside the gateway)
+        if _should_log_arize_request():
+            arize_gateway.log_inference(
+                prediction_id=prediction.id,
+                model_name=model.name,
+                model_version=model.version,
+                model_type=model.type,
+                features=prediction.features,
+                prediction_label=prediction.label,
+                actual_label=prediction.actual,
+                timestamp=prediction.created,
+                tags=prediction.tags or None,
+            )
 
         logger.info(
             "Prediction completed",
@@ -163,38 +188,25 @@ class PredictionController:
             },
         )
 
-        return prediction.model_dump_json(), 200
+        return jsonify(prediction.model_dump()), 200
 
     @staticmethod
-    def get_prediction_by_id(prediction: str) -> tuple[str, int]:
-        ...
-        # logger.debug(f'Got user_id {user_id}')
-        #
-        # user_sql = db.session.query(UserSQL).filter(UserSQL.id == user_id).first()
-        #
-        # user = User.model_validate(user_sql, from_attributes=True)
-        #
-        # if not user:
-        #     return jsonify({}), 404
-        #
-        # logging.info(f"user created, {user.id} for {user.email}")
-        #
-        # return user.model_dump_json(), 200
+    def get_prediction_by_id(prediction_id: str) -> tuple[str, int]:
+        logger.debug(f'Got prediction_id {prediction_id}')
+
+        prediction_sql: PredictionSQL = (
+            db.session.query(PredictionSQL)
+            .filter(PredictionSQL.id == prediction_id)
+            .first()
+        )
+
+        prediction = prediction_sql.to_prediction()
+
+        return jsonify(prediction.model_dump()), 200
 
     @staticmethod
     def update_actual(prediction_id: str) -> tuple[str, int]:
         ...
-        #
-        # user = User.model_validate(request.get_json(force=True))
-        #
-        # user_sql = db.session.query(UserSQL).filter(UserSQL.id == user_id).first()
-        #
-        # user_sql.name = user.name
-        # user_sql.email = user.email
-        #
-        # db.session.commit()
-        #
-        # return user.model_dump_json(), 200
 
 
 prediction_controller = PredictionController()
