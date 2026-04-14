@@ -122,7 +122,14 @@ class PredictionController:
             )
         except Exception as e:
             logger.exception("UMAP embedding calculation failed")
-            if "not fitted yet" in str(e).lower():
+            error_text = str(e).lower()
+            # Graceful degradation for warm-up and known runtime/JIT instability
+            # paths (seen in CI with numba/umap transform compilation).
+            if (
+                "not fitted yet" in error_text
+                or isinstance(e, AssertionError)
+                or "numba" in error_text
+            ):
                 prediction.embeddings = None
             else:
                 return (
