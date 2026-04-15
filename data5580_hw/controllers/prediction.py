@@ -45,7 +45,7 @@ def _cosine_similarity(v1: list[float], v2: list[float]) -> float:
     dot = sum(a * b for a, b in zip(v1, v2))
     n1 = math.sqrt(sum(a * a for a in v1))
     n2 = math.sqrt(sum(b * b for b in v2))
-    if n1 == 0.0 or n2 == 0.0:
+    if n1 <= 1e-12 or n2 <= 1e-12:
         return -1.0
     return dot / (n1 * n2)
 
