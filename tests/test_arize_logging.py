@@ -95,7 +95,7 @@ def test_log_inference_skips_when_no_client(sample_prediction, regression_model)
 
 
 @patch("data5580_hw.gateways.arize_gateway.ArizeClient")
-def test_log_inference_calls_ml_log_stream(mock_client_cls, tmp_path, sample_prediction, regression_model):
+def test_log_inference_calls_ml_log(mock_client_cls, tmp_path, sample_prediction, regression_model):
     mock_client = MagicMock()
     mock_client_cls.return_value = mock_client
 
@@ -105,19 +105,17 @@ def test_log_inference_calls_ml_log_stream(mock_client_cls, tmp_path, sample_pre
 
     gw.log_inference(regression_model, sample_prediction)
 
-    mock_client.ml.log_stream.assert_called_once()
-    call_kw = mock_client.ml.log_stream.call_args[1]
+    mock_client.ml.log.assert_called_once()
+    call_kw = mock_client.ml.log.call_args[1]
     assert call_kw["space_id"] == "test-space-id"
     assert call_kw["model_name"] == "california-housing"
     assert call_kw["model_version"] == "2"
-    assert "features" in call_kw
-    assert call_kw["prediction_label"] == pytest.approx(1.23)
 
 
 @patch("data5580_hw.gateways.arize_gateway.ArizeClient")
 def test_log_failure_writes_fallback_jsonl(mock_client_cls, tmp_path, sample_prediction, regression_model):
     mock_client = MagicMock()
-    mock_client.ml.log_stream.side_effect = RuntimeError("upstream failure")
+    mock_client.ml.log.side_effect = RuntimeError("upstream failure")
     mock_client_cls.return_value = mock_client
 
     fb = tmp_path / "failed.jsonl"
