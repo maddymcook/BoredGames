@@ -1,9 +1,13 @@
 import time
+import os
+import tempfile
 
 from flask import request
 from prometheus_client import CollectorRegistry, Counter, Histogram, multiprocess
 
 registry = CollectorRegistry()
+if not os.path.isdir(os.environ.get("PROMETHEUS_MULTIPROC_DIR", "")):
+    os.environ["PROMETHEUS_MULTIPROC_DIR"] = tempfile.mkdtemp()
 multiprocess.MultiProcessCollector(registry=registry)
 
 REQUEST_COUNT = Counter('request_count', 'Total number of requests', ['method', 'endpoint', 'http_status'],

@@ -190,6 +190,12 @@ class ArizeGateway:
             mock_children = getattr(self._client, "_mock_children", {})
             has_explicit_ml = "ml" in mock_children
 
+            effective_space_id = self._space_id or _normalize_arize_space_id(
+                os.environ.get("ARIZE_SPACE_KEY")
+                or os.environ.get("ARIZE_SPACE_ID")
+                or ""
+            )
+
             # Back-compat path (tests) with DataFrame-based ml.log.
             if (legacy_call or has_explicit_ml) and hasattr(self._client, "ml") and hasattr(self._client.ml, "log"):
                 row = dict(safe_features)
@@ -197,7 +203,7 @@ class ArizeGateway:
                 row["actual_score"] = actual_label
                 payload_df = pd.DataFrame([row])
                 self._client.ml.log(
-                    space_id=self._space_id,
+                    space_id=effective_space_id,
                     model_name=model_name,
                     model_type=arize_model_type,
                     model_version=model_version,
@@ -205,7 +211,7 @@ class ArizeGateway:
                 )
             elif hasattr(self._client, "log_stream"):
                 self._client.log_stream(
-                    space_id=self._space_id,
+                    space_id=effective_space_id,
                     model_name=model_name,
                     model_type=arize_model_type,
                     environment=self._environment,
@@ -219,7 +225,7 @@ class ArizeGateway:
                 )
             elif hasattr(self._client, "ml") and hasattr(self._client.ml, "log_stream"):
                 self._client.ml.log_stream(
-                    space_id=self._space_id,
+                    space_id=effective_space_id,
                     model_name=model_name,
                     model_type=arize_model_type,
                     environment=self._environment,

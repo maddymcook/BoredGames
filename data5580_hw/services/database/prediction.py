@@ -36,16 +36,6 @@ class ExplanationSql(db.Model):
                 )
             )
         return out
-    def from_prediction(cls, prediction: Prediction) -> List['ExplanationSql']:
-        return [
-            cls(
-                id=prediction.explanations.explanations[idx].id,
-                name=prediction.explanations.explanations[idx].name,
-                values=json.dumps(prediction.explanations.explanations[idx].values),
-                prediction_id=prediction.id,
-            )
-            for idx in range(len(prediction.explanations.explanations))
-        ]
 
 
 class ModelSql(db.Model):
@@ -63,7 +53,6 @@ class ModelSql(db.Model):
 
     @classmethod
     def from_model(cls, model: Model) -> "ModelSql":
-    def from_model(cls, model: Model) -> 'ModelSql':
         model_ = db.session.query(ModelSql).filter(
             (ModelSql.model_name == model.name),
             (ModelSql.model_version == model.version),
@@ -110,9 +99,6 @@ class PredictionSQL(db.Model):
             id=prediction.id,
             features=json.dumps(prediction.features),
             tags=json.dumps(prediction.tags),
-            label=str(prediction.label),
-            embeddings=json.dumps(prediction.embeddings) if prediction.embeddings is not None else None,
-            actual=str(prediction.actual) if prediction.actual is not None else None,
             label=prediction.label,
             embeddings=(
                 json.dumps(prediction.embeddings)
@@ -132,7 +118,6 @@ class PredictionSQL(db.Model):
             features=json.loads(self.features) if self.features else {},
             tags=json.loads(self.tags) if self.tags else {},
             label=self.label,
-            embeddings=json.loads(self.embeddings) if self.embeddings else None,
             embeddings=(
                 json.loads(self.embeddings) if self.embeddings is not None else None
             ),
@@ -158,21 +143,6 @@ class PredictionSQL(db.Model):
                         values=json.loads(explanation_sql.values),
                     )
                 )
-
-            if isinstance(self.explanations, ExplanationSql):
-                explanation_sql = [self.explanations]
-            else:
-                explanation_sql = self.explanations
-
-            for explanation in explanation_sql:
-                explanations_.explanations.append(
-                    Explanation(
-                        id=explanation.id,
-                        name=explanation.name,
-                        values=json.loads(explanation.values),
-                    )
-                )
-
             prediction_.explanations = explanations_
 
         return prediction_

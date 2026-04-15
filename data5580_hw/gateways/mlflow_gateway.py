@@ -18,19 +18,13 @@ class MLFlowGateway:
         self.models = app.config.get("MODELS", {})
 
         if app.config.get("TESTING") or os.environ.get("TESTING"):
-        self.models = app.config.get('MODELS', {})
-
-        if app.config.get('TESTING'):
             return
 
         try:
             response = requests.get(app.config["TRACKING_URI"], timeout=2)
             if response.status_code != 200:
-                raise Exception(
-                    f"MLFlow server returned {response.status_code}"
-                )
-                raise Exception(f'MLFlow server returned {response.status_code}')
-            mlflow.set_tracking_uri(app.config['TRACKING_URI'])
+                raise Exception(f"MLFlow server returned {response.status_code}")
+
             client = MlflowClient()
             for model in self.models.keys():
                 for version in self.models[model].keys():
@@ -56,10 +50,6 @@ class MLFlowGateway:
             logger.warning(
                 "MLFlow not available at %s: %s. App will start; /models/compare and prediction need MLFlow. Start with: mlflow server --port 8080 --backend-store-uri sqlite:///mlruns.db (on Windows add --workers 1).",
                 app.config["TRACKING_URI"],
-                "MLFlow not available at %s: %s. App will start; /models/compare and prediction need MLFlow. "
-                "Start with: mlflow server --port 8080 --backend-store-uri sqlite:///mlruns.db "
-                "(on Windows add --workers 1).",
-                app.config.get('TRACKING_URI'),
                 e,
             )
 
@@ -84,16 +74,6 @@ class MLFlowGateway:
         model = Model(type=model_["model_type"], name=model_name, version=model_version)
         model._model = model_["model"]
         model._explainer = model_.get("explainer", None)
-
-        model = Model(
-            type=model_["model_type"],
-            name=model_name,
-            version=model_version,
-        )
-
-        model._model = model_['model']
-        model._explainer = model_.get('explainer', None)
-
         return model
 
     def get_run_metrics(self, run_id: str):

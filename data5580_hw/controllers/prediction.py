@@ -6,19 +6,18 @@ from typing import Any
 from flask import jsonify, request
 from pydantic import ValidationError
 
+from data5580_hw.gateways.arize_gateway import arize_gateway
 from data5580_hw.gateways.llm_gateway import llm_gateway
 from data5580_hw.gateways.mlflow_gateway import mlflow_gateway
-from data5580_hw.models.prediction import Prediction, Model
+from data5580_hw.models.prediction import Model, Prediction
 from data5580_hw.services.database.database_client import db
-from data5580_hw.services.database.prediction import PredictionSQL, ModelSql
-from data5580_hw.services.model_service import model_service
-from data5580_hw.services.database.database_client import db
-from data5580_hw.gateways.mlflow_gateway import mlflow_gateway
-from data5580_hw.models.prediction import Prediction, Model
-from data5580_hw.services.model_service import model_service
-from data5580_hw.services.database.prediction import PredictionSQL, ModelSql, ExplanationSql
+from data5580_hw.services.database.prediction import (
+    ExplanationSql,
+    ModelSql,
+    PredictionSQL,
+)
 from data5580_hw.services.explainer_service import explainer_service
-from data5580_hw.gateways.arize_gateway import arize_gateway
+from data5580_hw.services.model_service import model_service
 from data5580_hw.services.umap_service import umap_embedding_service
 
 
@@ -50,6 +49,7 @@ def _cosine_similarity(v1: list[float], v2: list[float]) -> float:
         return -1.0
     return dot / (n1 * n2)
 
+
 def _should_log_arize_request() -> bool:
     """
     Allow callers to opt out of Arize logging per request.
@@ -70,8 +70,6 @@ def _should_log_arize_request() -> bool:
 
     return not (_is_false(q) or _is_false(h))
 
-
-class PredictionController:
 
 class PredictionController:
     @staticmethod
@@ -126,24 +124,16 @@ class PredictionController:
         try:
             prediction.label = model_service.create_inference(model, prediction=prediction)
         except ValueError as e:
-            return jsonify({"error": f"Invalid input data: {str(e)}"}), 400
             logger.warning(
                 "Prediction input mismatch",
                 extra={"model_name": model.name, "model_version": model.version},
             )
-            return (
-                jsonify({"error": f"Invalid input data: {str(e)}"}),
-                400,
-            )
+            return jsonify({"error": f"Invalid input data: {str(e)}"}), 400
         except Exception:
             logger.exception("Error during prediction")
             return jsonify({"error": "Internal error during prediction."}), 500
 
-        vector = _numeric_embedding_from_features(prediction.features)
-        prediction.embeddings = [vector] if vector else None
-
-        prediction.label = label
-        # Create UMAP embeddings from inputs using a persisted UMAP model cache.
+        # Create UMAP embeddings from model inputs.
         try:
             inputs_df = prediction.get_pandas_frame_of_inputs()
             X = inputs_df.to_numpy(dtype=float)
@@ -172,6 +162,10 @@ class PredictionController:
                     400,
                 )
 
+        if prediction.embeddings is None:
+            vector = _numeric_embedding_from_features(prediction.features)
+            prediction.embeddings = [vector] if vector else None
+
         # Create explanation
         if prediction.model._explainer:
             explanations = explainer_service.create_explanation(model, prediction=prediction)
@@ -186,18 +180,35 @@ class PredictionController:
                 db.session.add(explanation_sql)
         db.session.commit()
 
-        stored = (
-        # Read back from database and return
-        prediction_sql: PredictionSQL = (
-            db.session.query(PredictionSQL)
-            .filter(PredictionSQL.id == prediction.id)
-            .first()
+        # Log to Arize (non-blocking; errors are caught inside the gateway)
+        if _should_log_arize_request():
+            arize_gateway.log_inference(
+                prediction_id=prediction.id,
+                model_name=model.name,
+                model_version=model.version,
+                model_type=model.type,
+                features=prediction.features,
+                prediction_label=prediction.label,
+                actual_label=prediction.actual,
+                timestamp=prediction.created,
+                tags=prediction.tags or None,
+            )
+
+        logger.info(
+            "Prediction completed",
+            extra={
+                "prediction_id": prediction.id,
+                "model_name": prediction.model.name if prediction.model else None,
+                "model_version": prediction.model.version if prediction.model else None,
+                "label": prediction.label,
+            },
         )
-        return jsonify(stored.to_prediction().model_dump()), 200
+
+        return jsonify(prediction.model_dump()), 200
 
     @staticmethod
-    def get_prediction_by_id(prediction_id: str):
-        prediction_sql = (
+    def get_prediction_by_id(prediction_id: str) -> tuple[str, int]:
+        prediction_sql: PredictionSQL = (
             db.session.query(PredictionSQL)
             .filter(PredictionSQL.id == prediction_id)
             .first()
@@ -207,7 +218,7 @@ class PredictionController:
         return jsonify(prediction_sql.to_prediction().model_dump()), 200
 
     @staticmethod
-    def get_prediction_explainer(prediction_id: str):
+    def get_prediction_explainer(prediction_id: str) -> tuple[str, int]:
         prediction_sql = (
             db.session.query(PredictionSQL)
             .filter(PredictionSQL.id == prediction_id)
@@ -289,45 +300,6 @@ class PredictionController:
         base_payload["key_differences"] = differences
         base_payload["summary"] = summary
         return jsonify(base_payload), 200
-        # Log to Arize (non-blocking; errors are caught inside the gateway)
-        if _should_log_arize_request():
-            arize_gateway.log_inference(
-                prediction_id=prediction.id,
-                model_name=model.name,
-                model_version=model.version,
-                model_type=model.type,
-                features=prediction.features,
-                prediction_label=prediction.label,
-                actual_label=prediction.actual,
-                timestamp=prediction.created,
-                tags=prediction.tags or None,
-            )
-
-        logger.info(
-            "Prediction completed",
-            extra={
-                "prediction_id": prediction.id,
-                "model_name": prediction.model.name if prediction.model else None,
-                "model_version": prediction.model.version if prediction.model else None,
-                "label": prediction.label,
-            },
-        )
-
-        return jsonify(prediction.model_dump()), 200
-
-    @staticmethod
-    def get_prediction_by_id(prediction_id: str) -> tuple[str, int]:
-        logger.debug(f'Got prediction_id {prediction_id}')
-
-        prediction_sql: PredictionSQL = (
-            db.session.query(PredictionSQL)
-            .filter(PredictionSQL.id == prediction_id)
-            .first()
-        )
-
-        prediction = prediction_sql.to_prediction()
-
-        return jsonify(prediction.model_dump()), 200
 
     @staticmethod
     def update_actual(prediction_id: str) -> tuple[str, int]:
