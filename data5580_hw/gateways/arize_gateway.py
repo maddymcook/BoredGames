@@ -146,10 +146,14 @@ class ArizeGateway:
                 "tags": prediction.tags or None,
             }
 
-        prediction_id = kwargs["prediction_id"]
-        model_name = kwargs["model_name"]
-        model_version = kwargs["model_version"]
-        model_type = kwargs["model_type"]
+        prediction_id = kwargs.get("prediction_id")
+        model_name = kwargs.get("model_name")
+        model_version = kwargs.get("model_version")
+        model_type = kwargs.get("model_type")
+        if not prediction_id or not model_name or not model_version:
+            logger.warning("Arize logging skipped: missing required inference metadata.")
+            return
+
         features = kwargs.get("features", {}) or {}
         prediction_label = kwargs.get("prediction_label")
         actual_label = kwargs.get("actual_label")
@@ -166,7 +170,7 @@ class ArizeGateway:
                 "NUMERIC": ModelTypes.NUMERIC,
             }
             arize_model_type = model_type_map.get(
-                model_type.upper(), ModelTypes.REGRESSION
+                str(model_type).upper(), ModelTypes.REGRESSION
             )
 
             # Arize expects an integer Unix timestamp (seconds)

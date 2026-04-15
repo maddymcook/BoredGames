@@ -7,11 +7,11 @@ from flask.cli import load_dotenv
 
 from data5580_hw.routes import init_blueprints
 from data5580_hw.services.database.database_client import init_db
-from data5580_hw.monitoring import init_metrics
 from data5580_hw.gateways.mlflow_gateway import mlflow_gateway
 from data5580_hw.gateways.llm_gateway import llm_gateway
 
-os.environ["PROMETHEUS_MULTIPROC_DIR"] = tempfile.mkdtemp()
+if not os.path.isdir(os.environ.get("PROMETHEUS_MULTIPROC_DIR", "")):
+    os.environ["PROMETHEUS_MULTIPROC_DIR"] = tempfile.mkdtemp()
 
 logging.basicConfig(level=logging.DEBUG)
 logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 def create_app():
     app = Flask(__name__)
     load_dotenv()
+    from data5580_hw.monitoring import init_metrics
 
     from data5580_hw.config import Config
 
