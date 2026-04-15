@@ -17,3 +17,8 @@ flask_sqlalchemy
 prometheus_client
 pydantic[email]
 email-validator
+arize>=8.10,<9
+numpy>=1.26,<2.4
+pandas
+umap-learn
+arize[ml-stream]

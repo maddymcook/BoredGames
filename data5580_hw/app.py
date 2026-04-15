@@ -1,6 +1,4 @@
-import os
-import tempfile
-
+from app import create_app
 from flask.cli import load_dotenv
 
 os.environ['PROMETHEUS_MULTIPROC_DIR'] = tempfile.mkdtemp()

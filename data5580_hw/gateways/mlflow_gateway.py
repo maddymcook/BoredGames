@@ -18,6 +18,9 @@ class MLFlowGateway:
         self.models = app.config.get("MODELS", {})
 
         if app.config.get("TESTING") or os.environ.get("TESTING"):
+        self.models = app.config.get('MODELS', {})
+
+        if app.config.get('TESTING'):
             return
 
         try:
@@ -26,16 +29,37 @@ class MLFlowGateway:
                 raise Exception(
                     f"MLFlow server returned {response.status_code}"
                 )
+                raise Exception(f'MLFlow server returned {response.status_code}')
+            mlflow.set_tracking_uri(app.config['TRACKING_URI'])
+            client = MlflowClient()
             for model in self.models.keys():
                 for version in self.models[model].keys():
                     flavor_ = self.models[model][version].get("mlflow_flavor", "pyfunc")
                     self.models[model][version]["model"] = self._load_model(
                         self._get_model_uri(model, version), flavor_
                     )
+                    # Optionally load a linked explainer model from the run's outputs.
+                    try:
+                        model_version_info = client.get_model_version(model, version)
+                        run = mlflow.get_run(model_version_info.run_id)
+                        outputs = getattr(run, "outputs", None)
+                        model_outputs = getattr(outputs, "model_outputs", []) if outputs else []
+                        if model_outputs:
+                            logged_model = mlflow.get_logged_model(model_outputs[0].model_id)
+                            self.models[model][version]["explainer"] = mlflow.pyfunc.load_model(
+                                logged_model.model_uri
+                            )
+                    except Exception:
+                        # Keep app startup resilient if explainer discovery fails.
+                        self.models[model][version]["explainer"] = None
         except Exception as e:
             logger.warning(
                 "MLFlow not available at %s: %s. App will start; /models/compare and prediction need MLFlow. Start with: mlflow server --port 8080 --backend-store-uri sqlite:///mlruns.db (on Windows add --workers 1).",
                 app.config["TRACKING_URI"],
+                "MLFlow not available at %s: %s. App will start; /models/compare and prediction need MLFlow. "
+                "Start with: mlflow server --port 8080 --backend-store-uri sqlite:///mlruns.db "
+                "(on Windows add --workers 1).",
+                app.config.get('TRACKING_URI'),
                 e,
             )
 
@@ -60,6 +84,16 @@ class MLFlowGateway:
         model = Model(type=model_["model_type"], name=model_name, version=model_version)
         model._model = model_["model"]
         model._explainer = model_.get("explainer", None)
+
+        model = Model(
+            type=model_["model_type"],
+            name=model_name,
+            version=model_version,
+        )
+
+        model._model = model_['model']
+        model._explainer = model_.get('explainer', None)
+
         return model
 
     def get_run_metrics(self, run_id: str):
