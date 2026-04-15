@@ -7,6 +7,19 @@ from pydantic import Field
 
 from data5580_hw.models.base import LocalBaseModel, get_id
 
+# Same order as sklearn.datasets.fetch_california_housing().feature_names — required
+# for strict sklearn feature checks on DataFrame inputs.
+CALIFORNIA_HOUSING_FEATURE_ORDER = (
+    "MedInc",
+    "HouseAge",
+    "AveRooms",
+    "AveBedrms",
+    "Population",
+    "AveOccup",
+    "Latitude",
+    "Longitude",
+)
+
 
 class Explanation(LocalBaseModel):
     name: str
@@ -54,5 +67,13 @@ class Prediction(LocalBaseModel):
         if isinstance(self.features, list):
             # One row per datapoint.
             return pd.DataFrame(self.features)
+        if self.model and self.model.name == "california-housing":
+            f = self.features
+            expected = set(CALIFORNIA_HOUSING_FEATURE_ORDER)
+            if set(f.keys()) == expected:
+                ordered = {k: f[k] for k in CALIFORNIA_HOUSING_FEATURE_ORDER}
+                return pd.DataFrame(
+                    [ordered], columns=list(CALIFORNIA_HOUSING_FEATURE_ORDER)
+                )
         # One row for the provided feature vector.
         return pd.DataFrame([self.features], index=[0])

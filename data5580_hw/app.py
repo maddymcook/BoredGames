@@ -10,6 +10,7 @@ os.environ['PROMETHEUS_MULTIPROC_DIR'] = tempfile.mkdtemp()
 
 # Standardlibrary
 import logging
+from pathlib import Path
 
 # Installed
 from flask import Flask, jsonify
@@ -34,6 +35,8 @@ logger = logging.getLogger(__name__)
 def create_app():
     app = Flask(__name__)
 
+    # Package .env first (reliable when cwd is repo root); optional cwd .env overrides.
+    load_dotenv(Path(__file__).resolve().parent / ".env")
     load_dotenv()
 
     from data5580_hw.config import Config

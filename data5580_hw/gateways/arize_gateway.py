@@ -1,6 +1,9 @@
 """
 Arize ML observability integration.
 
+Inference rows are sent with :meth:`arize.client.ArizeClient.ml.log_stream` using
+per-field ``features`` (dict), ``prediction_label``, ``actual_label``, ``tags``, and optional ``shap_values``.
+
 Environment variables (also surfaced on Flask app.config):
   ARIZE_ENABLED — set to 1/true to send inference logs.
   ARIZE_API_KEY — API key (or rely on SDK defaults).
@@ -19,6 +22,7 @@ import base64
 import binascii
 import json
 import logging
+import numbers
 import os
 import re
 from pathlib import Path
@@ -26,19 +30,12 @@ from typing import Any
 
 import pandas as pd
 from arize.client import ArizeClient
-from arize.ml.types import Environments, ModelTypes, Schema
+from arize.ml.types import Environments, ModelTypes
 from arize.regions import Region
 
 from data5580_hw.models.prediction import Model, Prediction
 
 logger = logging.getLogger(__name__)
-
-PREDICTION_ID_COL = "prediction_id"
-TIMESTAMP_COL = "inference_timestamp"
-PRED_SCORE_COL = "prediction_score"
-PRED_LABEL_COL = "prediction_label"
-ACTUAL_SCORE_COL = "actual_score"
-ACTUAL_LABEL_COL = "actual_label"
 
 
 def _env_testing(app_config: dict) -> bool:
@@ -106,6 +103,60 @@ def _model_type_from_domain(model: Model) -> ModelTypes:
 
 def _is_numeric_model(mt: ModelTypes) -> bool:
     return mt in (ModelTypes.REGRESSION, ModelTypes.NUMERIC)
+
+
+def _cast_stream_value(v: Any) -> str | bool | float | int:
+    """Coerce values to types accepted by ml.log_stream (no numpy / complex types)."""
+    if isinstance(v, bool):
+        return v
+    if isinstance(v, str):
+        return v
+    if isinstance(v, numbers.Integral) and not isinstance(v, bool):
+        return int(v)
+    if isinstance(v, numbers.Real) and not isinstance(v, bool):
+        return float(v)
+    if hasattr(v, "item"):
+        return _cast_stream_value(v.item())
+    return str(v)
+
+
+def _features_dict_for_stream(
+    prediction: Prediction,
+) -> dict[str, str | bool | float | int] | None:
+    feats = prediction.features
+    if isinstance(feats, list):
+        if not feats:
+            return None
+        raw: dict[str, Any] = feats[0] if isinstance(feats[0], dict) else {}
+    elif isinstance(feats, dict):
+        raw = feats
+    else:
+        return None
+    if not raw:
+        return None
+    return {str(k): _cast_stream_value(v) for k, v in raw.items()}
+
+
+def _tags_for_stream(
+    tags: dict[str, Any] | None,
+) -> dict[str, str | bool | float | int] | None:
+    if not tags:
+        return None
+    return {str(k): _cast_stream_value(v) for k, v in tags.items()}
+
+
+def _shap_dict_for_stream(prediction: Prediction) -> dict[str, float] | None:
+    ex = prediction.explanations
+    if not ex or not ex.explanations:
+        return None
+    values = ex.explanations[0].values
+    out: dict[str, float] = {}
+    for k, v in values.items():
+        try:
+            out[str(k)] = float(v)
+        except (TypeError, ValueError):
+            continue
+    return out or None
 
 
 def _resolve_log_environment(
@@ -185,31 +236,55 @@ class ArizeGateway:
             batch_id = batch_id_override or self._validation_batch_id
 
         mt = _model_type_from_domain(model)
-        try:
-            dataframe, schema = self._build_dataframe_and_schema(
-                model, prediction, mt, has_actual
-            )
-        except Exception:
-            logger.exception("Arize: failed to build dataframe/schema for logging")
-            self._write_fallback(
-                model, prediction, "build_dataframe_schema", batch_id, env
-            )
-            return
+        numeric = _is_numeric_model(mt)
 
         try:
-            self._client.ml.log(
-                space_id=self._space_id,
-                model_name=model.name,
-                model_type=mt,
-                dataframe=dataframe,
-                schema=schema,
-                environment=env,
-                model_version=model.version,
-                batch_id=batch_id,
-                validate=True,
-            )
+            features = _features_dict_for_stream(prediction)
+            tags = _tags_for_stream(prediction.tags)
+            shap = _shap_dict_for_stream(prediction)
+            ts = int(pd.Timestamp(prediction.created).timestamp())
+
+            stream_kw: dict[str, Any] = {
+                "space_id": self._space_id,
+                "model_name": model.name,
+                "model_type": mt,
+                "environment": env,
+                "model_version": model.version,
+                "prediction_id": prediction.id,
+                "prediction_timestamp": ts,
+            }
+            if features:
+                stream_kw["features"] = features
+            if tags:
+                stream_kw["tags"] = tags
+            if shap:
+                stream_kw["shap_values"] = shap
+            if batch_id:
+                stream_kw["batch_id"] = batch_id
+
+            if numeric:
+                if prediction.label is not None:
+                    stream_kw["prediction_label"] = float(prediction.label)
+                if has_actual and prediction.actual is not None:
+                    stream_kw["actual_label"] = float(prediction.actual)
+            else:
+                if prediction.label is not None:
+                    stream_kw["prediction_label"] = str(prediction.label)
+                if has_actual and prediction.actual is not None:
+                    stream_kw["actual_label"] = str(prediction.actual)
+
             logger.info(
-                "Arize: logged inference model=%s version=%s env=%s prediction_id=%s",
+                "Arize stream request: space_id=%s model=%s version=%s env=%s profile=%s has_actual=%s",
+                self._space_id,
+                model.name,
+                model.version,
+                env.name,
+                self._profile,
+                has_actual,
+            )
+            self._client.ml.log_stream(**stream_kw)
+            logger.info(
+                "Arize: logged inference (stream) model=%s version=%s env=%s prediction_id=%s",
                 model.name,
                 model.version,
                 env.name,
@@ -225,62 +300,6 @@ class ArizeGateway:
             self._write_fallback(
                 model, prediction, f"{type(e).__name__}: {e}", batch_id, env
             )
-
-    def _build_dataframe_and_schema(
-        self,
-        model: Model,
-        prediction: Prediction,
-        model_type: ModelTypes,
-        has_actual: bool,
-    ) -> tuple[pd.DataFrame, Schema]:
-        inputs = prediction.get_pandas_frame_of_inputs()
-        row = inputs.iloc[:1].copy()
-
-        row[PREDICTION_ID_COL] = str(prediction.id)
-        ts = prediction.created
-        row[TIMESTAMP_COL] = int(pd.Timestamp(ts).timestamp())
-
-        numeric = _is_numeric_model(model_type)
-        if numeric:
-            if prediction.label is not None:
-                row[PRED_SCORE_COL] = float(prediction.label)
-            if has_actual and prediction.actual is not None:
-                row[ACTUAL_SCORE_COL] = float(prediction.actual)
-        else:
-            if prediction.label is not None:
-                row[PRED_LABEL_COL] = str(prediction.label)
-            if has_actual and prediction.actual is not None:
-                row[ACTUAL_LABEL_COL] = str(prediction.actual)
-
-        for key, val in (prediction.tags or {}).items():
-            col = f"tag_{key}"
-            if col in row.columns:
-                col = f"tag_meta_{key}"
-            row[col] = val
-
-        feature_cols = [c for c in inputs.columns.tolist()]
-        tag_cols = [c for c in row.columns if c.startswith("tag_") or c.startswith("tag_meta_")]
-
-        if numeric:
-            schema = Schema(
-                prediction_id_column_name=PREDICTION_ID_COL,
-                timestamp_column_name=TIMESTAMP_COL,
-                feature_column_names=feature_cols,
-                prediction_score_column_name=PRED_SCORE_COL,
-                actual_score_column_name=ACTUAL_SCORE_COL if has_actual else None,
-                tag_column_names=tag_cols or None,
-            )
-        else:
-            schema = Schema(
-                prediction_id_column_name=PREDICTION_ID_COL,
-                timestamp_column_name=TIMESTAMP_COL,
-                feature_column_names=feature_cols,
-                prediction_label_column_name=PRED_LABEL_COL,
-                actual_label_column_name=ACTUAL_LABEL_COL if has_actual else None,
-                tag_column_names=tag_cols or None,
-            )
-
-        return row, schema
 
     def _write_fallback(
         self,
