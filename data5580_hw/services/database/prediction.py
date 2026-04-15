@@ -13,87 +13,95 @@ class ExplanationSql(db.Model):
     __tablename__ = "explanations"
 
     id: Mapped[str] = mapped_column(db.String(120), primary_key=True)
-
     name: Mapped[str] = mapped_column(db.String(120), nullable=False)
-    values: Mapped[dict] = mapped_column(CLOB, nullable=False)
+    values: Mapped[str] = mapped_column(CLOB, nullable=False)
     updated: Mapped[datetime] = mapped_column(db.DateTime, nullable=True)
     created: Mapped[datetime] = mapped_column(db.DateTime, nullable=True)
-
-    prediction_id: Mapped[str] = mapped_column(db.String(120), ForeignKey('predictions.id'), nullable=False)
+    prediction_id: Mapped[str] = mapped_column(
+        db.String(120), ForeignKey("predictions.id"), nullable=False
+    )
 
     @classmethod
-    def from_prediction(cls, prediction: Prediction) -> List['ExplanationSql']:
-        return [cls(id=prediction.explanations.explanations[idx].id
-                    , name=prediction.explanations.explanations[idx].name
-                    , values=json.dumps(prediction.explanations.explanations[idx].values)
-                    , prediction_id=prediction.id
-                    ) for idx in range(0, len(prediction.explanations.explanations))]
+    def from_prediction(cls, prediction: Prediction) -> List["ExplanationSql"]:
+        out: list[ExplanationSql] = []
+        if not prediction.explanations:
+            return out
+        for item in prediction.explanations.explanations:
+            out.append(
+                cls(
+                    id=item.id,
+                    name=item.name,
+                    values=json.dumps(item.values),
+                    prediction_id=prediction.id,
+                )
+            )
+        return out
 
 
 class ModelSql(db.Model):
-    __tablename__ = 'models'
+    __tablename__ = "models"
 
     id: Mapped[str] = mapped_column(db.String(120), primary_key=True)
-
     model_type: Mapped[str] = mapped_column(db.String(120), nullable=False)
     model_name: Mapped[str] = mapped_column(db.String(4000), nullable=False)
     model_version: Mapped[str] = mapped_column(db.String(4000), nullable=False)
-
     updated: Mapped[datetime] = mapped_column(db.DateTime, nullable=True)
     created: Mapped[datetime] = mapped_column(db.DateTime, nullable=True)
-
-    predictions: Mapped[List['PredictionSQL']] = relationship("PredictionSQL", back_populates="model")
+    predictions: Mapped[List["PredictionSQL"]] = relationship(
+        "PredictionSQL", back_populates="model"
+    )
 
     @classmethod
-    def from_model(cls, model: Model) -> 'ModelSQL':
-
+    def from_model(cls, model: Model) -> "ModelSql":
         model_ = db.session.query(ModelSql).filter(
-            (ModelSql.model_name == model.name)
-            , (ModelSql.model_version == model.version)
+            (ModelSql.model_name == model.name),
+            (ModelSql.model_version == model.version),
         ).first()
 
         if not model_:
             model_ = cls(
-                id=model.id
-                , model_type=model.type
-                , model_name=model.name
-                , model_version=model.version
+                id=model.id,
+                model_type=model.type,
+                model_name=model.name,
+                model_version=model.version,
             )
-
             db.session.add(model_)
-
+            db.session.flush()
         return model_
 
     def __repr__(self):
-        return f'Model Name {self.model_name}, Model Version {self.model_version}'
+        return f"Model Name {self.model_name}, Model Version {self.model_version}"
 
 
 class PredictionSQL(db.Model):
     __tablename__ = "predictions"
 
     id: Mapped[str] = mapped_column(db.String(120), primary_key=True)
-
-    features: Mapped[dict] = mapped_column(CLOB, nullable=False)
-    tags: Mapped[dict] = mapped_column(CLOB)
+    features: Mapped[str] = mapped_column(CLOB, nullable=False)
+    tags: Mapped[str] = mapped_column(CLOB)
     label: Mapped[str] = mapped_column(db.String(120), nullable=False)
+    embeddings: Mapped[str] = mapped_column(CLOB, nullable=True)
     actual: Mapped[str] = mapped_column(db.String(120), nullable=True)
     threshold: Mapped[float] = mapped_column(db.Float, nullable=True)
-
     created: Mapped[datetime] = mapped_column(db.DateTime, nullable=True)
     updated: Mapped[datetime] = mapped_column(db.DateTime, nullable=True)
-
-    model_id: Mapped[str] = mapped_column(db.String(120), ForeignKey('models.id'), nullable=False)
-    model: Mapped['ModelSql'] = relationship("ModelSql", back_populates="predictions")
-    explanations: Mapped['ExplanationSql'] = relationship("ExplanationSql", uselist=True)
+    model_id: Mapped[str] = mapped_column(
+        db.String(120), ForeignKey("models.id"), nullable=False
+    )
+    model: Mapped["ModelSql"] = relationship("ModelSql", back_populates="predictions")
+    explanations: Mapped[List["ExplanationSql"]] = relationship(
+        "ExplanationSql", uselist=True
+    )
 
     @classmethod
-    def from_prediction(cls, prediction: Prediction, model: Model) -> 'PredictionSQL':
+    def from_prediction(cls, prediction: Prediction, model: ModelSql) -> "PredictionSQL":
         return cls(
             id=prediction.id,
             features=json.dumps(prediction.features),
             tags=json.dumps(prediction.tags),
-            label=prediction.label,
-            actual=prediction.actual,
+            label=str(prediction.label),
+            embeddings=json.dumps(prediction.embeddings) if prediction.embeddings is not None else None,
+            actual=str(prediction.actual) if prediction.actual is not None else None,
             threshold=prediction.threshold,
             created=prediction.created,
             updated=prediction.updated,
@@ -102,11 +110,11 @@ class PredictionSQL(db.Model):
 
     def to_prediction(self) -> Prediction:
         prediction_ = Prediction(
-        return Prediction(
             id=self.id,
-            features=json.loads(self.features),
-            tags=json.loads(self.tags),
+            features=json.loads(self.features) if self.features else {},
+            tags=json.loads(self.tags) if self.tags else {},
             label=self.label,
+            embeddings=json.loads(self.embeddings) if self.embeddings else None,
             actual=self.actual,
             threshold=self.threshold,
             created=self.created,
@@ -121,22 +129,15 @@ class PredictionSQL(db.Model):
 
         if self.explanations:
             explanations_ = Explanations()
-
-            if isinstance(self.explanations, (ExplanationSql,)):
-                explanation_sql = [self.explanations]
-            else:
-                explanation_sql = self.explanations
-
-            for explanations in explanation_sql:
+            for explanation_sql in self.explanations:
                 explanations_.explanations.append(
                     Explanation(
-                        id=explanations.id,
-                        name=explanations.name,
-                        values=json.loads(explanations.values)
+                        id=explanation_sql.id,
+                        name=explanation_sql.name,
+                        values=json.loads(explanation_sql.values),
                     )
                 )
-
-                prediction_.explanations = explanations_
+            prediction_.explanations = explanations_
 
         return prediction_
 

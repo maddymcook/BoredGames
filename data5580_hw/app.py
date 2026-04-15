@@ -16,6 +16,7 @@ from data5580_hw.routes import init_blueprints
 from data5580_hw.services.database.database_client import init_db
 from data5580_hw.monitoring import init_metrics
 from data5580_hw.gateways.mlflow_gateway import mlflow_gateway
+from data5580_hw.gateways.llm_gateway import llm_gateway
 
 logging.basicConfig(level=logging.DEBUG)
 # Avoid urllib3 DEBUG on stderr so PowerShell does not treat it as an error
@@ -48,6 +49,7 @@ def create_app():
     init_metrics(app)
 
     mlflow_gateway.init_app(app)
+    llm_gateway.init_app(app)
 
     return app
 

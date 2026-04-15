@@ -12,3 +12,13 @@ def predict(model: str, version: str):
     response = prediction_controller.create_prediction(model, version)
 
     return response
+
+
+@prediction.route("/prediction/<prediction_id>", methods=["GET"])
+def get_prediction(prediction_id: str):
+    return prediction_controller.get_prediction_by_id(prediction_id)
+
+
+@prediction.route("/prediction/<prediction_id>/explainer", methods=["GET"])
+def get_prediction_explainer(prediction_id: str):
+    return prediction_controller.get_prediction_explainer(prediction_id)

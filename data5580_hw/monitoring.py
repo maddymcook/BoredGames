@@ -17,10 +17,12 @@ def before_request():
 
 
 def after_request(response):
-    latency = time.time() - request.start_time
-    path = request.url_rule.rule
-    REQUEST_COUNT.labels(method=request.method, endpoint=path, http_status=response.status_code).inc()
-    REQUEST_LATENCY.labels(method=request.method, endpoint=path, http_status=response.status_code).observe(latency)
+    start = getattr(request, "start_time", None)
+    latency = (time.time() - start) if start is not None else 0.0
+    path = request.url_rule.rule if request.url_rule is not None else request.path
+    status = str(response.status_code)
+    REQUEST_COUNT.labels(method=request.method, endpoint=path, http_status=status).inc()
+    REQUEST_LATENCY.labels(method=request.method, endpoint=path, http_status=status).observe(latency)
     return response
 
 

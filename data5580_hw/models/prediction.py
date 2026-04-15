@@ -37,6 +37,7 @@ class Prediction(LocalBaseModel):
     tags: Dict = Field(default_factory=dict)
     explanations: Optional[Explanations] = None
     label: Union[int, float, str, None] = None
+    embeddings: Optional[List[List[float]]] = None
     actual: Union[int, float, str, None] = None
     threshold: Optional[float] = None
 
