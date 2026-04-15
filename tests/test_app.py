@@ -47,8 +47,6 @@ def test_create_user_duplicate_email(client):
     )
     assert response.status_code == 400
     assert response.json.get("error") == "email is already in use"
-
-
 def test_create_user_missing_email(client):
     response = client.post("/users", json={"name": "john"})
     assert response.status_code == 400
