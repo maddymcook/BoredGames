@@ -34,13 +34,26 @@ def test_umap_service_single_row_returns_embedding_shape(tmp_path):
     from data5580_hw.services.umap_service import UMAPEmbeddingService
 
     svc = UMAPEmbeddingService(persist_dir=str(tmp_path))
-    X = np.array([[1.0, 2.0, 3.0]])
+    # Warm-up fit with enough real rows (no synthetic augmentation).
+    X_warm = np.random.RandomState(0).rand(8, 3)
+    svc.compute_embeddings(X_warm, umap_params={"n_components": 2, "n_jobs": 1})
 
+    X = np.array([[1.0, 2.0, 3.0]])
     embeddings = svc.compute_embeddings(X, umap_params={"n_components": 2, "n_jobs": 1})
 
     assert isinstance(embeddings, list)
     assert len(embeddings) == 1
     assert len(embeddings[0]) == 2
+
+
+def test_umap_service_single_row_without_history_raises(tmp_path):
+    from data5580_hw.services.umap_service import UMAPEmbeddingService
+
+    svc = UMAPEmbeddingService(persist_dir=str(tmp_path))
+    X = np.array([[1.0, 2.0, 3.0]])
+
+    with pytest.raises(ValueError, match="not fitted yet"):
+        svc.compute_embeddings(X, umap_params={"n_components": 2, "n_jobs": 1})
 
 
 def test_umap_service_single_row_degenerate_single_feature(tmp_path):
@@ -67,8 +80,9 @@ def test_umap_service_multi_row_fits_and_persists(tmp_path):
     assert len(embeddings1[0]) == 2
     assert len(embeddings2) == 8
 
-    # At least one persisted model should exist on disk.
+    # Persisted model + training matrix should exist on disk.
     assert any(str(p).endswith(".pkl") for p in tmp_path.glob("umap_model_*.pkl"))
+    assert any(str(p).endswith(".npy") for p in tmp_path.glob("umap_training_*.npy"))
 
 
 def test_prediction_controller_success_returns_label_and_embeddings(client, app):

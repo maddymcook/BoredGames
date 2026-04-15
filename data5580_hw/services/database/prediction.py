@@ -23,11 +23,15 @@ class ExplanationSql(db.Model):
 
     @classmethod
     def from_prediction(cls, prediction: Prediction) -> List['ExplanationSql']:
-        return [cls(id=prediction.explanations.explanations[idx].id
-                    , name=prediction.explanations.explanations[idx].name
-                    , values=json.dumps(prediction.explanations.explanations[idx].values)
-                    , prediction_id=prediction.id
-                    ) for idx in range(0, len(prediction.explanations.explanations))]
+        return [
+            cls(
+                id=prediction.explanations.explanations[idx].id,
+                name=prediction.explanations.explanations[idx].name,
+                values=json.dumps(prediction.explanations.explanations[idx].values),
+                prediction_id=prediction.id,
+            )
+            for idx in range(len(prediction.explanations.explanations))
+        ]
 
 
 class ModelSql(db.Model):
@@ -45,21 +49,19 @@ class ModelSql(db.Model):
     predictions: Mapped[List['PredictionSQL']] = relationship("PredictionSQL", back_populates="model")
 
     @classmethod
-    def from_model(cls, model: Model) -> 'ModelSQL':
-
+    def from_model(cls, model: Model) -> 'ModelSql':
         model_ = db.session.query(ModelSql).filter(
-            (ModelSql.model_name == model.name)
-            , (ModelSql.model_version == model.version)
+            (ModelSql.model_name == model.name),
+            (ModelSql.model_version == model.version),
         ).first()
 
         if not model_:
             model_ = cls(
-                id=model.id
-                , model_type=model.type
-                , model_name=model.name
-                , model_version=model.version
+                id=model.id,
+                model_type=model.type,
+                model_name=model.name,
+                model_version=model.version,
             )
-
             db.session.add(model_)
 
         return model_
@@ -94,7 +96,11 @@ class PredictionSQL(db.Model):
             features=json.dumps(prediction.features),
             tags=json.dumps(prediction.tags),
             label=prediction.label,
-            embeddings=json.dumps(prediction.embeddings) if prediction.embeddings is not None else None,
+            embeddings=(
+                json.dumps(prediction.embeddings)
+                if prediction.embeddings is not None
+                else None
+            ),
             actual=prediction.actual,
             threshold=prediction.threshold,
             created=prediction.created,
@@ -108,7 +114,9 @@ class PredictionSQL(db.Model):
             features=json.loads(self.features),
             tags=json.loads(self.tags),
             label=self.label,
-            embeddings=json.loads(self.embeddings) if self.embeddings else None,
+            embeddings=(
+                json.loads(self.embeddings) if self.embeddings is not None else None
+            ),
             actual=self.actual,
             threshold=self.threshold,
             created=self.created,
@@ -124,18 +132,17 @@ class PredictionSQL(db.Model):
         if self.explanations:
             explanations_ = Explanations()
 
-            # `relationship(..., uselist=True)` should be a list, but keep this defensive.
-            if isinstance(self.explanations, (ExplanationSql,)):
+            if isinstance(self.explanations, ExplanationSql):
                 explanation_sql = [self.explanations]
             else:
                 explanation_sql = self.explanations
 
-            for explanation_sql in explanation_sql:
+            for explanation in explanation_sql:
                 explanations_.explanations.append(
                     Explanation(
-                        id=explanation_sql.id,
-                        name=explanation_sql.name,
-                        values=json.loads(explanation_sql.values),
+                        id=explanation.id,
+                        name=explanation.name,
+                        values=json.loads(explanation.values),
                     )
                 )
 
