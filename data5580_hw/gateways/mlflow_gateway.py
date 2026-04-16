@@ -21,37 +21,49 @@ class MLFlowGateway:
             return
 
         try:
-            response = requests.get(app.config["TRACKING_URI"], timeout=2)
-            if response.status_code != 200:
-                raise Exception(f"MLFlow server returned {response.status_code}")
-
-            client = MlflowClient()
-            for model in self.models.keys():
-                for version in self.models[model].keys():
-                    flavor_ = self.models[model][version].get("mlflow_flavor", "pyfunc")
-                    self.models[model][version]["model"] = self._load_model(
-                        self._get_model_uri(model, version), flavor_
-                    )
-                    # Optionally load a linked explainer model from the run's outputs.
-                    try:
-                        model_version_info = client.get_model_version(model, version)
-                        run = mlflow.get_run(model_version_info.run_id)
-                        outputs = getattr(run, "outputs", None)
-                        model_outputs = getattr(outputs, "model_outputs", []) if outputs else []
-                        if model_outputs:
-                            logged_model = mlflow.get_logged_model(model_outputs[0].model_id)
-                            self.models[model][version]["explainer"] = mlflow.pyfunc.load_model(
-                                logged_model.model_uri
-                            )
-                    except Exception:
-                        # Keep app startup resilient if explainer discovery fails.
-                        self.models[model][version]["explainer"] = None
+            self._assert_tracking_server_available(app.config["TRACKING_URI"])
+            self._load_registered_models()
         except Exception as e:
             logger.warning(
                 "MLFlow not available at %s: %s. App will start; /models/compare and prediction need MLFlow. Start with: mlflow server --port 8080 --backend-store-uri sqlite:///mlruns.db (on Windows add --workers 1).",
                 app.config["TRACKING_URI"],
                 e,
             )
+
+    def _assert_tracking_server_available(self, tracking_uri: str) -> None:
+        response = requests.get(tracking_uri, timeout=2)
+        if response.status_code != 200:
+            raise requests.HTTPError(
+                f"MLFlow server returned {response.status_code} for {tracking_uri}"
+            )
+
+    def _load_registered_models(self) -> None:
+        client = MlflowClient()
+        for model_name, versions in self.models.items():
+            for version, model_cfg in versions.items():
+                flavor_ = model_cfg.get("mlflow_flavor", "pyfunc")
+                model_cfg["model"] = self._load_model(
+                    self._get_model_uri(model_name, version), flavor_
+                )
+                model_cfg["explainer"] = self._load_linked_explainer(
+                    client, model_name, version
+                )
+
+    def _load_linked_explainer(
+        self, client: MlflowClient, model_name: str, version: str
+    ):
+        # Keep app startup resilient if explainer discovery fails.
+        try:
+            model_version_info = client.get_model_version(model_name, version)
+            run = mlflow.get_run(model_version_info.run_id)
+            outputs = getattr(run, "outputs", None)
+            model_outputs = getattr(outputs, "model_outputs", []) if outputs else []
+            if not model_outputs:
+                return None
+            logged_model = mlflow.get_logged_model(model_outputs[0].model_id)
+            return mlflow.pyfunc.load_model(logged_model.model_uri)
+        except Exception:
+            return None
 
     def _get_model_uri(self, model_name, model_version):
         return f"models:/{model_name}/{model_version}"
