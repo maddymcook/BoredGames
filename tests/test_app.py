@@ -5,6 +5,11 @@ import pytest
 from unittest.mock import patch
 
 from data5580_hw.app import create_app
+from tests.arize_compat import (
+    arize_client_patch_target,
+    import_environments,
+    import_environments_and_model_types,
+)
 
 
 @pytest.fixture
@@ -377,7 +382,7 @@ def test_arize_gateway_init_success():
         "os.environ",
         {"ARIZE_API_KEY": "key123", "ARIZE_SPACE_KEY": "space456"},
     ), patch(
-        "arize.api.Client",
+        arize_client_patch_target(),
         mock_client_cls,
         create=True,
     ):
@@ -406,7 +411,7 @@ def test_arize_log_inference_calls_client_log():
     from datetime import datetime
     from unittest.mock import MagicMock
 
-    from arize.utils.types import Environments, ModelTypes
+    Environments, ModelTypes = import_environments_and_model_types()
     from data5580_hw.gateways.arize_gateway import ArizeGateway
 
     gw = ArizeGateway()
@@ -450,7 +455,7 @@ def test_arize_log_inference_error_does_not_raise():
     """A crash inside client.log is caught and never propagates to the caller."""
     from unittest.mock import MagicMock
 
-    from arize.utils.types import Environments
+    Environments = import_environments()
     from data5580_hw.gateways.arize_gateway import ArizeGateway
 
     gw = ArizeGateway()
@@ -477,7 +482,7 @@ def test_arize_unknown_model_type_defaults_to_regression():
     from concurrent.futures import Future
     from unittest.mock import MagicMock
 
-    from arize.utils.types import Environments, ModelTypes
+    Environments, ModelTypes = import_environments_and_model_types()
     from data5580_hw.gateways.arize_gateway import ArizeGateway
 
     gw = ArizeGateway()
@@ -550,7 +555,7 @@ def test_arize_feature_casting():
     from concurrent.futures import Future
     from unittest.mock import MagicMock
 
-    from arize.utils.types import Environments
+    Environments = import_environments()
     from data5580_hw.gateways.arize_gateway import ArizeGateway
 
     gw = ArizeGateway()

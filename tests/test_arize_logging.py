@@ -10,6 +10,7 @@ from flask import Flask
 from data5580_hw.controllers.prediction import _should_log_arize_request
 from data5580_hw.gateways.arize_gateway import ArizeGateway, _normalize_arize_space_id
 from data5580_hw.models.prediction import Model, Prediction
+from tests.arize_compat import arize_client_patch_target
 
 
 @pytest.fixture
@@ -99,7 +100,7 @@ def test_log_inference_skips_when_no_client(sample_prediction, regression_model)
     gw.log_inference(regression_model, sample_prediction)  # no exception
 
 
-@patch("arize.api.Client")
+@patch(arize_client_patch_target())
 def test_log_inference_calls_client_log(mock_client_cls, tmp_path, sample_prediction, regression_model):
     from concurrent.futures import Future
     from unittest.mock import MagicMock
@@ -122,7 +123,7 @@ def test_log_inference_calls_client_log(mock_client_cls, tmp_path, sample_predic
     assert call_kw["model_version"] == "2"
 
 
-@patch("arize.api.Client")
+@patch(arize_client_patch_target())
 def test_log_failure_writes_fallback_jsonl(mock_client_cls, tmp_path, sample_prediction, regression_model):
     mock_client = MagicMock()
     mock_client.log.side_effect = RuntimeError("upstream failure")

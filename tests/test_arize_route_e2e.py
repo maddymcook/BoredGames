@@ -5,6 +5,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from data5580_hw.app import create_app
+from data5580_hw.gateways.arize_gateway import _SDK_BACKEND_LEGACY
+from tests.arize_compat import arize_client_patch_target
 
 
 @pytest.fixture
@@ -22,9 +24,10 @@ def client_with_arize_env(monkeypatch):
     _fut = Future()
     _fut.set_result(MagicMock(status_code=200, text="ok"))
     mock_arize_client.log = MagicMock(return_value=_fut)
+    mock_arize_client.log_stream = MagicMock(return_value=_fut)
 
     with patch(
-        "arize.api.Client",
+        arize_client_patch_target(),
         return_value=mock_arize_client,
     ), patch("data5580_hw.app.load_dotenv", return_value=None):
         app = create_app()
@@ -80,6 +83,7 @@ def test_predict_route_triggers_arize_log(monkeypatch, client_with_arize_env):
 
         arize_gw_instance._enabled = True
         arize_gw_instance._client = mock_arize_client
+        arize_gw_instance._sdk_backend = _SDK_BACKEND_LEGACY
 
         resp = client.post(
             "/california-housing/version/1/predict",

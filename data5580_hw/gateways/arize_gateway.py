@@ -162,7 +162,11 @@ class ArizeGateway:
             logger.info("Arize monitoring disabled in testing mode.")
             return
 
-        enabled_val = os.environ.get("ARIZE_ENABLED", app.config.get("ARIZE_ENABLED", True))
+        cfg = app.config
+        if "ARIZE_ENABLED" in cfg:
+            enabled_val = cfg["ARIZE_ENABLED"]
+        else:
+            enabled_val = os.environ.get("ARIZE_ENABLED", True)
         if str(enabled_val).lower() in {"0", "false", "no", "off"}:
             logger.info("Arize monitoring disabled by ARIZE_ENABLED.")
             return
@@ -345,7 +349,10 @@ class ArizeGateway:
         timestamp: Any,
         tags: Any,
     ) -> None:
-        from arize.utils.types import ModelTypes
+        try:
+            from arize.utils.types import ModelTypes
+        except ImportError:
+            from arize.ml.types import ModelTypes
 
         model_type_map = {
             "REGRESSION": ModelTypes.REGRESSION,
