@@ -103,6 +103,19 @@ def test_list_users_empty(client):
     assert response.json == []
 
 
+def test_legacy_user_routes_alias_same_controller(client):
+    """Legacy /user and /user/<id> behave like /users REST routes."""
+    create = client.post(
+        "/user",
+        json={"name": "legacy", "email": "legacy@example.com"},
+    )
+    assert create.status_code == 200
+    uid = create.json["id"]
+    get_resp = client.get(f"/user/{uid}")
+    assert get_resp.status_code == 200
+    assert get_resp.json["email"] == "legacy@example.com"
+
+
 # --- User Story 3 & 7 & 8: Update user ---
 def test_update_user(client):
     create = client.post(
