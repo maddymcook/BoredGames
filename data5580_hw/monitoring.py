@@ -25,8 +25,16 @@ def after_request(response):
     latency = (time.time() - start) if start is not None else 0.0
     path = request.url_rule.rule if request.url_rule is not None else request.path
     status = str(response.status_code)
-    REQUEST_COUNT.labels(method=request.method, endpoint=path, http_status=status).inc()
-    REQUEST_LATENCY.labels(method=request.method, endpoint=path, http_status=status).observe(latency)
+    REQUEST_COUNT.labels(
+        method=request.method,
+        endpoint=path,
+        http_status=status,
+    ).inc()
+    REQUEST_LATENCY.labels(
+        method=request.method,
+        endpoint=path,
+        http_status=status,
+    ).observe(latency)
     return response
 
 

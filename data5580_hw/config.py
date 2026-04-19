@@ -53,6 +53,21 @@ class Config:
         "ARIZE_VALIDATION_BATCH_ID", "staging-batch"
     )
 
+    # Celery + Redis async task processing
+    REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+    CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", REDIS_URL)
+    CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", REDIS_URL)
+    CELERY_TASK_TRACK_STARTED = _env_bool("CELERY_TASK_TRACK_STARTED", True)
+    CELERY_TASK_TIME_LIMIT = int(os.environ.get("CELERY_TASK_TIME_LIMIT", "300"))
+    CELERY_TASK_SOFT_TIME_LIMIT = int(
+        os.environ.get("CELERY_TASK_SOFT_TIME_LIMIT", "240")
+    )
+    CELERY_TASK_DEFAULT_RETRY_DELAY = int(
+        os.environ.get("CELERY_TASK_DEFAULT_RETRY_DELAY", "10")
+    )
+    CELERY_TASK_MAX_RETRIES = int(os.environ.get("CELERY_TASK_MAX_RETRIES", "3"))
+    CELERY_RESULT_EXPIRES = int(os.environ.get("CELERY_RESULT_EXPIRES", "3600"))
+
 environments = {
     'config': Config()
 }
