@@ -21,6 +21,64 @@ _SDK_BACKEND_LEGACY = "legacy_api"
 _SDK_BACKEND_ARIZE_CLIENT = "arize_client"
 
 
+def _map_arize_environment(Environments: Any, env_name: str) -> Any:
+    mapping = {
+        "PRODUCTION": Environments.PRODUCTION,
+        "VALIDATION": Environments.VALIDATION,
+        "TRAINING": Environments.TRAINING,
+        "STAGING": Environments.VALIDATION,
+        "DEVELOPMENT": Environments.TRAINING,
+    }
+    return mapping.get(env_name, Environments.PRODUCTION)
+
+
+def _import_model_types() -> Any:
+    try:
+        from arize.utils.types import ModelTypes
+    except ImportError:
+        from arize.ml.types import ModelTypes
+    return ModelTypes
+
+
+def _map_sdk_model_type(model_type: Any, ModelTypes: Any) -> Any:
+    key = str(model_type).upper()
+    table = {
+        "REGRESSION": ModelTypes.REGRESSION,
+        "BINARY_CLASSIFICATION": ModelTypes.BINARY_CLASSIFICATION,
+        "SCORE_CATEGORICAL": ModelTypes.SCORE_CATEGORICAL,
+        "NUMERIC": ModelTypes.NUMERIC,
+    }
+    return table.get(key, ModelTypes.REGRESSION)
+
+
+def _safe_feature_tag_dicts(
+    features: Any, tags: Any
+) -> tuple[dict[str, Any], Optional[dict[str, Any]]]:
+    safe_features = {
+        k: (float(v) if isinstance(v, (int, float)) else str(v))
+        for k, v in (features or {}).items()
+    }
+    if not tags:
+        return safe_features, None
+    safe_tags = {
+        k: (float(v) if isinstance(v, (int, float)) else str(v)) for k, v in tags.items()
+    }
+    return safe_features, safe_tags
+
+
+def _prediction_timestamp_int(timestamp: Any) -> int:
+    ts = timestamp or datetime.now()
+    return int(ts.timestamp())
+
+
+def _schedule_log_followup(fn: Any) -> None:
+    wait = str(os.environ.get("ARIZE_LOG_WAIT", "")).lower() in ("1", "true", "yes")
+    if wait:
+        fn()
+    else:
+        threading.Thread(target=fn, daemon=True).start()
+
+
 def _normalize_arize_space_id(space_id: str) -> str:
     """
     Prepare ARIZE_SPACE_KEY for SDK / HTTP clients.
@@ -192,14 +250,7 @@ class ArizeGateway:
             from arize.api import Client as LegacyArizeClient
             from arize.utils.types import Environments
 
-            env_map = {
-                "PRODUCTION": Environments.PRODUCTION,
-                "VALIDATION": Environments.VALIDATION,
-                "TRAINING": Environments.TRAINING,
-                "STAGING": Environments.VALIDATION,
-                "DEVELOPMENT": Environments.TRAINING,
-            }
-            self._environment = env_map.get(env_name, Environments.PRODUCTION)
+            self._environment = _map_arize_environment(Environments, env_name)
             self._space_id = space_id
             self._client = LegacyArizeClient(space_id=space_id, api_key=api_key)
             self._sdk_backend = _SDK_BACKEND_LEGACY
@@ -217,14 +268,7 @@ class ArizeGateway:
             from arize import ArizeClient
             from arize.ml.types import Environments
 
-            env_map = {
-                "PRODUCTION": Environments.PRODUCTION,
-                "VALIDATION": Environments.VALIDATION,
-                "TRAINING": Environments.TRAINING,
-                "STAGING": Environments.VALIDATION,
-                "DEVELOPMENT": Environments.TRAINING,
-            }
-            self._environment = env_map.get(env_name, Environments.PRODUCTION)
+            self._environment = _map_arize_environment(Environments, env_name)
             self._space_id = space_id
             self._client = ArizeClient(api_key=api_key)
             self._sdk_backend = _SDK_BACKEND_ARIZE_CLIENT
@@ -349,32 +393,10 @@ class ArizeGateway:
         timestamp: Any,
         tags: Any,
     ) -> None:
-        try:
-            from arize.utils.types import ModelTypes
-        except ImportError:
-            from arize.ml.types import ModelTypes
-
-        model_type_map = {
-            "REGRESSION": ModelTypes.REGRESSION,
-            "BINARY_CLASSIFICATION": ModelTypes.BINARY_CLASSIFICATION,
-            "SCORE_CATEGORICAL": ModelTypes.SCORE_CATEGORICAL,
-            "NUMERIC": ModelTypes.NUMERIC,
-        }
-        arize_model_type = model_type_map.get(str(model_type).upper(), ModelTypes.REGRESSION)
-
-        ts = timestamp or datetime.now()
-        prediction_timestamp = int(ts.timestamp())
-
-        safe_features = {
-            k: (float(v) if isinstance(v, (int, float)) else str(v))
-            for k, v in (features or {}).items()
-        }
-        safe_tags = None
-        if tags:
-            safe_tags = {
-                k: (float(v) if isinstance(v, (int, float)) else str(v))
-                for k, v in tags.items()
-            }
+        ModelTypes = _import_model_types()
+        arize_model_type = _map_sdk_model_type(model_type, ModelTypes)
+        prediction_timestamp = _prediction_timestamp_int(timestamp)
+        safe_features, safe_tags = _safe_feature_tag_dicts(features, tags)
 
         log_kwargs: dict[str, Any] = {
             "model_id": model_name,
@@ -399,7 +421,6 @@ class ArizeGateway:
         )
         fut = self._client.log(**log_kwargs)
 
-        wait = str(os.environ.get("ARIZE_LOG_WAIT", "")).lower() in ("1", "true", "yes")
         finisher = lambda f=fut: _finalize_arize_log_future(
             f,
             prediction_id=prediction_id,
@@ -411,10 +432,7 @@ class ArizeGateway:
             prediction_label=prediction_label,
             actual_label=actual_label,
         )
-        if wait:
-            finisher()
-        else:
-            threading.Thread(target=finisher, daemon=True).start()
+        _schedule_log_followup(finisher)
 
     def _log_inference_arize_client(
         self,
@@ -429,29 +447,10 @@ class ArizeGateway:
         timestamp: Any,
         tags: Any,
     ) -> None:
-        from arize.ml.types import ModelTypes
-
-        model_type_map = {
-            "REGRESSION": ModelTypes.REGRESSION,
-            "BINARY_CLASSIFICATION": ModelTypes.BINARY_CLASSIFICATION,
-            "SCORE_CATEGORICAL": ModelTypes.SCORE_CATEGORICAL,
-            "NUMERIC": ModelTypes.NUMERIC,
-        }
-        arize_model_type = model_type_map.get(str(model_type).upper(), ModelTypes.REGRESSION)
-
-        ts = timestamp or datetime.now()
-        prediction_timestamp = int(ts.timestamp())
-
-        safe_features = {
-            k: (float(v) if isinstance(v, (int, float)) else str(v))
-            for k, v in (features or {}).items()
-        }
-        safe_tags = None
-        if tags:
-            safe_tags = {
-                k: (float(v) if isinstance(v, (int, float)) else str(v))
-                for k, v in tags.items()
-            }
+        ModelTypes = _import_model_types()
+        arize_model_type = _map_sdk_model_type(model_type, ModelTypes)
+        prediction_timestamp = _prediction_timestamp_int(timestamp)
+        safe_features, safe_tags = _safe_feature_tag_dicts(features, tags)
 
         effective_space_id = self._space_id or _normalize_arize_space_id(
             os.environ.get("ARIZE_SPACE_KEY") or os.environ.get("ARIZE_SPACE_ID") or ""
@@ -486,7 +485,6 @@ class ArizeGateway:
         else:
             raise RuntimeError("ArizeClient has no log_stream method.")
 
-        wait = str(os.environ.get("ARIZE_LOG_WAIT", "")).lower() in ("1", "true", "yes")
         meta = {
             "prediction_id": prediction_id,
             "model_name": model_name,
@@ -497,11 +495,7 @@ class ArizeGateway:
             "prediction_label": prediction_label,
             "actual_label": actual_label,
         }
-        target = lambda: _dispatch_stream_future(fut, meta)
-        if wait:
-            target()
-        else:
-            threading.Thread(target=target, daemon=True).start()
+        _schedule_log_followup(lambda: _dispatch_stream_future(fut, meta))
 
 
 arize_gateway = ArizeGateway()
