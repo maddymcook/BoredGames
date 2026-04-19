@@ -8,7 +8,11 @@ import pytest
 from flask import Flask
 
 from data5580_hw.controllers.prediction import _should_log_arize_request
-from data5580_hw.gateways.arize_gateway import ArizeGateway, _normalize_arize_space_id
+from data5580_hw.gateways.arize_gateway import (
+    ArizeGateway,
+    _normalize_arize_space_id,
+    _SDK_BACKEND_LEGACY,
+)
 from data5580_hw.models.prediction import Model, Prediction
 from tests.arize_compat import arize_client_patch_target
 
@@ -114,6 +118,8 @@ def test_log_inference_calls_client_log(mock_client_cls, tmp_path, sample_predic
     gw = ArizeGateway()
     app = SimpleNamespace(config=_app_config(tmp_path))
     gw.init_app(app)
+    # v8 init uses log_stream; these tests assert legacy client.log() behavior.
+    gw._sdk_backend = _SDK_BACKEND_LEGACY
 
     gw.log_inference(regression_model, sample_prediction)
 
@@ -135,6 +141,7 @@ def test_log_failure_writes_fallback_jsonl(mock_client_cls, tmp_path, sample_pre
     cfg["ARIZE_FALLBACK_PATH"] = str(fb)
     app = SimpleNamespace(config=cfg)
     gw.init_app(app)
+    gw._sdk_backend = _SDK_BACKEND_LEGACY
 
     gw.log_inference(regression_model, sample_prediction)
 
