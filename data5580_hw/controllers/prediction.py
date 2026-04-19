@@ -1,6 +1,7 @@
 import json
 import logging
 import math
+import traceback
 from typing import Any
 
 from flask import jsonify, request
@@ -135,23 +136,34 @@ class PredictionController:
 
         # Create UMAP embeddings from model inputs.
         try:
-            inputs_df = prediction.get_pandas_frame_of_inputs()
+            inputs_df = prediction.get_pandas_frame_aligned_to_model(model._model)
             X = inputs_df.to_numpy(dtype=float)
             prediction.embeddings = umap_embedding_service.compute_embeddings(
                 X, umap_params=prediction.umap_params
             )
         except Exception as e:
-            logger.exception("UMAP embedding calculation failed")
-            error_text = str(e).lower()
-            # Graceful degradation for warm-up and known runtime/JIT instability
-            # paths (seen in CI with numba/umap transform compilation).
-            if (
+            # str(KeyError(...)) may omit "numba" even when the stack is inside numba;
+            # include the traceback so JIT/bytecode failures degrade like other numba issues.
+            tb = traceback.format_exc()
+            error_text = (str(e) + "\n" + tb.lower()).lower()
+            # Warm-up, numba/umap JIT issues (incl. KeyError 114 in numba.core.byteflow on Windows).
+            keyerror_114 = isinstance(e, KeyError) and e.args == (114,)
+            recoverable = (
                 "not fitted yet" in error_text
                 or isinstance(e, AssertionError)
                 or "numba" in error_text
-            ):
+                or "byteflow" in error_text
+                or keyerror_114
+            )
+            if recoverable:
+                logger.warning(
+                    "UMAP embedding skipped (%s); using numeric fallback.",
+                    type(e).__name__,
+                )
+                logger.debug("UMAP embedding traceback:\n%s", tb)
                 prediction.embeddings = None
             else:
+                logger.exception("UMAP embedding calculation failed")
                 return (
                     jsonify(
                         {

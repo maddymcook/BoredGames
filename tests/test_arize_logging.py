@@ -40,9 +40,9 @@ def _app_config(tmp_path, **overrides):
     return base
 
 
-def test_normalize_space_id_decodes_relay_base64():
-    """UI Space copy may be Base64(Space:<numeric_id>:suffix); SDK needs the number."""
-    assert _normalize_arize_space_id("U3BhY2U6MzkyOTk6MmtFVQ==") == "39299"
+def test_normalize_space_id_keeps_relay_base64_for_api():
+    """UI Space key is Base64(Space:...); API expects opaque string, not digits-only."""
+    assert _normalize_arize_space_id("U3BhY2U6MzkyOTk6MmtFVQ==") == "U3BhY2U6MzkyOTk6MmtFVQ=="
 
 
 def test_normalize_space_id_plain_unchanged():
@@ -53,6 +53,11 @@ def test_normalize_space_id_respects_no_decode(monkeypatch):
     monkeypatch.setenv("ARIZE_SPACE_KEY_NO_DECODE", "1")
     raw = "U3BhY2U6MzkyOTk6MmtFVQ=="
     assert _normalize_arize_space_id(raw) == raw
+
+
+def test_normalize_space_id_numeric_only_extracts_digits(monkeypatch):
+    monkeypatch.setenv("ARIZE_SPACE_KEY_NUMERIC_ONLY", "1")
+    assert _normalize_arize_space_id("U3BhY2U6MzkyOTk6MmtFVQ==") == "39299"
 
 
 def test_should_log_arize_request_defaults_true():
@@ -94,9 +99,15 @@ def test_log_inference_skips_when_no_client(sample_prediction, regression_model)
     gw.log_inference(regression_model, sample_prediction)  # no exception
 
 
-@patch("data5580_hw.gateways.arize_gateway.ArizeClient")
-def test_log_inference_calls_ml_log(mock_client_cls, tmp_path, sample_prediction, regression_model):
+@patch("arize.api.Client")
+def test_log_inference_calls_client_log(mock_client_cls, tmp_path, sample_prediction, regression_model):
+    from concurrent.futures import Future
+    from unittest.mock import MagicMock
+
     mock_client = MagicMock()
+    fut = Future()
+    fut.set_result(MagicMock(status_code=200, text="ok"))
+    mock_client.log.return_value = fut
     mock_client_cls.return_value = mock_client
 
     gw = ArizeGateway()
@@ -105,17 +116,16 @@ def test_log_inference_calls_ml_log(mock_client_cls, tmp_path, sample_prediction
 
     gw.log_inference(regression_model, sample_prediction)
 
-    mock_client.ml.log.assert_called_once()
-    call_kw = mock_client.ml.log.call_args[1]
-    assert call_kw["space_id"] == "test-space-id"
-    assert call_kw["model_name"] == "california-housing"
+    mock_client.log.assert_called_once()
+    call_kw = mock_client.log.call_args[1]
+    assert call_kw["model_id"] == "california-housing"
     assert call_kw["model_version"] == "2"
 
 
-@patch("data5580_hw.gateways.arize_gateway.ArizeClient")
+@patch("arize.api.Client")
 def test_log_failure_writes_fallback_jsonl(mock_client_cls, tmp_path, sample_prediction, regression_model):
     mock_client = MagicMock()
-    mock_client.ml.log.side_effect = RuntimeError("upstream failure")
+    mock_client.log.side_effect = RuntimeError("upstream failure")
     mock_client_cls.return_value = mock_client
 
     fb = tmp_path / "failed.jsonl"

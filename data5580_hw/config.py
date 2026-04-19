@@ -41,7 +41,7 @@ class Config:
     GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-1.5-flash")
     GEMINI_TIMEOUT_SECONDS = int(os.environ.get("GEMINI_TIMEOUT_SECONDS", "8"))
     # Arize (see data5580_hw.gateways.arize_gateway)
-    ARIZE_ENABLED = _env_bool("ARIZE_ENABLED", False)
+    ARIZE_ENABLED = _env_bool("ARIZE_ENABLED", True)
     ARIZE_API_KEY = os.environ.get("ARIZE_API_KEY", "")
     ARIZE_SPACE_KEY = os.environ.get("ARIZE_SPACE_KEY", "")
     ARIZE_ENVIRONMENT = os.environ.get("ARIZE_ENVIRONMENT", "production")

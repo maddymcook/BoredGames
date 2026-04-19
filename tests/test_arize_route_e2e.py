@@ -1,5 +1,5 @@
 import os
-
+from concurrent.futures import Future
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -17,12 +17,14 @@ def client_with_arize_env(monkeypatch):
     monkeypatch.setenv("ARIZE_SPACE_KEY", "test-space-id")
     monkeypatch.setenv("ARIZE_ENVIRONMENT", "production")
 
-    # Patch ArizeClient during app creation so ArizeGateway.init_app() uses the mock.
+    # Patch arize.api.Client during app creation so ArizeGateway.init_app() uses the mock.
     mock_arize_client = MagicMock()
-    mock_arize_client.ml.log = MagicMock()
+    _fut = Future()
+    _fut.set_result(MagicMock(status_code=200, text="ok"))
+    mock_arize_client.log = MagicMock(return_value=_fut)
 
     with patch(
-        "data5580_hw.gateways.arize_gateway.ArizeClient",
+        "arize.api.Client",
         return_value=mock_arize_client,
     ), patch("data5580_hw.app.load_dotenv", return_value=None):
         app = create_app()
@@ -39,7 +41,7 @@ def client_with_arize_env(monkeypatch):
 
 
 def test_predict_route_triggers_arize_log(monkeypatch, client_with_arize_env):
-    # Patch ArizeClient so we don't need network/real credentials.
+    # Patch arize.api.Client so we don't need network/real credentials.
     client, mock_arize_client = client_with_arize_env
 
     fake_model_payload = {
@@ -85,16 +87,11 @@ def test_predict_route_triggers_arize_log(monkeypatch, client_with_arize_env):
         )
 
     assert resp.status_code == 200
-    mock_arize_client.ml.log.assert_called_once()
-    call_kw = mock_arize_client.ml.log.call_args[1]
+    mock_arize_client.log.assert_called_once()
+    call_kw = mock_arize_client.log.call_args[1]
 
-    assert isinstance(call_kw["space_id"], str) and call_kw["space_id"]
-    assert call_kw["model_name"] == "california-housing"
+    assert call_kw["model_id"] == "california-housing"
     assert call_kw["model_version"] == "1"
-
-    df = call_kw["dataframe"]
-    assert "prediction_score" in df.columns
-    assert "actual_score" in df.columns
-    assert float(df.loc[0, "prediction_score"]) == 10.5
-    assert float(df.loc[0, "actual_score"]) == 2.25
+    assert call_kw["prediction_label"] == 10.5
+    assert call_kw["actual_label"] == 2.25
 

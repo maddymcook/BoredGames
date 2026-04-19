@@ -7,13 +7,18 @@ from flask.cli import load_dotenv
 
 from data5580_hw.routes import init_blueprints
 from data5580_hw.services.database.database_client import init_db
+from data5580_hw.gateways.arize_gateway import arize_gateway
 from data5580_hw.gateways.mlflow_gateway import mlflow_gateway
 from data5580_hw.gateways.llm_gateway import llm_gateway
 
 if not os.path.isdir(os.environ.get("PROMETHEUS_MULTIPROC_DIR", "")):
     os.environ["PROMETHEUS_MULTIPROC_DIR"] = tempfile.mkdtemp()
 
-logging.basicConfig(level=logging.DEBUG)
+# INFO keeps local runs readable; set LOG_LEVEL=DEBUG when troubleshooting.
+_log_level = getattr(logging, os.environ.get("LOG_LEVEL", "INFO").upper(), logging.INFO)
+if not isinstance(_log_level, int):
+    _log_level = logging.INFO
+logging.basicConfig(level=_log_level)
 logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
@@ -39,6 +44,7 @@ def create_app():
     init_metrics(app)
     mlflow_gateway.init_app(app)
     llm_gateway.init_app(app)
+    arize_gateway.init_app(app)
 
     return app
 

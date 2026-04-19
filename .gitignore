@@ -1,4 +1,16 @@
+# Python virtual environments
+.venv/
 .venv
+venv/
+env/
+.env/
+.venv-*/
+
+# Local env files (secrets)
+.env
+.env.local
+.env.*.local
+
 **.db
 
 logs

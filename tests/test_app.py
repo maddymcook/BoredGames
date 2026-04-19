@@ -368,22 +368,20 @@ def test_arize_gateway_init_success():
     """ArizeGateway enables itself when both credentials are present."""
     from data5580_hw.gateways.arize_gateway import ArizeGateway
     from unittest.mock import MagicMock, patch
+
     gw = ArizeGateway()
     app_mock = type("App", (), {"config": {}})()
 
-    mock_arize_client = MagicMock()
-    with patch.dict("os.environ", {"ARIZE_API_KEY": "key123", "ARIZE_SPACE_ID": "space456"}), \
-         patch("data5580_hw.gateways.arize_gateway.ArizeClient", mock_arize_client, create=True):
-        # Patch the import inside init_app
-        with patch.dict("sys.modules", {
-            "arize": type("arize", (), {"ArizeClient": mock_arize_client})(),
-        }):
-            import importlib
-            import data5580_hw.gateways.arize_gateway as ag_mod
-            with patch.object(ag_mod, "ArizeClient" if hasattr(ag_mod, "ArizeClient") else "__builtins__", mock_arize_client, create=True):
-                gw.init_app(app_mock)
-    # Even if the import mock didn't fully wire up, at minimum _enabled should
-    # be False (no crash) — the important thing is no exception is raised.
+    mock_client_cls = MagicMock()
+    with patch.dict(
+        "os.environ",
+        {"ARIZE_API_KEY": "key123", "ARIZE_SPACE_KEY": "space456"},
+    ), patch(
+        "arize.api.Client",
+        mock_client_cls,
+        create=True,
+    ):
+        gw.init_app(app_mock)
     assert isinstance(gw._enabled, bool)
 
 
@@ -402,15 +400,20 @@ def test_arize_log_inference_no_op_when_disabled():
     )
 
 
-def test_arize_log_inference_calls_log_stream():
-    """log_inference calls client.log_stream with correct arguments."""
-    from unittest.mock import MagicMock
-    from data5580_hw.gateways.arize_gateway import ArizeGateway
-    from arize.ml.types import ModelTypes, Environments
+def test_arize_log_inference_calls_client_log():
+    """log_inference calls client.log with correct arguments (arize v7 API)."""
+    from concurrent.futures import Future
     from datetime import datetime
+    from unittest.mock import MagicMock
+
+    from arize.utils.types import Environments, ModelTypes
+    from data5580_hw.gateways.arize_gateway import ArizeGateway
 
     gw = ArizeGateway()
     mock_client = MagicMock()
+    fut = Future()
+    fut.set_result(MagicMock(status_code=200, text="ok"))
+    mock_client.log.return_value = fut
     gw._client = mock_client
     gw._enabled = True
     gw._space_id = "space456"
@@ -429,10 +432,9 @@ def test_arize_log_inference_calls_log_stream():
         tags={"source": "api"},
     )
 
-    mock_client.log_stream.assert_called_once()
-    call_kwargs = mock_client.log_stream.call_args.kwargs
-    assert call_kwargs["space_id"] == "space456"
-    assert call_kwargs["model_name"] == "california-housing"
+    mock_client.log.assert_called_once()
+    call_kwargs = mock_client.log.call_args.kwargs
+    assert call_kwargs["model_id"] == "california-housing"
     assert call_kwargs["model_version"] == "2"
     assert call_kwargs["model_type"] == ModelTypes.REGRESSION
     assert call_kwargs["environment"] == Environments.PRODUCTION
@@ -445,14 +447,15 @@ def test_arize_log_inference_calls_log_stream():
 
 
 def test_arize_log_inference_error_does_not_raise():
-    """A crash inside log_stream is caught and never propagates to the caller."""
+    """A crash inside client.log is caught and never propagates to the caller."""
     from unittest.mock import MagicMock
+
+    from arize.utils.types import Environments
     from data5580_hw.gateways.arize_gateway import ArizeGateway
-    from arize.ml.types import Environments
 
     gw = ArizeGateway()
     mock_client = MagicMock()
-    mock_client.log_stream.side_effect = Exception("Network failure")
+    mock_client.log.side_effect = Exception("Network failure")
     gw._client = mock_client
     gw._enabled = True
     gw._space_id = "space456"
@@ -471,12 +474,17 @@ def test_arize_log_inference_error_does_not_raise():
 
 def test_arize_unknown_model_type_defaults_to_regression():
     """An unrecognised model_type string falls back to ModelTypes.REGRESSION."""
+    from concurrent.futures import Future
     from unittest.mock import MagicMock
+
+    from arize.utils.types import Environments, ModelTypes
     from data5580_hw.gateways.arize_gateway import ArizeGateway
-    from arize.ml.types import ModelTypes, Environments
 
     gw = ArizeGateway()
     mock_client = MagicMock()
+    fut = Future()
+    fut.set_result(MagicMock(status_code=200, text="ok"))
+    mock_client.log.return_value = fut
     gw._client = mock_client
     gw._enabled = True
     gw._space_id = "s"
@@ -491,7 +499,7 @@ def test_arize_unknown_model_type_defaults_to_regression():
         prediction_label=1.0,
     )
 
-    call_kwargs = mock_client.log_stream.call_args.kwargs
+    call_kwargs = mock_client.log.call_args.kwargs
     assert call_kwargs["model_type"] == ModelTypes.REGRESSION
 
 
@@ -539,12 +547,17 @@ def test_arize_log_inference_not_called_on_failed_prediction(client):
 
 def test_arize_feature_casting():
     """Features with int values are cast to float; strings stay as strings."""
+    from concurrent.futures import Future
     from unittest.mock import MagicMock
+
+    from arize.utils.types import Environments
     from data5580_hw.gateways.arize_gateway import ArizeGateway
-    from arize.ml.types import Environments
 
     gw = ArizeGateway()
     mock_client = MagicMock()
+    fut = Future()
+    fut.set_result(MagicMock(status_code=200, text="ok"))
+    mock_client.log.return_value = fut
     gw._client = mock_client
     gw._enabled = True
     gw._space_id = "s"
@@ -559,7 +572,7 @@ def test_arize_feature_casting():
         prediction_label=1.0,
     )
 
-    sent_features = mock_client.log_stream.call_args.kwargs["features"]
+    sent_features = mock_client.log.call_args.kwargs["features"]
     assert sent_features["int_feat"] == 5.0
     assert isinstance(sent_features["int_feat"], float)
     assert sent_features["str_feat"] == "cat"
