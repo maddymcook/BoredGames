@@ -17,6 +17,7 @@ class Listing(models.Model):
     )
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
+    image = models.ImageField(upload_to="listing_images/", null=True, blank=True)
     listing_type = models.CharField(max_length=10, choices=LISTING_TYPE_CHOICES)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     iso_text = models.TextField(null=True, blank=True)

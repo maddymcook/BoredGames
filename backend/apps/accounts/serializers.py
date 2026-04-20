@@ -1,14 +1,17 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from .models import Profile
 
 UserAccount = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    profile_display_name = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = UserAccount
-        fields = ("id", "email", "username", "is_admin", "is_staff", "is_superuser", "password")
+        fields = ("id", "email", "username", "profile_display_name", "is_admin", "is_staff", "is_superuser", "password")
         extra_kwargs = {
             "password": {"write_only": True, "min_length": 8},
             "is_admin": {"read_only": True},
@@ -29,3 +32,15 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+    def get_profile_display_name(self, obj):
+        profile = getattr(obj, "profile", None)
+        if profile and profile.display_name:
+            return profile.display_name
+        return obj.username or obj.email
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ("display_name", "credentials", "looking_for")

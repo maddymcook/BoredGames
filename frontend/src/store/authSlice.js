@@ -59,6 +59,50 @@ export const registerUser = createAsyncThunk("auth/registerUser", async (_, thun
   });
 });
 
+export const fetchCurrentUser = createAsyncThunk("auth/fetchCurrentUser", async (_, thunkApi) => {
+  const state = thunkApi.getState();
+  const { token, userId } = state.auth;
+  if (!token || !userId) {
+    return null;
+  }
+  const user = await apiRequest(`/users/${userId}/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return user;
+});
+
+export const fetchMyProfile = createAsyncThunk("auth/fetchMyProfile", async (_, thunkApi) => {
+  const state = thunkApi.getState();
+  const { token } = state.auth;
+  if (!token) {
+    return null;
+  }
+  const profile = await apiRequest("/profiles/me/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return profile;
+});
+
+export const saveMyProfile = createAsyncThunk("auth/saveMyProfile", async (payload, thunkApi) => {
+  const state = thunkApi.getState();
+  const { token } = state.auth;
+  if (!token) {
+    throw new Error("Please log in before saving your profile.");
+  }
+  const profile = await apiRequest("/profiles/me/", {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  return profile;
+});
+
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -70,6 +114,11 @@ const authSlice = createSlice({
     registerStatus: "idle",
     registerError: null,
     registerSuccess: false,
+    profileName: null,
+    profile: null,
+    profileStatus: "idle",
+    profileError: null,
+    profileSavedAt: null,
     form: {
       email: "",
       username: "",
@@ -85,10 +134,20 @@ const authSlice = createSlice({
       state.registerSuccess = false;
       state.registerStatus = "idle";
     },
+    clearProfileFeedback(state) {
+      state.profileError = null;
+      state.profileStatus = "idle";
+      state.profileSavedAt = null;
+    },
     logout(state) {
       state.token = null;
       state.refreshToken = null;
       state.userId = null;
+      state.profileName = null;
+      state.profile = null;
+      state.profileStatus = "idle";
+      state.profileError = null;
+      state.profileSavedAt = null;
     },
   },
   extraReducers: (builder) => {
@@ -133,10 +192,40 @@ const authSlice = createSlice({
       .addCase(registerUser.rejected, (state, action) => {
         state.registerStatus = "failed";
         state.registerError = action.error.message || "Registration failed";
+      })
+      .addCase(fetchCurrentUser.fulfilled, (state, action) => {
+        state.profileName = action.payload?.profile_display_name || null;
+      })
+      .addCase(fetchMyProfile.pending, (state) => {
+        state.profileStatus = "loading";
+        state.profileError = null;
+      })
+      .addCase(fetchMyProfile.fulfilled, (state, action) => {
+        state.profileStatus = "succeeded";
+        state.profile = action.payload;
+        state.profileName = action.payload?.display_name || state.profileName;
+      })
+      .addCase(fetchMyProfile.rejected, (state, action) => {
+        state.profileStatus = "failed";
+        state.profileError = action.error.message || "Could not load profile.";
+      })
+      .addCase(saveMyProfile.pending, (state) => {
+        state.profileStatus = "loading";
+        state.profileError = null;
+      })
+      .addCase(saveMyProfile.fulfilled, (state, action) => {
+        state.profileStatus = "succeeded";
+        state.profile = action.payload;
+        state.profileName = action.payload?.display_name || state.profileName;
+        state.profileSavedAt = Date.now();
+      })
+      .addCase(saveMyProfile.rejected, (state, action) => {
+        state.profileStatus = "failed";
+        state.profileError = action.error.message || "Could not save profile.";
       });
   },
 });
 
-export const { clearRegisterFeedback, logout, setCredentialsForm } = authSlice.actions;
+export const { clearProfileFeedback, clearRegisterFeedback, logout, setCredentialsForm } = authSlice.actions;
 export const selectAuth = (state) => state.auth;
 export default authSlice.reducer;

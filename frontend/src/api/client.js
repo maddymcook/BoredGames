@@ -1,4 +1,5 @@
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000/api";
+const API_ROOT = API_BASE_URL.replace(/\/api\/?$/, "");
 
 function getMessageFromResponse(data, fallback) {
   if (!data) {
@@ -22,22 +23,47 @@ function getMessageFromResponse(data, fallback) {
 }
 
 export async function apiRequest(path, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
+  const isFormData = typeof FormData !== "undefined" && options.body instanceof FormData;
+  const baseHeaders = isFormData ? {} : { "Content-Type": "application/json" };
+  const mergedHeaders = {
+    ...baseHeaders,
+    ...(options.headers || {}),
+  };
+  const fetchOptions = {
     ...options,
-  });
+    headers: mergedHeaders,
+  };
+
+  const response = await fetch(`${API_BASE_URL}${path}`, fetchOptions);
 
   const text = await response.text();
-  const data = text ? JSON.parse(text) : null;
+  let data = null;
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch (error) {
+      data = text;
+    }
+  }
 
   if (!response.ok) {
     throw new Error(getMessageFromResponse(data, "Request failed"));
   }
 
   return data;
+}
+
+export function toAbsoluteMediaUrl(maybeRelativeUrl) {
+  if (!maybeRelativeUrl) {
+    return null;
+  }
+  if (maybeRelativeUrl.startsWith("http://") || maybeRelativeUrl.startsWith("https://")) {
+    return maybeRelativeUrl;
+  }
+  if (maybeRelativeUrl.startsWith("/")) {
+    return `${API_ROOT}${maybeRelativeUrl}`;
+  }
+  return `${API_ROOT}/${maybeRelativeUrl}`;
 }
 
 export { API_BASE_URL };
