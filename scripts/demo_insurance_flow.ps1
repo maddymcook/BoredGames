@@ -45,7 +45,11 @@ try {
         -Uri "$BaseUrl/insurance-charges/version/$Version/predict" `
         -ContentType "application/json; charset=utf-8" `
         -Body $predictBody
-    $id = $pred.id
+    $id = ([string]$pred.id).Trim()
+    if (-not $id) {
+        Write-Host "FAILED: predict response had no id." -ForegroundColor Red
+        exit 1
+    }
     Write-Host "prediction id: $id"
     Write-Host "label: $($pred.label)"
 } catch {
@@ -59,7 +63,10 @@ $r2 = Invoke-RestMethod -Method GET -Uri "$BaseUrl/prediction/$id"
 Write-Host "retrieved id: $($r2.id), label: $($r2.label)"
 
 Write-Step "3) GET /prediction/$id/explainer"
-$r3 = Invoke-RestMethod -Method GET -Uri "$BaseUrl/prediction/$id/explainer"
+# Avoid empty $id (merged URL becomes /prediction/explainer) and trailing-slash 308
+# issues with Invoke-RestMethod on some PowerShell builds.
+$explainerUrl = "$BaseUrl/prediction/$id/explainer".TrimEnd("/")
+$r3 = Invoke-RestMethod -Method GET -Uri $explainerUrl
 $sum = [string]$r3.summary
 $len = [Math]::Min(200, $sum.Length)
 if ($len -gt 0) {

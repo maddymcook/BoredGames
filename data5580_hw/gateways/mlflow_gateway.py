@@ -16,6 +16,10 @@ class MLFlowGateway:
     def init_app(self, app):
         mlflow.set_tracking_uri(app.config["TRACKING_URI"])
         self.models = app.config.get("MODELS", {})
+        logger.info(
+            "MLflow gateway MODELS keys: %s",
+            {name: list(vers.keys()) for name, vers in self.models.items()},
+        )
 
         if app.config.get("TESTING") or os.environ.get("TESTING"):
             return
@@ -81,9 +85,37 @@ class MLFlowGateway:
             return mlflow.pyfunc.load_model(model_uri)
         raise ValueError(f"Unsupported model flavor: {model_flavor}")
 
+    def _registry(self):
+        """
+        Prefer Flask app config during requests so lookups match the running app
+        even if this singleton's self.models was never set (e.g. class default {}).
+        """
+        try:
+            from flask import current_app, has_app_context
+
+            if has_app_context() and "MODELS" in current_app.config:
+                return current_app.config["MODELS"]
+        except RuntimeError:
+            pass
+        return self.models
+
     def get_model(self, model_name, model_version) -> Model:
-        model_ = self.models[model_name][model_version]
-        model = Model(type=model_["model_type"], name=model_name, version=model_version)
+        # URL path segments are strings; config keys must match (e.g. "4" not 4).
+        ver = str(model_version).strip()
+        registry = self._registry()
+        versions = registry.get(model_name)
+        if versions is None:
+            raise KeyError(model_name)
+        model_ = versions.get(ver)
+        if model_ is None and ver.isdigit():
+            model_ = versions.get(int(ver))
+        if model_ is None:
+            raise KeyError((model_name, ver))
+        # Startup model loading can be skipped or fail transiently; load on demand.
+        if model_.get("model") is None:
+            flavor_ = model_.get("mlflow_flavor", "pyfunc")
+            model_["model"] = self._load_model(self._get_model_uri(model_name, ver), flavor_)
+        model = Model(type=model_["model_type"], name=model_name, version=str(model_version))
         model._model = model_["model"]
         model._explainer = model_.get("explainer", None)
         return model

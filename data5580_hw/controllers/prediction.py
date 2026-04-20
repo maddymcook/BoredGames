@@ -1,10 +1,11 @@
 import json
 import logging
 import math
+import os
 import traceback
 from typing import Any
 
-from flask import jsonify, request
+from flask import current_app, jsonify, request
 from pydantic import ValidationError
 
 from data5580_hw.gateways.arize_gateway import arize_gateway
@@ -23,6 +24,25 @@ from data5580_hw.services.umap_service import umap_embedding_service
 
 
 logger = logging.getLogger(__name__)
+
+
+def _error_payload(message: str, exc: Exception | None = None) -> dict[str, Any]:
+    payload: dict[str, Any] = {"error": message}
+    show_details = os.environ.get("SHOW_ERROR_DETAILS", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
+    if not show_details:
+        try:
+            show_details = bool(current_app.config.get("DEBUG") or current_app.config.get("TESTING"))
+        except RuntimeError:
+            show_details = False
+    if show_details and exc is not None:
+        payload["detail"] = str(exc)
+        payload["exception_type"] = type(exc).__name__
+    return payload
 
 
 def _numeric_embedding_from_features(features: dict[str, Any]) -> list[float]:
@@ -93,17 +113,22 @@ class PredictionController:
         try:
             model: Model = mlflow_gateway.get_model(model_name, model_version)
         except KeyError:
+            logger.warning(
+                "Unknown model or version; loaded registry: %s",
+                {n: list(v.keys()) for n, v in mlflow_gateway.models.items()},
+            )
             return (
                 jsonify(
                     {
-                        "error": f"Model '{model_name}' version '{model_version}' not found."
+                        "error": f"Model '{model_name}' version '{model_version}' not found.",
+                        "hint": "GET /models/registry shows what this Flask process loaded; restart Flask after editing config.",
                     }
                 ),
                 404,
             )
-        except Exception:
+        except Exception as e:
             logger.exception("Error loading model for prediction")
-            return jsonify({"error": "Internal error loading model."}), 500
+            return jsonify(_error_payload("Internal error loading model.", e)), 500
 
         try:
             payload = request.get_json(force=True) or {}
@@ -130,9 +155,9 @@ class PredictionController:
                 extra={"model_name": model.name, "model_version": model.version},
             )
             return jsonify({"error": f"Invalid input data: {str(e)}"}), 400
-        except Exception:
+        except Exception as e:
             logger.exception("Error during prediction")
-            return jsonify({"error": "Internal error during prediction."}), 500
+            return jsonify(_error_payload("Internal error during prediction.", e)), 500
 
         # Create UMAP embeddings from model inputs.
         try:
