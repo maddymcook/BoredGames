@@ -19,8 +19,10 @@ import numpy as np
 import pandas as pd
 from mlflow.models import infer_signature
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.inspection import permutation_importance
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
+from umap import UMAP
 
 EXPERIMENT_NAME = "insurance-charges"
 REGISTERED_MODEL_NAME = "insurance-charges"
@@ -89,16 +91,60 @@ def main() -> None:
             registered_model_name=REGISTERED_MODEL_NAME,
         )
 
-        # Log explainer artifact if SHAP stack is available.
-        try:
-            import shap
+        with TemporaryDirectory() as tmp_dir:
+            tmp = Path(tmp_dir)
 
-            explainer = shap.Explainer(
-                model,
-                X_train.sample(min(200, len(X_train)), random_state=RANDOM_STATE),
+            # --- Embedding artifact ---
+            emb_sample = X_train.sample(min(300, len(X_train)), random_state=RANDOM_STATE)
+            reducer = UMAP(
+                n_components=2,
+                n_neighbors=min(15, max(2, len(emb_sample) - 1)),
+                min_dist=0.1,
+                metric="euclidean",
+                random_state=RANDOM_STATE,
             )
-            with TemporaryDirectory() as tmp_dir:
-                explainer_path = Path(tmp_dir) / "explainer.pkl"
+            emb_2d = reducer.fit_transform(emb_sample.to_numpy(dtype=float))
+            emb_df = pd.DataFrame(
+                emb_2d, columns=["umap_x", "umap_y"], index=emb_sample.index
+            ).reset_index(names=["row_id"])
+            emb_df["target_charges"] = y_train.loc[emb_df["row_id"]].values
+
+            embedding_csv = tmp / "insurance_umap_embeddings.csv"
+            emb_df.to_csv(embedding_csv, index=False)
+            mlflow.log_artifact(str(embedding_csv), artifact_path="embeddings")
+            mlflow.log_param("embedding_method", "umap_2d")
+            mlflow.log_metric("embedding_rows", float(len(emb_df)))
+
+            # --- Always-on explainer artifact (permutation importance) ---
+            perm = permutation_importance(
+                model,
+                X_test,
+                y_test,
+                n_repeats=5,
+                random_state=RANDOM_STATE,
+                n_jobs=-1,
+            )
+            perm_df = pd.DataFrame(
+                {
+                    "feature": X_test.columns,
+                    "importance_mean": perm.importances_mean,
+                    "importance_std": perm.importances_std,
+                }
+            ).sort_values("importance_mean", ascending=False)
+            fallback_csv = tmp / "feature_importance_explainer.csv"
+            perm_df.to_csv(fallback_csv, index=False)
+            mlflow.log_artifact(str(fallback_csv), artifact_path="explainers")
+            mlflow.log_param("explainer_baseline_type", "permutation_importance")
+
+            # --- Optional SHAP explainer artifact ---
+            try:
+                import shap
+
+                explainer = shap.Explainer(
+                    model,
+                    X_train.sample(min(200, len(X_train)), random_state=RANDOM_STATE),
+                )
+                explainer_path = tmp / "explainer.pkl"
                 with open(explainer_path, "wb") as f:
                     pickle.dump(explainer, f)
 
@@ -116,9 +162,10 @@ def main() -> None:
                     ),
                     extra_pip_requirements=["shap"],
                 )
-        except Exception as exc:
-            # Step 1 requirement is model registration; explainer is handled in Step 2.
-            print(f"Warning: explainer artifact logging skipped: {exc}")
+                mlflow.log_param("explainer_type", "shap")
+            except Exception as exc:
+                print(f"Warning: SHAP explainer logging skipped: {exc}")
+                mlflow.log_param("explainer_type", "permutation_importance")
 
         print(f"Run logged with ID: {run.info.run_id}")
         print(f"Tracking URI: {TRACKING_URI}")
