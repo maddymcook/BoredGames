@@ -12,10 +12,11 @@ class MessageSerializer(serializers.ModelSerializer):
             "recipient",
             "listing",
             "content",
+            "is_read",
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("created_at", "updated_at")
+        read_only_fields = ("is_read", "created_at", "updated_at")
 
     def validate(self, attrs):
         sender = attrs.get("sender", getattr(self.instance, "sender", None))

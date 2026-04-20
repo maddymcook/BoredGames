@@ -2,6 +2,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import PermissionDenied
 from rest_framework import filters, viewsets
 from rest_framework.permissions import AllowAny
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 
 from .models import Listing
 from .permissions import IsOwnerOrAdminOrReadOnly
@@ -9,11 +10,12 @@ from .serializers import ListingSerializer
 
 
 class ListingViewSet(viewsets.ModelViewSet):
-    queryset = Listing.objects.select_related("owner").all().order_by("-created_at")
+    queryset = Listing.objects.select_related("owner", "owner__profile").all().order_by("-created_at")
     serializer_class = ListingSerializer
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ["listing_type", "owner"]
-    search_fields = ["title", "description", "iso_text"]
+    search_fields = ["title", "description", "iso_text", "tags__name"]
     ordering_fields = ["created_at", "updated_at", "price"]
     ordering = ["-created_at"]
 
