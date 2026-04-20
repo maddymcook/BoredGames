@@ -19,3 +19,4 @@ mlflow
 arize>=7.0.0,<9
 openai
 pytest-cov
+kagglehub
