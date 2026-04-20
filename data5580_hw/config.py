@@ -33,7 +33,20 @@ class Config:
                 , "model_type": "REGRESSION"
                 , "mlflow_flavor": "sklearn"
             }
-        }
+        },
+        # Kaggle insurance dataset (mirichoi0218/insurance); register via generate_insurance_model.py
+        "insurance-charges": {
+            "1": {
+                "model": None,
+                "model_type": "REGRESSION",
+                "mlflow_flavor": "sklearn",
+            },
+            "4": {
+                "model": None,
+                "model_type": "REGRESSION",
+                "mlflow_flavor": "sklearn",
+            },
+        },
     }
 
     # Gemini LLM integration
