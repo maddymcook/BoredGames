@@ -49,6 +49,16 @@ export const registerAndLogin = createAsyncThunk("auth/registerAndLogin", async 
   };
 });
 
+export const registerUser = createAsyncThunk("auth/registerUser", async (_, thunkApi) => {
+  const state = thunkApi.getState();
+  const { email, username, password } = state.auth.form;
+
+  await apiRequest("/users/", {
+    method: "POST",
+    body: JSON.stringify({ email, username, password }),
+  });
+});
+
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -57,6 +67,9 @@ const authSlice = createSlice({
     userId: null,
     status: "idle",
     error: null,
+    registerStatus: "idle",
+    registerError: null,
+    registerSuccess: false,
     form: {
       email: "",
       username: "",
@@ -66,6 +79,11 @@ const authSlice = createSlice({
   reducers: {
     setCredentialsForm(state, action) {
       state.form[action.payload.field] = action.payload.value;
+    },
+    clearRegisterFeedback(state) {
+      state.registerError = null;
+      state.registerSuccess = false;
+      state.registerStatus = "idle";
     },
     logout(state) {
       state.token = null;
@@ -102,10 +120,23 @@ const authSlice = createSlice({
       .addCase(registerAndLogin.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Registration failed";
+      })
+      .addCase(registerUser.pending, (state) => {
+        state.registerStatus = "loading";
+        state.registerError = null;
+        state.registerSuccess = false;
+      })
+      .addCase(registerUser.fulfilled, (state) => {
+        state.registerStatus = "succeeded";
+        state.registerSuccess = true;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.registerStatus = "failed";
+        state.registerError = action.error.message || "Registration failed";
       });
   },
 });
 
-export const { logout, setCredentialsForm } = authSlice.actions;
+export const { clearRegisterFeedback, logout, setCredentialsForm } = authSlice.actions;
 export const selectAuth = (state) => state.auth;
 export default authSlice.reducer;

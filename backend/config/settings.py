@@ -149,3 +149,9 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     origin for origin in os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:8081,http://127.0.0.1:8081").split(",") if origin
 ]
+
+# Allow Expo web/dev servers on arbitrary local ports (8081, 8082, etc.)
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://localhost:\d+$",
+    r"^http://127\.0\.0\.1:\d+$",
+]

@@ -7,6 +7,11 @@ export const fetchListings = createAsyncThunk("listings/fetchListings", async ()
   return data.results || data;
 });
 
+export const fetchUsers = createAsyncThunk("listings/fetchUsers", async () => {
+  const data = await apiRequest("/users/");
+  return data.results || data;
+});
+
 export const createListing = createAsyncThunk("listings/createListing", async (_, thunkApi) => {
   const state = thunkApi.getState();
   const { token, userId } = state.auth;
@@ -20,13 +25,17 @@ export const createListing = createAsyncThunk("listings/createListing", async (_
     owner: userId,
     title: draft.title,
     description: draft.description,
-    listing_type: draft.listing_type,
   };
 
-  if (draft.listing_type === "buy") {
+  if (draft.mode === "selling") {
+    payload.listing_type = "buy";
     payload.price = draft.price ? Number(draft.price) : null;
-  } else {
+  } else if (draft.mode === "swapping") {
+    payload.listing_type = "swap";
     payload.iso_text = draft.iso_text;
+  } else {
+    payload.listing_type = "swap";
+    payload.iso_text = draft.iso_text || `ISO: ${draft.title}`;
   }
 
   const created = await apiRequest("/listings/", {
@@ -46,11 +55,14 @@ const listingsSlice = createSlice({
     status: "idle",
     items: [],
     error: null,
+    usersById: {},
+    userStatus: "idle",
+    userError: null,
     createError: null,
     draft: {
       title: "",
       description: "",
-      listing_type: "buy",
+      mode: "selling",
       price: "",
       iso_text: "",
     },
@@ -74,6 +86,20 @@ const listingsSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message || "Failed to load listings";
       })
+      .addCase(fetchUsers.pending, (state) => {
+        state.userStatus = "loading";
+      })
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+        state.userStatus = "succeeded";
+        state.usersById = action.payload.reduce((acc, user) => {
+          acc[user.id] = user;
+          return acc;
+        }, {});
+      })
+      .addCase(fetchUsers.rejected, (state, action) => {
+        state.userStatus = "failed";
+        state.userError = action.error.message || "Failed to load users";
+      })
       .addCase(createListing.pending, (state) => {
         state.createError = null;
       })
@@ -83,6 +109,7 @@ const listingsSlice = createSlice({
         state.draft.description = "";
         state.draft.price = "";
         state.draft.iso_text = "";
+        state.draft.mode = "selling";
       })
       .addCase(createListing.rejected, (state, action) => {
         state.createError = action.error.message || "Failed to create listing";
