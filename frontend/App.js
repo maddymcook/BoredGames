@@ -21,6 +21,7 @@ import {
   clearRegisterFeedback,
   fetchCurrentUser,
   fetchMyProfile,
+  loadStoredAuth,
   loginUser,
   registerUser,
   saveMyProfile,
@@ -40,6 +41,54 @@ import {
 import { toAbsoluteMediaUrl } from "./src/api/client";
 import { store } from "./src/store/store";
 
+const palette = {
+  bg: "#f4f7fb",
+  card: "#ffffff",
+  border: "#d9e2ef",
+  text: "#142033",
+  subtext: "#617086",
+  primary: "#4f46e5",
+  primarySoft: "#ecebff",
+  success: "#0f766e",
+  successSoft: "#ccfbf1",
+  warning: "#b45309",
+  warningSoft: "#fef3c7",
+  danger: "#b91c1c",
+  dangerSoft: "#fee2e2",
+  dark: "#1e293b",
+};
+
+function getListingMode(item) {
+  if (item.listing_type === "buy") return "selling";
+  if (item.iso_text?.toLowerCase().startsWith("iso:")) return "in_search_of";
+  return "swapping";
+}
+
+function getApprovalTone(status) {
+  if (status === "approved") {
+    return { bg: "#dcfce7", color: "#166534", label: "Approved" };
+  }
+  if (status === "pending") {
+    return { bg: "#fef3c7", color: "#92400e", label: "Pending" };
+  }
+  if (status === "rejected") {
+    return { bg: "#fee2e2", color: "#991b1b", label: "Rejected" };
+  }
+  return { bg: "#e2e8f0", color: "#334155", label: status || "Unknown" };
+}
+
+function stars(value) {
+  const rounded = Math.round(Number(value) || 0);
+  return "★".repeat(rounded) + "☆".repeat(5 - rounded);
+}
+
+function formatRating(item) {
+  const count = Number(item.rating_count || 0);
+  const avg = Number(item.average_rating || 0);
+  if (!count) return "No ratings yet";
+  return `${stars(avg)} ${avg.toFixed(1)} (${count})`;
+}
+
 function AuthGate() {
   const dispatch = useDispatch();
   const auth = useSelector(selectAuth);
@@ -48,53 +97,63 @@ function AuthGate() {
   const onRegister = () => dispatch(registerUser());
 
   return (
-    <View style={styles.authContainer}>
-      <Text style={styles.authHeading}>Welcome to BoredGames Marketplace</Text>
-      <Text style={styles.authSubheading}>Create an account, then log in to open the app.</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        autoCapitalize="none"
-        value={auth.form.email}
-        onChangeText={(value) => dispatch(setCredentialsForm({ field: "email", value }))}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Username (for account creation)"
-        autoCapitalize="none"
-        value={auth.form.username}
-        onChangeText={(value) => {
-          dispatch(clearRegisterFeedback());
-          dispatch(setCredentialsForm({ field: "username", value }));
-        }}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={auth.form.password}
-        onChangeText={(value) => {
-          dispatch(clearRegisterFeedback());
-          dispatch(setCredentialsForm({ field: "password", value }));
-        }}
-      />
-
-      <View style={styles.row}>
-        <Pressable style={styles.secondaryButton} onPress={onRegister}>
-          <Text style={styles.secondaryButtonText}>
-            {auth.registerStatus === "loading" ? "Creating..." : "Create Account"}
-          </Text>
-        </Pressable>
-        <Pressable style={styles.primaryButton} onPress={onLogin}>
-          <Text style={styles.primaryButtonText}>{auth.status === "loading" ? "Logging in..." : "Login"}</Text>
-        </Pressable>
+    <ScrollView contentContainerStyle={styles.authScroll}>
+      <View style={styles.authHero}>
+        <Text style={styles.authEyebrow}>BOARD GAME BUY • SELL • SWAP</Text>
+        <Text style={styles.authHeading}>BoredGames Marketplace</Text>
+        <Text style={styles.authSubheading}>
+          Discover campus-friendly trades, sell games you are done with, and connect with other players.
+        </Text>
       </View>
 
-      {auth.registerSuccess ? <Text style={styles.success}>Account created. Now log in.</Text> : null}
-      {auth.registerError ? <Text style={styles.error}>{auth.registerError}</Text> : null}
-      {auth.error ? <Text style={styles.error}>{auth.error}</Text> : null}
-    </View>
+      <View style={styles.authCard}>
+        <Text style={styles.sectionTitle}>Get started</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          autoCapitalize="none"
+          value={auth.form.email}
+          onChangeText={(value) => dispatch(setCredentialsForm({ field: "email", value }))}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Username"
+          autoCapitalize="none"
+          value={auth.form.username}
+          onChangeText={(value) => {
+            dispatch(clearRegisterFeedback());
+            dispatch(setCredentialsForm({ field: "username", value }));
+          }}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry
+          value={auth.form.password}
+          onChangeText={(value) => {
+            dispatch(clearRegisterFeedback());
+            dispatch(setCredentialsForm({ field: "password", value }));
+          }}
+        />
+
+        <View style={styles.row}>
+          <Pressable style={styles.secondaryButton} onPress={onRegister}>
+            <Text style={styles.secondaryButtonText}>
+              {auth.registerStatus === "loading" ? "Creating..." : "Create Account"}
+            </Text>
+          </Pressable>
+          <Pressable style={styles.primaryButton} onPress={onLogin}>
+            <Text style={styles.primaryButtonText}>
+              {auth.status === "loading" ? "Logging in..." : "Login"}
+            </Text>
+          </Pressable>
+        </View>
+
+        {auth.registerSuccess ? <Text style={styles.success}>Account created. Now log in.</Text> : null}
+        {auth.registerError ? <Text style={styles.error}>{auth.registerError}</Text> : null}
+        {auth.error ? <Text style={styles.error}>{auth.error}</Text> : null}
+      </View>
+    </ScrollView>
   );
 }
 
@@ -103,6 +162,7 @@ function MarketplaceApp() {
   const auth = useSelector(selectAuth);
   const listings = useSelector(selectListings);
   const messages = useSelector(selectMessages);
+
   const [activeTab, setActiveTab] = useState("listings");
   const [profile, setProfile] = useState({ displayName: "", location: "", bio: "" });
   const [profileSaved, setProfileSaved] = useState(false);
@@ -140,9 +200,7 @@ function MarketplaceApp() {
   }, [auth.profile]);
 
   useEffect(() => {
-    if (!auth.token) {
-      return undefined;
-    }
+    if (!auth.token) return undefined;
     const timer = setInterval(() => {
       dispatch(fetchMessages({ markRead: activeTab === "messages" }));
     }, 5000);
@@ -157,24 +215,39 @@ function MarketplaceApp() {
 
   const listingModeLabels = { selling: "Selling", swapping: "Swapping", in_search_of: "In Search Of" };
   const listingTypeLabels = { buy: "Selling", swap: "Swap/ISO" };
+
   const selectedListing = useMemo(
     () => listings.items.find((item) => item.id === selectedListingId) || null,
     [listings.items, selectedListingId]
   );
+
+  const ownerName = (ownerId) => {
+    const user = listings.usersById[ownerId];
+    if (!user) return `User #${ownerId}`;
+    return user.profile_display_name || user.username || user.email || `User #${ownerId}`;
+  };
+
+  const listingOwnerName = (listing) => listing?.owner_display_name || ownerName(listing?.owner);
+
+  const listingTitleById = (listingId) => {
+    if (!listingId) return "General chat";
+    const listing = listings.items.find((item) => Number(item.id) === Number(listingId));
+    return listing?.title || `Listing #${listingId}`;
+  };
+
   const messageThreads = useMemo(() => {
-    if (!auth.userId) {
-      return [];
-    }
+    if (!auth.userId) return [];
     const threadMap = new Map();
+
     messages.items.forEach((message) => {
       const otherUserId =
         Number(message.sender) === Number(auth.userId) ? message.recipient : message.sender;
-      if (Number(otherUserId) === Number(auth.userId)) {
-        return;
-      }
+      if (Number(otherUserId) === Number(auth.userId)) return;
+
       const key = `${otherUserId}`;
       const existing = threadMap.get(key);
       const unread = Number(message.recipient) === Number(auth.userId) && !message.is_read ? 1 : 0;
+
       if (!existing) {
         threadMap.set(key, {
           key,
@@ -184,11 +257,13 @@ function MarketplaceApp() {
         });
         return;
       }
+
       if (new Date(message.created_at) > new Date(existing.latestMessage.created_at)) {
         existing.latestMessage = message;
       }
       existing.unreadCount += unread;
     });
+
     return Array.from(threadMap.values()).sort(
       (a, b) => new Date(b.latestMessage.created_at) - new Date(a.latestMessage.created_at)
     );
@@ -210,9 +285,7 @@ function MarketplaceApp() {
   );
 
   const threadMessages = useMemo(() => {
-    if (!selectedThread || !auth.userId) {
-      return [];
-    }
+    if (!selectedThread || !auth.userId) return [];
     return messages.items
       .filter((item) => {
         const otherUserId =
@@ -230,11 +303,20 @@ function MarketplaceApp() {
         (item.description || "").toLowerCase().includes(searchText.toLowerCase()) ||
         (item.iso_text || "").toLowerCase().includes(searchText.toLowerCase());
 
-      const mode = item.listing_type === "buy" ? "selling" : item.iso_text?.toLowerCase().startsWith("iso:") ? "in_search_of" : "swapping";
+      const mode = getListingMode(item);
       const matchesFilter = feedFilter === "all" || feedFilter === mode;
       return matchesText && matchesFilter;
     });
   }, [listings.items, searchText, feedFilter]);
+
+  const feedStats = useMemo(() => {
+    return {
+      total: listings.items.length,
+      selling: listings.items.filter((item) => getListingMode(item) === "selling").length,
+      swapping: listings.items.filter((item) => getListingMode(item) === "swapping").length,
+      iso: listings.items.filter((item) => getListingMode(item) === "in_search_of").length,
+    };
+  }, [listings.items]);
 
   const pickListingImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -255,9 +337,10 @@ function MarketplaceApp() {
   const submitListing = async () => {
     const result = await dispatch(createListing());
     if (!result.error) {
-      Alert.alert("Listing posted", "Your listing is now live in the marketplace.");
+      Alert.alert("Listing posted", "Your listing was submitted successfully.");
       setActiveTab("listings");
       dispatch(fetchListings());
+      dispatch(fetchMyListings());
     }
   };
 
@@ -281,6 +364,7 @@ function MarketplaceApp() {
   const onSendMessage = async () => {
     const recipientId = selectedRecipientId;
     const listingId = selectedListingContextId;
+
     if (!recipientId) {
       Alert.alert("Select a conversation", "Choose a thread or click a listing first.");
       return;
@@ -324,33 +408,50 @@ function MarketplaceApp() {
     Alert.alert("Delete failed", result.error.message || "Could not delete listing.");
   };
 
-  const ownerName = (ownerId) => {
-    const user = listings.usersById[ownerId];
-    if (!user) {
-      return `User #${ownerId}`;
-    }
-    return user.profile_display_name || user.username || user.email || `User #${ownerId}`;
-  };
-
-  const listingOwnerName = (listing) => listing?.owner_display_name || ownerName(listing?.owner);
-  const listingTitleById = (listingId) => {
-    if (!listingId) {
-      return "General chat";
-    }
-    const listing = listings.items.find((item) => Number(item.id) === Number(listingId));
-    return listing?.title || `Listing #${listingId}`;
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
-        <Text style={styles.brand}>BoredGames Marketplace</Text>
-        <Text style={styles.topMeta}>Signed in as {auth.profileName || ownerName(auth.userId)}</Text>
+        <View style={styles.topBarTextWrap}>
+          <Text style={styles.brand}>BoredGames Marketplace</Text>
+          <Text style={styles.topMeta}>
+            Signed in as {auth.profileName || ownerName(auth.userId)}
+          </Text>
+        </View>
+        <View style={styles.topBadge}>
+          <Text style={styles.topBadgeText}>{messages.unreadCount || 0} new</Text>
+        </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {activeTab === "listings" ? (
           <>
+            <View style={styles.heroCard}>
+              <Text style={styles.heroEyebrow}>Campus board game exchange</Text>
+              <Text style={styles.heroTitle}>Buy, sell, swap, and message collectors in one place.</Text>
+              <Text style={styles.heroText}>
+                Browse approved listings, see reputation at a glance, and connect with owners instantly.
+              </Text>
+
+              <View style={styles.statsRow}>
+                <View style={styles.statPill}>
+                  <Text style={styles.statNumber}>{feedStats.total}</Text>
+                  <Text style={styles.statLabel}>Listings</Text>
+                </View>
+                <View style={styles.statPill}>
+                  <Text style={styles.statNumber}>{feedStats.selling}</Text>
+                  <Text style={styles.statLabel}>Selling</Text>
+                </View>
+                <View style={styles.statPill}>
+                  <Text style={styles.statNumber}>{feedStats.swapping}</Text>
+                  <Text style={styles.statLabel}>Swaps</Text>
+                </View>
+                <View style={styles.statPill}>
+                  <Text style={styles.statNumber}>{feedStats.iso}</Text>
+                  <Text style={styles.statLabel}>ISO</Text>
+                </View>
+              </View>
+            </View>
+
             <View style={styles.searchBar}>
               <TextInput
                 style={styles.searchInput}
@@ -361,15 +462,16 @@ function MarketplaceApp() {
             </View>
 
             <View style={styles.card}>
-              <Text style={styles.cardTitle}>All Listings</Text>
+              <Text style={styles.sectionTitle}>Marketplace Feed</Text>
+
               <View style={styles.rowWrap}>
                 {["all", "selling", "swapping", "in_search_of"].map((filter) => (
                   <Pressable
                     key={filter}
-                    style={feedFilter === filter ? styles.modeButtonActive : styles.modeButton}
+                    style={feedFilter === filter ? styles.filterChipActive : styles.filterChip}
                     onPress={() => setFeedFilter(filter)}
                   >
-                    <Text style={feedFilter === filter ? styles.modeTextActive : styles.modeText}>
+                    <Text style={feedFilter === filter ? styles.filterChipTextActive : styles.filterChipText}>
                       {filter === "all" ? "All" : listingModeLabels[filter]}
                     </Text>
                   </Pressable>
@@ -384,53 +486,110 @@ function MarketplaceApp() {
                   scrollEnabled={false}
                   keyExtractor={(item) => String(item.id)}
                   ListEmptyComponent={<Text style={styles.subtleText}>No listings match your search.</Text>}
-                  renderItem={({ item }) => (
-                    <Pressable
-                      style={styles.listingCard}
-                      onPress={() => {
-                        if (Number(item.owner) === Number(auth.userId)) {
-                          Alert.alert("Your listing", "This is your own listing, so messaging is disabled.");
-                          return;
-                        }
-                        setSelectedListingId(item.id);
-                        setSelectedThreadKey(String(item.owner));
-                        setSelectedRecipientId(item.owner);
-                        setSelectedRecipientName(listingOwnerName(item));
-                        setSelectedListingContextId(item.id);
-                        setActiveTab("messages");
-                      }}
-                    >
-                      {item.image ? (
-                        <Image source={{ uri: toAbsoluteMediaUrl(item.image) }} style={styles.listingImage} />
-                      ) : null}
-                      <View style={styles.listingCardTop}>
-                        <Text style={styles.listTitle}>{item.title}</Text>
-                        <Text style={styles.tag}>{listingTypeLabels[item.listing_type] || item.listing_type}</Text>
-                      </View>
-                      <Text style={styles.subtleText}>Owner: {listingOwnerName(item)}</Text>
-                      <Text>{item.description || "No description provided."}</Text>
-                      {item.price !== null ? <Text style={styles.price}>${item.price}</Text> : null}
-                      {item.iso_text ? <Text style={styles.subtleText}>{item.iso_text}</Text> : null}
-                      {item.tags?.length ? <Text style={styles.subtleText}>Tags: {item.tags.join(", ")}</Text> : null}
-                    </Pressable>
-                  )}
+                  renderItem={({ item }) => {
+                    const approval = getApprovalTone(item.approval_status);
+                    return (
+                      <Pressable
+                        style={styles.listingCard}
+                        onPress={() => {
+                          if (Number(item.owner) === Number(auth.userId)) {
+                            Alert.alert("Your listing", "This is your own listing, so messaging is disabled.");
+                            setSelectedListingId(item.id);
+                            return;
+                          }
+                          setSelectedListingId(item.id);
+                          setSelectedThreadKey(String(item.owner));
+                          setSelectedRecipientId(item.owner);
+                          setSelectedRecipientName(listingOwnerName(item));
+                          setSelectedListingContextId(item.id);
+                          setActiveTab("messages");
+                        }}
+                      >
+                        {item.image ? (
+                          <Image source={{ uri: toAbsoluteMediaUrl(item.image) }} style={styles.listingImage} />
+                        ) : (
+                          <View style={styles.imagePlaceholder}>
+                            <Text style={styles.imagePlaceholderText}>No image</Text>
+                          </View>
+                        )}
+
+                        <View style={styles.listingHeaderRow}>
+                          <View style={styles.listingHeaderText}>
+                            <Text style={styles.listTitle}>{item.title}</Text>
+                            <Text style={styles.subtleText}>Owner: {listingOwnerName(item)}</Text>
+                          </View>
+                          <View style={styles.rightPills}>
+                            <View style={styles.typePill}>
+                              <Text style={styles.typePillText}>
+                                {listingTypeLabels[item.listing_type] || item.listing_type}
+                              </Text>
+                            </View>
+                            {item.approval_status ? (
+                              <View style={[styles.approvalPill, { backgroundColor: approval.bg }]}>
+                                <Text style={[styles.approvalPillText, { color: approval.color }]}>
+                                  {approval.label}
+                                </Text>
+                              </View>
+                            ) : null}
+                          </View>
+                        </View>
+
+                        <Text style={styles.listingBodyText}>
+                          {item.description || "No description provided."}
+                        </Text>
+
+                        <View style={styles.metaRow}>
+                          {item.price !== null ? <Text style={styles.price}>${item.price}</Text> : null}
+                          <Text style={styles.ratingText}>{formatRating(item)}</Text>
+                        </View>
+
+                        {item.iso_text ? <Text style={styles.isoText}>{item.iso_text}</Text> : null}
+
+                        {item.tags?.length ? (
+                          <View style={styles.tagsRow}>
+                            {item.tags.map((tag) => (
+                              <View key={`${item.id}-${tag}`} style={styles.tagChip}>
+                                <Text style={styles.tagChipText}>{tag}</Text>
+                              </View>
+                            ))}
+                          </View>
+                        ) : null}
+                      </Pressable>
+                    );
+                  }}
                 />
               )}
             </View>
 
             {selectedListing ? (
               <View style={styles.card}>
-                <Text style={styles.cardTitle}>Listing Details</Text>
+                <Text style={styles.sectionTitle}>Listing Details</Text>
                 <Text style={styles.detailTitle}>{selectedListing.title}</Text>
                 <Text style={styles.subtleText}>Posted by {listingOwnerName(selectedListing)}</Text>
-                <Text>{selectedListing.description || "No description provided."}</Text>
-                {selectedListing.price !== null ? <Text style={styles.price}>${selectedListing.price}</Text> : null}
-                {selectedListing.iso_text ? <Text style={styles.subtleText}>{selectedListing.iso_text}</Text> : null}
-                {selectedListing.tags?.length ? (
-                  <Text style={styles.subtleText}>Tags: {selectedListing.tags.join(", ")}</Text>
+                <Text style={styles.ratingDetail}>{formatRating(selectedListing)}</Text>
+                <Text style={styles.listingBodyText}>
+                  {selectedListing.description || "No description provided."}
+                </Text>
+
+                {selectedListing.price !== null ? (
+                  <Text style={styles.price}>${selectedListing.price}</Text>
                 ) : null}
 
-                <Text style={styles.cardSubTitle}>Message Listing Owner</Text>
+                {selectedListing.iso_text ? (
+                  <Text style={styles.isoText}>{selectedListing.iso_text}</Text>
+                ) : null}
+
+                {selectedListing.tags?.length ? (
+                  <View style={styles.tagsRow}>
+                    {selectedListing.tags.map((tag) => (
+                      <View key={`detail-${selectedListing.id}-${tag}`} style={styles.tagChip}>
+                        <Text style={styles.tagChipText}>{tag}</Text>
+                      </View>
+                    ))}
+                  </View>
+                ) : null}
+
+                <Text style={styles.sectionSubTitle}>Message Listing Owner</Text>
                 <TextInput
                   style={[styles.input, styles.multilineInput]}
                   placeholder="Hi! Is this still available?"
@@ -449,6 +608,7 @@ function MarketplaceApp() {
                     {messages.sendStatus === "loading" ? "Sending..." : "Send Message"}
                   </Text>
                 </Pressable>
+
                 {messages.sendError ? <Text style={styles.error}>{messages.sendError}</Text> : null}
                 {messages.sendStatus === "succeeded" ? (
                   <Text style={styles.success}>Message sent successfully.</Text>
@@ -460,7 +620,8 @@ function MarketplaceApp() {
 
         {activeTab === "messages" ? (
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Messaging</Text>
+            <Text style={styles.sectionTitle}>Messages</Text>
+
             <FlatList
               data={messageThreads}
               scrollEnabled={false}
@@ -480,7 +641,9 @@ function MarketplaceApp() {
                     <Text style={styles.listTitle}>{ownerName(item.otherUserId)}</Text>
                     {item.unreadCount > 0 ? (
                       <View style={styles.badge}>
-                        <Text style={styles.badgeText}>{item.unreadCount > 99 ? "99+" : item.unreadCount}</Text>
+                        <Text style={styles.badgeText}>
+                          {item.unreadCount > 99 ? "99+" : item.unreadCount}
+                        </Text>
                       </View>
                     ) : null}
                   </View>
@@ -490,6 +653,7 @@ function MarketplaceApp() {
                 </Pressable>
               )}
             />
+
             {selectedThread ? (
               <FlatList
                 data={threadMessages}
@@ -499,7 +663,9 @@ function MarketplaceApp() {
                 renderItem={({ item }) => (
                   <View
                     style={
-                      Number(item.sender) === Number(auth.userId) ? styles.messageBubbleMine : styles.messageBubbleTheirs
+                      Number(item.sender) === Number(auth.userId)
+                        ? styles.messageBubbleMine
+                        : styles.messageBubbleTheirs
                     }
                   >
                     <Text style={styles.messageText}>{item.content}</Text>
@@ -507,10 +673,13 @@ function MarketplaceApp() {
                 )}
               />
             ) : null}
+
             {selectedThread || selectedListing ? (
               <View style={styles.messageComposeCard}>
-                <Text style={styles.cardSubTitle}>
-                  Message {selectedRecipientName || (selectedThread ? ownerName(selectedThread.otherUserId) : listingOwnerName(selectedListing))}
+                <Text style={styles.sectionSubTitle}>
+                  Message{" "}
+                  {selectedRecipientName ||
+                    (selectedThread ? ownerName(selectedThread.otherUserId) : listingOwnerName(selectedListing))}
                 </Text>
                 <TextInput
                   style={[styles.input, styles.multilineInput]}
@@ -544,158 +713,188 @@ function MarketplaceApp() {
             ) : (
               <Text style={styles.subtleText}>Choose a conversation or click a listing to start one.</Text>
             )}
-            {messages.listStatus === "loading" ? (
-              <ActivityIndicator />
-            ) : (
-              <></>
-            )}
+
+            {messages.listStatus === "loading" ? <ActivityIndicator /> : null}
             {messages.listError ? <Text style={styles.error}>{messages.listError}</Text> : null}
           </View>
         ) : null}
 
         {activeTab === "profile" ? (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Profile</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Display name"
-              value={profile.displayName}
-              onChangeText={(value) => setProfile((prev) => ({ ...prev, displayName: value }))}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Campus / location"
-              value={profile.location}
-              onChangeText={(value) => setProfile((prev) => ({ ...prev, location: value }))}
-            />
-            <TextInput
-              style={[styles.input, styles.multilineInput]}
-              placeholder="Bio / trade preferences"
-              value={profile.bio}
-              multiline
-              onChangeText={(value) => setProfile((prev) => ({ ...prev, bio: value }))}
-            />
-            <Pressable style={styles.primaryButton} onPress={saveProfile}>
-              <Text style={styles.primaryButtonText}>
-                {auth.profileStatus === "loading" ? "Saving..." : "Save Profile"}
-              </Text>
-            </Pressable>
-            {profileSaved ? <Text style={styles.success}>Profile section ready.</Text> : null}
-            {auth.profileSavedAt ? <Text style={styles.success}>Profile saved.</Text> : null}
-            {auth.profileError ? <Text style={styles.error}>{auth.profileError}</Text> : null}
-          </View>
-        ) : null}
-
-        {activeTab === "profile" ? (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>My Listings</Text>
-            {listings.myStatus === "loading" ? (
-              <ActivityIndicator />
-            ) : (
-              <FlatList
-                data={listings.myItems}
-                scrollEnabled={false}
-                keyExtractor={(item) => `my-${item.id}`}
-                ListEmptyComponent={<Text style={styles.subtleText}>You have no listings yet.</Text>}
-                renderItem={({ item }) => (
-                  <View style={styles.myListingCard}>
-                    <Text style={styles.listTitle}>{item.title}</Text>
-                    <Text style={styles.subtleText}>
-                      {item.listing_type === "buy" ? "Selling" : "Swap/ISO"} {item.price !== null ? `- $${item.price}` : ""}
-                    </Text>
-                    <Text numberOfLines={2}>{item.description || "No description"}</Text>
-                    <Pressable
-                      style={styles.deleteButton}
-                      onPress={() => onDeleteListing(item.id)}
-                      disabled={listings.deleteStatus === "loading"}
-                    >
-                      <Text style={styles.deleteButtonText}>
-                        {listings.deleteStatus === "loading" ? "Deleting..." : "Delete Listing"}
-                      </Text>
-                    </Pressable>
-                  </View>
-                )}
+          <>
+            <View style={styles.card}>
+              <Text style={styles.sectionTitle}>Profile</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Display name"
+                value={profile.displayName}
+                onChangeText={(value) => setProfile((prev) => ({ ...prev, displayName: value }))}
               />
-            )}
-            {listings.myError ? <Text style={styles.error}>{listings.myError}</Text> : null}
-            {listings.deleteError ? <Text style={styles.error}>{listings.deleteError}</Text> : null}
-          </View>
-        ) : null}
-
-        {activeTab === "profile" ? (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Add Listing</Text>
-            <View style={styles.rowWrap}>
-              {["selling", "swapping", "in_search_of"].map((mode) => (
-                <Pressable
-                  key={mode}
-                  style={listings.draft.mode === mode ? styles.modeButtonActive : styles.modeButton}
-                  onPress={() => dispatch(setDraftField({ field: "mode", value: mode }))}
-                >
-                  <Text style={listings.draft.mode === mode ? styles.modeTextActive : styles.modeText}>
-                    {listingModeLabels[mode]}
-                  </Text>
-                </Pressable>
-              ))}
+              <TextInput
+                style={styles.input}
+                placeholder="Campus / location"
+                value={profile.location}
+                onChangeText={(value) => setProfile((prev) => ({ ...prev, location: value }))}
+              />
+              <TextInput
+                style={[styles.input, styles.multilineInput]}
+                placeholder="Bio / trade preferences"
+                value={profile.bio}
+                multiline
+                onChangeText={(value) => setProfile((prev) => ({ ...prev, bio: value }))}
+              />
+              <Pressable style={styles.primaryButton} onPress={saveProfile}>
+                <Text style={styles.primaryButtonText}>
+                  {auth.profileStatus === "loading" ? "Saving..." : "Save Profile"}
+                </Text>
+              </Pressable>
+              {profileSaved ? <Text style={styles.success}>Profile section ready.</Text> : null}
+              {auth.profileSavedAt ? <Text style={styles.success}>Profile saved.</Text> : null}
+              {auth.profileError ? <Text style={styles.error}>{auth.profileError}</Text> : null}
             </View>
-            <TextInput
-              style={styles.input}
-              placeholder="Listing title"
-              value={listings.draft.title}
-              onChangeText={(value) => dispatch(setDraftField({ field: "title", value }))}
-            />
-            <TextInput
-              style={[styles.input, styles.multilineInput]}
-              placeholder="Description"
-              value={listings.draft.description}
-              multiline
-              onChangeText={(value) => dispatch(setDraftField({ field: "description", value }))}
-            />
-            {listings.draft.mode === "selling" ? (
+
+            <View style={styles.card}>
+              <Text style={styles.sectionTitle}>My Listings</Text>
+              {listings.myStatus === "loading" ? (
+                <ActivityIndicator />
+              ) : (
+                <FlatList
+                  data={listings.myItems}
+                  scrollEnabled={false}
+                  keyExtractor={(item) => `my-${item.id}`}
+                  ListEmptyComponent={<Text style={styles.subtleText}>You have no listings yet.</Text>}
+                  renderItem={({ item }) => {
+                    const approval = getApprovalTone(item.approval_status);
+                    return (
+                      <View style={styles.myListingCard}>
+                        <View style={styles.listingHeaderRow}>
+                          <Text style={styles.listTitle}>{item.title}</Text>
+                          {item.approval_status ? (
+                            <View style={[styles.approvalPill, { backgroundColor: approval.bg }]}>
+                              <Text style={[styles.approvalPillText, { color: approval.color }]}>
+                                {approval.label}
+                              </Text>
+                            </View>
+                          ) : null}
+                        </View>
+
+                        <Text style={styles.subtleText}>
+                          {item.listing_type === "buy" ? "Selling" : "Swap/ISO"}
+                          {item.price !== null ? ` • $${item.price}` : ""}
+                        </Text>
+                        <Text style={styles.subtleText}>{formatRating(item)}</Text>
+                        <Text numberOfLines={2}>{item.description || "No description"}</Text>
+
+                        <Pressable
+                          style={styles.deleteButton}
+                          onPress={() => onDeleteListing(item.id)}
+                          disabled={listings.deleteStatus === "loading"}
+                        >
+                          <Text style={styles.deleteButtonText}>
+                            {listings.deleteStatus === "loading" ? "Deleting..." : "Delete Listing"}
+                          </Text>
+                        </Pressable>
+                      </View>
+                    );
+                  }}
+                />
+              )}
+              {listings.myError ? <Text style={styles.error}>{listings.myError}</Text> : null}
+              {listings.deleteError ? <Text style={styles.error}>{listings.deleteError}</Text> : null}
+            </View>
+
+            <View style={styles.card}>
+              <Text style={styles.sectionTitle}>Add Listing</Text>
+              <View style={styles.rowWrap}>
+                {["selling", "swapping", "in_search_of"].map((mode) => (
+                  <Pressable
+                    key={mode}
+                    style={listings.draft.mode === mode ? styles.filterChipActive : styles.filterChip}
+                    onPress={() => dispatch(setDraftField({ field: "mode", value: mode }))}
+                  >
+                    <Text style={listings.draft.mode === mode ? styles.filterChipTextActive : styles.filterChipText}>
+                      {listingModeLabels[mode]}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+
               <TextInput
                 style={styles.input}
-                placeholder="Price (required)"
-                value={listings.draft.price}
-                keyboardType="decimal-pad"
-                onChangeText={(value) => dispatch(setDraftField({ field: "price", value }))}
+                placeholder="Listing title"
+                value={listings.draft.title}
+                onChangeText={(value) => dispatch(setDraftField({ field: "title", value }))}
               />
-            ) : (
+              <TextInput
+                style={[styles.input, styles.multilineInput]}
+                placeholder="Description"
+                value={listings.draft.description}
+                multiline
+                onChangeText={(value) => dispatch(setDraftField({ field: "description", value }))}
+              />
+
+              {listings.draft.mode === "selling" ? (
+                <TextInput
+                  style={styles.input}
+                  placeholder="Price (required)"
+                  value={listings.draft.price}
+                  keyboardType="decimal-pad"
+                  onChangeText={(value) => dispatch(setDraftField({ field: "price", value }))}
+                />
+              ) : (
+                <TextInput
+                  style={styles.input}
+                  placeholder={
+                    listings.draft.mode === "in_search_of"
+                      ? "What are you looking for?"
+                      : "What are you offering/wanting?"
+                  }
+                  value={listings.draft.iso_text}
+                  onChangeText={(value) => dispatch(setDraftField({ field: "iso_text", value }))}
+                />
+              )}
+
               <TextInput
                 style={styles.input}
-                placeholder={listings.draft.mode === "in_search_of" ? "What are you looking for?" : "What are you offering/wanting?"}
-                value={listings.draft.iso_text}
-                onChangeText={(value) => dispatch(setDraftField({ field: "iso_text", value }))}
+                placeholder="Tags (comma-separated)"
+                value={listings.draft.tags}
+                onChangeText={(value) => dispatch(setDraftField({ field: "tags", value }))}
               />
-            )}
-            <TextInput
-              style={styles.input}
-              placeholder="Tags (comma-separated, e.g. card games, fantasy, deck building)"
-              value={listings.draft.tags}
-              onChangeText={(value) => dispatch(setDraftField({ field: "tags", value }))}
-            />
-            {listings.draft.image ? (
-              <Image source={{ uri: listings.draft.image.uri }} style={styles.previewImage} />
-            ) : (
-              <Text style={styles.subtleText}>No image selected</Text>
-            )}
-            <Pressable style={styles.secondaryButton} onPress={pickListingImage}>
-              <Text style={styles.secondaryButtonText}>Upload Listing Image</Text>
-            </Pressable>
-            <Pressable style={styles.primaryButton} onPress={submitListing}>
-              <Text style={styles.primaryButtonText}>Post Listing</Text>
-            </Pressable>
-            {listings.createError ? <Text style={styles.error}>{listings.createError}</Text> : null}
-          </View>
+
+              {listings.draft.image ? (
+                <Image source={{ uri: listings.draft.image.uri }} style={styles.previewImage} />
+              ) : (
+                <View style={styles.imagePlaceholderLarge}>
+                  <Text style={styles.imagePlaceholderText}>No image selected</Text>
+                </View>
+              )}
+
+              <Pressable style={styles.secondaryButton} onPress={pickListingImage}>
+                <Text style={styles.secondaryButtonText}>Upload Listing Image</Text>
+              </Pressable>
+              <Pressable style={styles.primaryButton} onPress={submitListing}>
+                <Text style={styles.primaryButtonText}>Post Listing</Text>
+              </Pressable>
+
+              {listings.createError ? <Text style={styles.error}>{listings.createError}</Text> : null}
+            </View>
+          </>
         ) : null}
       </ScrollView>
 
       <View style={styles.tabBar}>
-        <Pressable style={activeTab === "listings" ? styles.tabActive : styles.tab} onPress={() => setActiveTab("listings")}>
-          <Text style={activeTab === "listings" ? styles.tabTextActive : styles.tabText}>All Listings</Text>
+        <Pressable
+          style={activeTab === "listings" ? styles.tabActive : styles.tab}
+          onPress={() => setActiveTab("listings")}
+        >
+          <Text style={activeTab === "listings" ? styles.tabTextActive : styles.tabText}>Marketplace</Text>
         </Pressable>
-        <Pressable style={activeTab === "messages" ? styles.tabActive : styles.tab} onPress={() => setActiveTab("messages")}>
+
+        <Pressable
+          style={activeTab === "messages" ? styles.tabActive : styles.tab}
+          onPress={() => setActiveTab("messages")}
+        >
           <View style={styles.tabLabelRow}>
-            <Text style={activeTab === "messages" ? styles.tabTextActive : styles.tabText}>Messaging</Text>
+            <Text style={activeTab === "messages" ? styles.tabTextActive : styles.tabText}>Messages</Text>
             {messages.unreadCount > 0 ? (
               <View style={styles.badge}>
                 <Text style={styles.badgeText}>{messages.unreadCount > 99 ? "99+" : messages.unreadCount}</Text>
@@ -703,7 +902,11 @@ function MarketplaceApp() {
             ) : null}
           </View>
         </Pressable>
-        <Pressable style={activeTab === "profile" ? styles.tabActive : styles.tab} onPress={() => setActiveTab("profile")}>
+
+        <Pressable
+          style={activeTab === "profile" ? styles.tabActive : styles.tab}
+          onPress={() => setActiveTab("profile")}
+        >
           <Text style={activeTab === "profile" ? styles.tabTextActive : styles.tabText}>Profile</Text>
         </Pressable>
       </View>
@@ -712,12 +915,26 @@ function MarketplaceApp() {
 }
 
 function RootApp() {
+  const dispatch = useDispatch();
   const auth = useSelector(selectAuth);
+
+  useEffect(() => {
+    dispatch(loadStoredAuth());
+  }, [dispatch]);
+
+  if (!auth.authChecked) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator style={{ marginTop: 40 }} />
+        <StatusBar style="dark" />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       {!auth.token ? <AuthGate /> : <MarketplaceApp />}
-      <StatusBar style="auto" />
+      <StatusBar style="dark" />
     </SafeAreaView>
   );
 }
@@ -733,82 +950,180 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#eef2f7",
+    backgroundColor: palette.bg,
   },
-  authContainer: {
-    flex: 1,
-    padding: 18,
+  authScroll: {
+    flexGrow: 1,
     justifyContent: "center",
-    gap: 10,
+    padding: 18,
+    gap: 16,
   },
-  authHeading: {
-    fontSize: 24,
+  authHero: {
+    backgroundColor: "#1f2454",
+    borderRadius: 24,
+    padding: 22,
+    shadowColor: "#0f172a",
+    shadowOpacity: 0.12,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 5,
+  },
+  authEyebrow: {
+    color: "#c7d2fe",
+    fontSize: 12,
     fontWeight: "700",
-    color: "#1f2a37",
-  },
-  authSubheading: {
-    color: "#566070",
+    letterSpacing: 1,
     marginBottom: 8,
   },
+  authHeading: {
+    fontSize: 30,
+    fontWeight: "800",
+    color: "#ffffff",
+    marginBottom: 8,
+  },
+  authSubheading: {
+    color: "#dbe4ff",
+    lineHeight: 21,
+  },
+  authCard: {
+    backgroundColor: palette.card,
+    borderRadius: 22,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: palette.border,
+    gap: 10,
+  },
   topBar: {
-    backgroundColor: "#1877f2",
+    backgroundColor: "#1f2454",
     paddingHorizontal: 16,
-    paddingTop: 12,
+    paddingTop: 14,
     paddingBottom: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  topBarTextWrap: {
+    flex: 1,
+    paddingRight: 10,
   },
   brand: {
     color: "white",
     fontSize: 22,
-    fontWeight: "700",
+    fontWeight: "800",
   },
   topMeta: {
-    color: "#dbe8ff",
-    marginTop: 2,
+    color: "#c7d2fe",
+    marginTop: 4,
+  },
+  topBadge: {
+    backgroundColor: "#312e81",
+    borderWidth: 1,
+    borderColor: "#4f46e5",
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 999,
+  },
+  topBadgeText: {
+    color: "#e0e7ff",
+    fontWeight: "700",
+    fontSize: 12,
   },
   scrollContent: {
     paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingVertical: 14,
     gap: 12,
   },
-  searchBar: {
-    backgroundColor: "white",
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+  heroCard: {
+    backgroundColor: "#eef2ff",
+    borderRadius: 24,
+    padding: 18,
     borderWidth: 1,
-    borderColor: "#d6deea",
+    borderColor: "#c7d2fe",
+    gap: 8,
+  },
+  heroEyebrow: {
+    fontSize: 12,
+    fontWeight: "800",
+    color: "#4338ca",
+    letterSpacing: 1,
+  },
+  heroTitle: {
+    fontSize: 24,
+    fontWeight: "800",
+    color: "#1e1b4b",
+    lineHeight: 30,
+  },
+  heroText: {
+    color: "#475569",
+    lineHeight: 20,
+  },
+  statsRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginTop: 6,
+  },
+  statPill: {
+    backgroundColor: "#ffffff",
+    borderRadius: 18,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderWidth: 1,
+    borderColor: "#dbe4ff",
+    minWidth: 78,
+  },
+  statNumber: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#1e1b4b",
+  },
+  statLabel: {
+    fontSize: 12,
+    color: "#64748b",
+    marginTop: 2,
+  },
+  searchBar: {
+    backgroundColor: palette.card,
+    borderRadius: 18,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: palette.border,
   },
   searchInput: {
     fontSize: 15,
+    color: palette.text,
   },
   card: {
-    backgroundColor: "white",
-    borderRadius: 12,
-    padding: 12,
+    backgroundColor: palette.card,
+    borderRadius: 22,
+    padding: 14,
     borderWidth: 1,
-    borderColor: "#d6deea",
-    gap: 8,
+    borderColor: palette.border,
+    gap: 10,
   },
-  cardTitle: {
+  sectionTitle: {
+    fontWeight: "800",
+    fontSize: 18,
+    color: palette.text,
+  },
+  sectionSubTitle: {
     fontWeight: "700",
-    fontSize: 17,
-    color: "#1f2a37",
-  },
-  cardSubTitle: {
-    fontWeight: "600",
     fontSize: 15,
     marginTop: 4,
+    color: palette.text,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#c8d1dc",
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
+    borderColor: "#cdd7e5",
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 11,
     backgroundColor: "#fff",
+    color: palette.text,
   },
   multilineInput: {
-    minHeight: 70,
+    minHeight: 80,
     textAlignVertical: "top",
   },
   row: {
@@ -821,106 +1136,231 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   primaryButton: {
-    backgroundColor: "#1877f2",
-    borderRadius: 8,
-    paddingVertical: 10,
+    backgroundColor: palette.primary,
+    borderRadius: 14,
+    paddingVertical: 12,
     paddingHorizontal: 14,
     alignItems: "center",
     flex: 1,
   },
   secondaryButton: {
-    backgroundColor: "#e7f0ff",
-    borderRadius: 8,
-    paddingVertical: 10,
+    backgroundColor: palette.primarySoft,
+    borderRadius: 14,
+    paddingVertical: 12,
     paddingHorizontal: 14,
     alignItems: "center",
     flex: 1,
   },
   disabledButton: {
-    backgroundColor: "#99afcf",
-    borderRadius: 8,
-    paddingVertical: 10,
+    backgroundColor: "#a8b3c7",
+    borderRadius: 14,
+    paddingVertical: 12,
     paddingHorizontal: 14,
     alignItems: "center",
   },
   primaryButtonText: {
     color: "white",
-    fontWeight: "700",
+    fontWeight: "800",
   },
   secondaryButtonText: {
-    color: "#0f4fa8",
-    fontWeight: "700",
+    color: palette.primary,
+    fontWeight: "800",
   },
-  modeButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    borderRadius: 99,
+  filterChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
     borderWidth: 1,
-    borderColor: "#c8d1dc",
+    borderColor: "#d3dce9",
     backgroundColor: "#f8fafc",
   },
-  modeButtonActive: {
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    borderRadius: 99,
+  filterChipActive: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
     borderWidth: 1,
-    borderColor: "#1877f2",
-    backgroundColor: "#e9f2ff",
+    borderColor: "#a5b4fc",
+    backgroundColor: "#eef2ff",
   },
-  modeText: {
+  filterChipText: {
     color: "#334155",
-    fontWeight: "500",
+    fontWeight: "600",
   },
-  modeTextActive: {
-    color: "#1256af",
-    fontWeight: "700",
+  filterChipTextActive: {
+    color: "#4338ca",
+    fontWeight: "800",
   },
   listingCard: {
     borderWidth: 1,
-    borderColor: "#d8e2f0",
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 8,
-    gap: 4,
-    backgroundColor: "#fbfdff",
+    borderColor: "#dde5f1",
+    borderRadius: 20,
+    padding: 12,
+    marginBottom: 10,
+    gap: 8,
+    backgroundColor: "#fcfdff",
   },
   listingImage: {
     width: "100%",
-    height: 170,
-    borderRadius: 8,
-    marginBottom: 6,
+    height: 180,
+    borderRadius: 16,
     backgroundColor: "#dbe6f7",
   },
   previewImage: {
     width: "100%",
     height: 200,
-    borderRadius: 8,
+    borderRadius: 16,
     backgroundColor: "#dbe6f7",
   },
-  messageCard: {
+  imagePlaceholder: {
+    width: "100%",
+    height: 180,
+    borderRadius: 16,
+    backgroundColor: "#e9eef7",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  imagePlaceholderLarge: {
+    width: "100%",
+    height: 200,
+    borderRadius: 16,
+    backgroundColor: "#e9eef7",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  imagePlaceholderText: {
+    color: "#64748b",
+    fontWeight: "700",
+  },
+  listingHeaderRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    gap: 10,
+  },
+  listingHeaderText: {
+    flex: 1,
+    gap: 2,
+  },
+  rightPills: {
+    alignItems: "flex-end",
+    gap: 6,
+  },
+  typePill: {
+    backgroundColor: "#ede9fe",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+  },
+  typePillText: {
+    fontSize: 12,
+    color: "#5b21b6",
+    fontWeight: "800",
+  },
+  approvalPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+  },
+  approvalPillText: {
+    fontSize: 12,
+    fontWeight: "800",
+  },
+  listTitle: {
+    fontSize: 16,
+    fontWeight: "800",
+    color: palette.text,
+  },
+  listingBodyText: {
+    color: "#334155",
+    lineHeight: 20,
+  },
+  metaRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 10,
+    flexWrap: "wrap",
+  },
+  ratingText: {
+    color: "#7c3aed",
+    fontWeight: "700",
+  },
+  ratingDetail: {
+    color: "#7c3aed",
+    fontWeight: "700",
+    marginBottom: 2,
+  },
+  isoText: {
+    color: "#475569",
+    fontStyle: "italic",
+  },
+  tagsRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  tagChip: {
+    backgroundColor: "#eff6ff",
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  tagChipText: {
+    color: "#1d4ed8",
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  detailTitle: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: palette.text,
+  },
+  price: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#166534",
+  },
+  subtleText: {
+    color: palette.subtext,
+  },
+  threadCard: {
     borderWidth: 1,
     borderColor: "#d8e2f0",
-    borderRadius: 10,
-    padding: 10,
+    borderRadius: 16,
+    padding: 12,
     marginBottom: 8,
-    gap: 3,
     backgroundColor: "#fbfdff",
+    gap: 4,
+  },
+  threadCardActive: {
+    borderWidth: 1,
+    borderColor: "#a5b4fc",
+    borderRadius: 16,
+    padding: 12,
+    marginBottom: 8,
+    backgroundColor: "#eef2ff",
+    gap: 4,
+  },
+  threadRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   messageBubbleMine: {
     alignSelf: "flex-end",
-    backgroundColor: "#dbeafe",
-    borderRadius: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
+    backgroundColor: "#e0e7ff",
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     marginBottom: 6,
     maxWidth: "84%",
   },
   messageBubbleTheirs: {
     alignSelf: "flex-start",
     backgroundColor: "#f1f5f9",
-    borderRadius: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     marginBottom: 6,
     maxWidth: "84%",
   },
@@ -930,90 +1370,31 @@ const styles = StyleSheet.create({
   messageComposeCard: {
     borderWidth: 1,
     borderColor: "#d8e2f0",
-    borderRadius: 10,
-    padding: 10,
-    gap: 6,
+    borderRadius: 18,
+    padding: 12,
+    gap: 8,
     backgroundColor: "#fbfdff",
     marginBottom: 10,
   },
   myListingCard: {
     borderWidth: 1,
     borderColor: "#d8e2f0",
-    borderRadius: 10,
-    padding: 10,
+    borderRadius: 18,
+    padding: 12,
     marginBottom: 8,
-    gap: 4,
+    gap: 6,
     backgroundColor: "#fbfdff",
   },
   deleteButton: {
     marginTop: 6,
-    backgroundColor: "#fee2e2",
-    borderRadius: 8,
-    paddingVertical: 8,
+    backgroundColor: palette.dangerSoft,
+    borderRadius: 12,
+    paddingVertical: 10,
     alignItems: "center",
   },
   deleteButtonText: {
-    color: "#b91c1c",
-    fontWeight: "700",
-  },
-  threadCard: {
-    borderWidth: 1,
-    borderColor: "#d8e2f0",
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 8,
-    backgroundColor: "#fbfdff",
-    gap: 2,
-  },
-  threadCardActive: {
-    borderWidth: 1,
-    borderColor: "#93c5fd",
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 8,
-    backgroundColor: "#eff6ff",
-    gap: 2,
-  },
-  threadRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  chatHeaderRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    marginBottom: 6,
-  },
-  backLink: {
-    color: "#1d4ed8",
-    fontWeight: "700",
-  },
-  listingCardTop: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-  },
-  listTitle: {
-    fontSize: 15,
-    fontWeight: "600",
-  },
-  tag: {
-    fontSize: 12,
-    color: "#1d4ed8",
-    fontWeight: "700",
-  },
-  detailTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-  },
-  price: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#14532d",
-  },
-  subtleText: {
-    color: "#5b6470",
+    color: palette.danger,
+    fontWeight: "800",
   },
   tabBar: {
     flexDirection: "row",
@@ -1027,24 +1408,24 @@ const styles = StyleSheet.create({
   tab: {
     flex: 1,
     alignItems: "center",
-    paddingVertical: 10,
-    borderRadius: 10,
+    paddingVertical: 11,
+    borderRadius: 14,
     backgroundColor: "#edf2f7",
   },
   tabActive: {
     flex: 1,
     alignItems: "center",
-    paddingVertical: 10,
-    borderRadius: 10,
-    backgroundColor: "#dbeafe",
+    paddingVertical: 11,
+    borderRadius: 14,
+    backgroundColor: "#e0e7ff",
   },
   tabText: {
     color: "#475569",
-    fontWeight: "600",
+    fontWeight: "700",
   },
   tabTextActive: {
-    color: "#1d4ed8",
-    fontWeight: "700",
+    color: "#3730a3",
+    fontWeight: "800",
   },
   tabLabelRow: {
     flexDirection: "row",
@@ -1063,12 +1444,14 @@ const styles = StyleSheet.create({
   badgeText: {
     color: "white",
     fontSize: 11,
-    fontWeight: "700",
+    fontWeight: "800",
   },
   success: {
-    color: "#0b7a2f",
+    color: palette.success,
+    fontWeight: "600",
   },
   error: {
-    color: "#a11",
+    color: palette.danger,
+    fontWeight: "600",
   },
 });

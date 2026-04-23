@@ -7,3 +7,4 @@ frontend/.expo/
 frontend/.env
 __pycache__/
 *.pyc
+node_modules

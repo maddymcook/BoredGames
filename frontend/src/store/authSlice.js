@@ -1,7 +1,10 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
 
 import { apiRequest } from "../api/client";
+
+const AUTH_STORAGE_KEY = "boredgames_auth";
 
 function decodeUserIdFromToken(token) {
   try {
@@ -12,6 +15,25 @@ function decodeUserIdFromToken(token) {
   }
 }
 
+async function persistAuth(payload) {
+  await AsyncStorage.setItem(
+    AUTH_STORAGE_KEY,
+    JSON.stringify({
+      token: payload.access,
+      refreshToken: payload.refresh,
+      userId: payload.userId,
+    })
+  );
+}
+
+export const loadStoredAuth = createAsyncThunk("auth/loadStoredAuth", async () => {
+  const raw = await AsyncStorage.getItem(AUTH_STORAGE_KEY);
+  if (!raw) {
+    return null;
+  }
+  return JSON.parse(raw);
+});
+
 export const loginUser = createAsyncThunk("auth/loginUser", async (_, thunkApi) => {
   const state = thunkApi.getState();
   const { email, password } = state.auth.form;
@@ -21,11 +43,14 @@ export const loginUser = createAsyncThunk("auth/loginUser", async (_, thunkApi) 
     body: JSON.stringify({ email, password }),
   });
 
-  return {
+  const payload = {
     access: tokenData.access,
     refresh: tokenData.refresh,
     userId: decodeUserIdFromToken(tokenData.access),
   };
+
+  await persistAuth(payload);
+  return payload;
 });
 
 export const registerAndLogin = createAsyncThunk("auth/registerAndLogin", async (_, thunkApi) => {
@@ -42,11 +67,14 @@ export const registerAndLogin = createAsyncThunk("auth/registerAndLogin", async 
     body: JSON.stringify({ email, password }),
   });
 
-  return {
+  const payload = {
     access: tokenData.access,
     refresh: tokenData.refresh,
     userId: decodeUserIdFromToken(tokenData.access),
   };
+
+  await persistAuth(payload);
+  return payload;
 });
 
 export const registerUser = createAsyncThunk("auth/registerUser", async (_, thunkApi) => {
@@ -65,11 +93,13 @@ export const fetchCurrentUser = createAsyncThunk("auth/fetchCurrentUser", async 
   if (!token || !userId) {
     return null;
   }
+
   const user = await apiRequest(`/users/${userId}/`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+
   return user;
 });
 
@@ -79,11 +109,13 @@ export const fetchMyProfile = createAsyncThunk("auth/fetchMyProfile", async (_, 
   if (!token) {
     return null;
   }
+
   const profile = await apiRequest("/profiles/me/", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+
   return profile;
 });
 
@@ -93,6 +125,7 @@ export const saveMyProfile = createAsyncThunk("auth/saveMyProfile", async (paylo
   if (!token) {
     throw new Error("Please log in before saving your profile.");
   }
+
   const profile = await apiRequest("/profiles/me/", {
     method: "PUT",
     headers: {
@@ -100,7 +133,13 @@ export const saveMyProfile = createAsyncThunk("auth/saveMyProfile", async (paylo
     },
     body: JSON.stringify(payload),
   });
+
   return profile;
+});
+
+export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
+  await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
+  return true;
 });
 
 const authSlice = createSlice({
@@ -119,6 +158,7 @@ const authSlice = createSlice({
     profileStatus: "idle",
     profileError: null,
     profileSavedAt: null,
+    authChecked: false,
     form: {
       email: "",
       username: "",
@@ -139,19 +179,21 @@ const authSlice = createSlice({
       state.profileStatus = "idle";
       state.profileSavedAt = null;
     },
-    logout(state) {
-      state.token = null;
-      state.refreshToken = null;
-      state.userId = null;
-      state.profileName = null;
-      state.profile = null;
-      state.profileStatus = "idle";
-      state.profileError = null;
-      state.profileSavedAt = null;
-    },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(loadStoredAuth.fulfilled, (state, action) => {
+        state.authChecked = true;
+        if (!action.payload) {
+          return;
+        }
+        state.token = action.payload.token || null;
+        state.refreshToken = action.payload.refreshToken || null;
+        state.userId = action.payload.userId || null;
+      })
+      .addCase(loadStoredAuth.rejected, (state) => {
+        state.authChecked = true;
+      })
       .addCase(loginUser.pending, (state) => {
         state.status = "loading";
         state.error = null;
@@ -222,10 +264,27 @@ const authSlice = createSlice({
       .addCase(saveMyProfile.rejected, (state, action) => {
         state.profileStatus = "failed";
         state.profileError = action.error.message || "Could not save profile.";
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.token = null;
+        state.refreshToken = null;
+        state.userId = null;
+        state.profileName = null;
+        state.profile = null;
+        state.profileStatus = "idle";
+        state.profileError = null;
+        state.profileSavedAt = null;
+        state.status = "idle";
+        state.error = null;
       });
   },
 });
 
-export const { clearProfileFeedback, clearRegisterFeedback, logout, setCredentialsForm } = authSlice.actions;
+export const {
+  clearProfileFeedback,
+  clearRegisterFeedback,
+  setCredentialsForm,
+} = authSlice.actions;
+
 export const selectAuth = (state) => state.auth;
 export default authSlice.reducer;

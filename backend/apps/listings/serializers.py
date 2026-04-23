@@ -1,7 +1,29 @@
 from rest_framework import serializers
 
 from apps.accounts.models import GenreTag
-from .models import Listing
+from .models import Listing, ListingRating
+
+
+class ListingRatingSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = ListingRating
+        fields = (
+            "id",
+            "user",
+            "score",
+            "review",
+            "created_at",
+            "updated_at",
+        )
+        read_only_fields = ("created_at", "updated_at")
+
+    def get_user(self, obj):
+        profile = getattr(obj.user, "profile", None)
+        if profile and profile.display_name:
+            return profile.display_name
+        return obj.user.username or obj.user.email
 
 
 class ListingSerializer(serializers.ModelSerializer):
@@ -12,6 +34,14 @@ class ListingSerializer(serializers.ModelSerializer):
     )
     tags = serializers.SerializerMethodField(read_only=True)
     owner_display_name = serializers.SerializerMethodField(read_only=True)
+
+    average_rating = serializers.ReadOnlyField()
+    rating_count = serializers.ReadOnlyField()
+    ratings = ListingRatingSerializer(many=True, read_only=True)
+
+    approval_status = serializers.ReadOnlyField()
+    approved_by = serializers.SerializerMethodField(read_only=True)
+    approved_at = serializers.ReadOnlyField()
 
     class Meta:
         model = Listing
@@ -27,10 +57,25 @@ class ListingSerializer(serializers.ModelSerializer):
             "iso_text",
             "tags",
             "tag_names",
+            "average_rating",
+            "rating_count",
+            "ratings",
+            "approval_status",
+            "approved_by",
+            "approved_at",
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("created_at", "updated_at")
+        read_only_fields = (
+            "created_at",
+            "updated_at",
+            "average_rating",
+            "rating_count",
+            "ratings",
+            "approval_status",
+            "approved_by",
+            "approved_at",
+        )
 
     def validate(self, attrs):
         listing_type = attrs.get("listing_type", getattr(self.instance, "listing_type", None))
@@ -59,6 +104,14 @@ class ListingSerializer(serializers.ModelSerializer):
         if profile and profile.display_name:
             return profile.display_name
         return obj.owner.username or obj.owner.email
+
+    def get_approved_by(self, obj):
+        if not obj.approved_by:
+            return None
+        profile = getattr(obj.approved_by, "profile", None)
+        if profile and profile.display_name:
+            return profile.display_name
+        return obj.approved_by.username or obj.approved_by.email
 
     def _set_tags_from_names(self, listing, tag_names):
         cleaned = [name.strip().lower() for name in tag_names if name and name.strip()]
